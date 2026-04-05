@@ -1,4 +1,0 @@
-/home/ds1adr/QtProjects/OasisView/build-OASISView-Desktop-Debug/CMakeFiles/OASISView.dir
-/home/ds1adr/QtProjects/OasisView/build-OASISView-Desktop-Debug/CMakeFiles/edit_cache.dir
-/home/ds1adr/QtProjects/OasisView/build-OASISView-Desktop-Debug/CMakeFiles/rebuild_cache.dir
-/home/ds1adr/QtProjects/OasisView/build-OASISView-Desktop-Debug/CMakeFiles/OASISView_autogen.dir

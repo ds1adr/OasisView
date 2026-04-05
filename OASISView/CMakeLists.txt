@@ -18,7 +18,10 @@ set(PROJECT_SOURCES
         main.cpp
         MainWindow.cpp
         MainWindow.h
+        OASISParser/OASISElement.h
         OASISParser/OASISParserException.h
+        OASISParser/OASISElementParser.h
+        OASISParser/OASISElementParser.cpp
 )
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(OASISView

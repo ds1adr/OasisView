@@ -52,6 +52,7 @@ struct DeltaGForm2SecondByte {
 
 int parseInt(byte_t* mem, unsigned int& offset);
 unsigned int parseUInt(byte_t* mem, unsigned int& offset);
+unsigned int parseUInt(std::ifstream& fileStream);
 double parseRealNumber(byte_t* mem, unsigned int& offset);
 
 // Delta Type
@@ -64,7 +65,7 @@ Delta3 parse3Delta(byte_t* mem, unsigned int& offset);
 // g delta
 Delta3 parseGDelta(byte_t* mem, unsigned int& offset);
 
-byte_t lastRepetition = 0;
+extern byte_t lastRepetition;
 // positive whole number (uint -> real)
 double parseRealType0(byte_t* mem, unsigned int& offset);
 // negative whole number -(uint)
@@ -83,6 +84,7 @@ double parseRealType6(byte_t* mem, unsigned int& offset);
 double parseRealType7(byte_t* mem, unsigned int& offset);
 // A-String ASCII string space (0x20), 21 ~ 7E
 const std::string parseAString(byte_t* mem, unsigned int& offset);
+const std::string parseAString(std::ifstream& fileStream);
 // B-String Binary String : any code
 const std::string parseBString(byte_t* mem, unsigned int& offset);
 // N-String Name String

@@ -1,4 +1,5 @@
 #include <cstring>
+#include <fstream>
 
 #include "OASISElementParser.h"
 #include "OASISParserException.h"
@@ -7,6 +8,7 @@ namespace OASISParser {
 
 const int validBitSize = 7;
 const int validBitSizeForSigned = 6;
+byte_t lastRepetition = 0;
 
 int parseInt(byte_t* mem, unsigned int& offset) {
     unsigned int result = 0;
@@ -61,6 +63,28 @@ unsigned int parseUInt(byte_t* mem, unsigned int& offset) {
         result = result | iValue;
         totalBitSize += validBitSize;
         offset++;
+    } while (isContinuous);
+
+    return result;
+}
+
+unsigned int parseUInt(std::ifstream& fileStream) {
+    bool isContinuous = false;
+    unsigned int result = 0;
+    int totalBitSize = 0;
+    char buffer;
+
+    // TODO: need to check bitSize is larger than int size
+    do {
+        fileStream.read(&buffer, sizeof(buffer));
+        UIntTypeByte *b = (UIntTypeByte*)&buffer;
+
+        int iValue = b->value;
+        iValue = iValue << totalBitSize;
+        isContinuous = (b->continuous == 1);
+
+        result = result | iValue;
+        totalBitSize += validBitSize;
     } while (isContinuous);
 
     return result;
@@ -144,6 +168,18 @@ const std::string parseAString(byte_t* mem, unsigned int& offset) {
     }
 
     return std::string((char *)(mem + initOffset), length);
+}
+
+const std::string parseAString(std::ifstream& fileStream) {
+    unsigned int length = parseUInt(fileStream);
+    char* buffer = new char[length];
+
+    fileStream.read(buffer, length);
+
+    std::string result = std::string((char *)(buffer), length);
+    delete [] buffer;
+
+    return result;
 }
 
 const std::string parseBString(byte_t* mem, unsigned int& offset) {

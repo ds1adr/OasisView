@@ -3,12 +3,14 @@
 
 #include <QMainWindow>
 
+#include "OASISParser/OASISData.h"
 #include "OASISView.h"
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
+    OASISData mOASISData;
     OASISView* mOASISView;
     QMenu* mFileMenu;
     QAction* mOpenAction;

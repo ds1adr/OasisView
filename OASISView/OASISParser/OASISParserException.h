@@ -9,6 +9,12 @@ class ParserException: public std::exception {
     virtual const char* description() const throw() = 0;
 };
 
+class NotOASISFile: public ParserException {
+    const char* description() const throw() {
+        return "File is not OASIS.";
+    }
+};
+
 class InvalidIntegerLength: public ParserException {
     const char* description() const throw() {
         return "Integer Length exceed its lengths.";

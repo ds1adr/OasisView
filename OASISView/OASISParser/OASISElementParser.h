@@ -54,6 +54,7 @@ int parseInt(byte_t* mem, unsigned int& offset);
 unsigned int parseUInt(byte_t* mem, unsigned int& offset);
 unsigned int parseUInt(std::ifstream& fileStream);
 double parseRealNumber(byte_t* mem, unsigned int& offset);
+double parseRealNumber(std::ifstream& fileStream);
 
 // Delta Type
 // 1 delta = int
@@ -68,20 +69,28 @@ Delta3 parseGDelta(byte_t* mem, unsigned int& offset);
 extern byte_t lastRepetition;
 // positive whole number (uint -> real)
 double parseRealType0(byte_t* mem, unsigned int& offset);
+double parseRealType0(std::ifstream& fileStream);
 // negative whole number -(uint)
 double parseRealType1(byte_t* mem, unsigned int& offset);
+double parseRealType1(std::ifstream& fileStream);
 // 1 / uint
 double parseRealType2(byte_t* mem, unsigned int& offset);
+double parseRealType2(std::ifstream& fileStream);
 // -1 / uint
 double parseRealType3(byte_t* mem, unsigned int& offset);
+double parseRealType3(std::ifstream& fileStream);
 // uint / uint
 double parseRealType4(byte_t* mem, unsigned int& offset);
+double parseRealType4(std::ifstream& fileStream);
 // - uint / uint
 double parseRealType5(byte_t* mem, unsigned int& offset);
+double parseRealType5(std::ifstream& fileStream);
 // Float
 double parseRealType6(byte_t* mem, unsigned int& offset);
+double parseRealType6(std::ifstream& fileStream);
 // Double
 double parseRealType7(byte_t* mem, unsigned int& offset);
+double parseRealType7(std::ifstream& fileStream);
 // A-String ASCII string space (0x20), 21 ~ 7E
 const std::string parseAString(byte_t* mem, unsigned int& offset);
 const std::string parseAString(std::ifstream& fileStream);

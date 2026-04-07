@@ -116,29 +116,78 @@ double parseRealNumber(byte_t* mem, unsigned int& offset) {
     }
 }
 
+double parseRealNumber(std::ifstream& fileStream) {
+    char type;
+    fileStream.read(&type, sizeof(type));
+
+    switch (type) {
+    case 0:
+        return parseRealType0(fileStream);
+    case 1:
+        return parseRealType1(fileStream);
+    case 2:
+        return parseRealType2(fileStream);
+    case 3:
+        return parseRealType3(fileStream);
+    case 4:
+        return parseRealType4(fileStream);
+    case 5:
+        return parseRealType5(fileStream);
+    case 6:
+        return parseRealType6(fileStream);
+    case 7:
+        return parseRealType7(fileStream);
+    default:
+        return 0.0;
+    }
+}
+
 double parseRealType0(byte_t* mem, unsigned int& offset) {
     return (double)parseUInt(mem, offset);
+}
+
+double parseRealType0(std::ifstream& fileStream) {
+    return (double)parseUInt(fileStream);
 }
 
 double parseRealType1(byte_t* mem, unsigned int& offset) {
     return -(double)parseUInt(mem, offset);
 }
 
+double parseRealType1(std::ifstream& fileStream) {
+    return -(double)parseUInt(fileStream);
+}
+
 double parseRealType2(byte_t* mem, unsigned int& offset) {
     return 1.0 / (double)parseUInt(mem, offset);
+}
+
+double parseRealType2(std::ifstream& fileStream) {
+    return 1.0 / (double)parseUInt(fileStream);
 }
 
 double parseRealType3(byte_t* mem, unsigned int& offset) {
     return -1.0 / (double)parseUInt(mem, offset);
 }
 
+double parseRealType3(std::ifstream& fileStream) {
+    return -1.0 / (double)parseUInt(fileStream);
+}
+
 double parseRealType4(byte_t* mem, unsigned int& offset) {
     return (double)parseUInt(mem, offset) / (double)parseUInt(mem, offset);
 }
 
+double parseRealType4(std::ifstream& fileStream) {
+    return (double)parseUInt(fileStream) / (double)parseUInt(fileStream);
+}
+
 double parseRealType5(byte_t* mem, unsigned int& offset) {
     return -(double)parseUInt(mem, offset) / (double)parseUInt(mem, offset);
+}
 
+double parseRealType5(std::ifstream& fileStream) {
+    return -(double)parseUInt(fileStream);
 }
 
 double parseRealType6(byte_t* mem, unsigned int& offset) {
@@ -148,10 +197,22 @@ double parseRealType6(byte_t* mem, unsigned int& offset) {
     return (double)value;
 }
 
+double parseRealType6(std::ifstream& fileStream) {
+    float value;
+    fileStream.read((char*)&value, sizeof(float));
+    return (double)value;
+}
+
 double parseRealType7(byte_t* mem, unsigned int& offset) {
     double value;
     memcpy(&value, (mem + offset), sizeof(double));
     offset += sizeof(double);
+    return value;
+}
+
+double parseRealType7(std::ifstream& fileStream) {
+    double value;
+    fileStream.read((char*)&value, sizeof(double));
     return value;
 }
 

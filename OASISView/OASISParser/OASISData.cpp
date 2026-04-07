@@ -43,5 +43,12 @@ int OASISData::parseStart(std::ifstream& fileStream) {
 
     mVersion = OASISParser::parseAString(fileStream);
     std::cout << "Version:" << mVersion << std::endl;
+    mUnit = OASISParser::parseRealNumber(fileStream);
+    std::cout << "Unit:" << mUnit << std::endl;
+    mOffsetFlag = OASISParser::parseUInt(fileStream);
+    std::cout << "Offset Flag:" << mOffsetFlag << std::endl;
+    if (mOffsetFlag == 0) {
+
+    }
     return 0;
 }

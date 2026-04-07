@@ -7,7 +7,8 @@ class OASISData
 {
 private:
     std::string mVersion;
-    int mResolution;
+    double mUnit;
+    unsigned int mOffsetFlag; // 0 : Table offset is in the Start, 1: Table offset is in the End
 
     int parseMagicBytes(std::ifstream& fileStream);
     int parseStart(std::ifstream& fileStream);

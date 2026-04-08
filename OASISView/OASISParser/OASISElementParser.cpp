@@ -4,6 +4,8 @@
 #include "OASISElementParser.h"
 #include "OASISParserException.h"
 
+// TODO: will separate parsing from memory / parsing from file
+
 namespace OASISParser {
 
 const int validBitSize = 7;
@@ -251,6 +253,17 @@ const std::string parseBString(byte_t* mem, unsigned int& offset) {
     return std::string((char *)(mem + initOffset), length);
 }
 
+const std::string parseBString(std::ifstream& fileStream) {
+    unsigned int length = parseUInt(fileStream);
+    char* buffer = new char[length];
+
+    fileStream.read(buffer, length);
+    std::string result = std::string((char *)(buffer), length);
+    delete [] buffer;
+
+    return result;
+}
+
 // N-String Name String
 const std::string parseNString(byte_t* mem, unsigned int& offset) {
     unsigned int length = parseUInt(mem, offset);
@@ -270,6 +283,20 @@ const std::string parseNString(byte_t* mem, unsigned int& offset) {
     }
 
     return std::string((char *)(mem + initOffset), length);
+}
+
+const std::string parseNString(std::ifstream& fileStream) {
+    unsigned int length = parseUInt(fileStream);
+
+    if (length == 0) {
+        throw InvalidString();
+    }
+    char* buffer = new char[length];
+    fileStream.read(buffer, length);
+    std::string result = std::string(buffer, length);
+    delete [] buffer;
+
+    return result;
 }
 
 // Delta type

@@ -1,6 +1,10 @@
 #include "OASISCells.h"
 
-OASISCell::OASISCell() {
+OASISCell::OASISCell(const std::string& name) {
+    mName = name;
+}
+
+void OASISCell::parse(std::ifstream& fileStream) {
 
 }
 
@@ -8,3 +12,4 @@ OASISCell::OASISCell() {
 OASISCellRef::OASISCellRef() {
 
 }
+

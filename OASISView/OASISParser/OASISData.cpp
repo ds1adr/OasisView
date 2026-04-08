@@ -20,9 +20,42 @@ void OASISData::parse(const std::string& filePath) {
     result = parseStart(fileStream);
     if (result != 0) { return; }
 
-    // while (!fileStream.eof()) {
+    // { CBLOCK | PAD | PROPERTY | <cell> | <name> }*
+    while (!fileStream.eof()) {
+        char recordType;
+        bool quit = false;
+        fileStream.read(&recordType, sizeof(recordType));
 
-    // }
+        switch (recordType) {
+        case 13: // Cell Record: reference-number, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
+        {
+            unsigned int referenceNumber = OASISParser::parseUInt(fileStream);
+            std::string key = std::to_string(referenceNumber);
+            std::cout << "Cell Reference:" << key << std::endl;
+            OASISCell cell(key);
+            cell.parse(fileStream);
+            mCellMap.emplace(key, cell);
+            break;
+        }
+        case 14: // Cell Record: cellname-string, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
+        {
+            std::string cellName = OASISParser::parseNString(fileStream);
+            std::cout << "Cell Name:" << cellName << std::endl;
+            OASISCell cell(cellName);
+            cell.parse(fileStream);
+            mCellMap.emplace(cellName, cell);
+            break;
+        }
+        default:
+            quit = true;
+            break;
+        }
+
+        // Temporal to prevent infinite loop
+        if (quit) {
+            break;
+        }
+    }
 
     fileStream.close();
 }

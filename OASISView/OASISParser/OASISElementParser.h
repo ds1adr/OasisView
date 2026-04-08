@@ -96,8 +96,10 @@ const std::string parseAString(byte_t* mem, unsigned int& offset);
 const std::string parseAString(std::ifstream& fileStream);
 // B-String Binary String : any code
 const std::string parseBString(byte_t* mem, unsigned int& offset);
+const std::string parseBString(std::ifstream& fileStream);
 // N-String Name String
 const std::string parseNString(byte_t* mem, unsigned int& offset);
+const std::string parseNString(std::ifstream& fileStream);
 
 // g delta form 1
 Delta3 parseGDeltaForm1(byte_t *mem, unsigned int &offset);

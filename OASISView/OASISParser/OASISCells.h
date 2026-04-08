@@ -40,7 +40,9 @@ class OASISCell
 private:
     std::string mName;
 public:
-    OASISCell();
+    OASISCell(const std::string& name);
+
+    void parse(std::ifstream& fileStream);
 };
 
 class OASISCellRef {

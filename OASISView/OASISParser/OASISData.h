@@ -2,6 +2,7 @@
 #define OASISDATA_H
 
 #include <string>
+#include "OASISCells.h"
 
 class OASISData
 {
@@ -9,6 +10,7 @@ private:
     std::string mVersion;
     double mUnit;
     unsigned int mOffsetFlag; // 0 : Table offset is in the Start, 1: Table offset is in the End
+    TableOffsets mTableOffsets;
 
     int parseMagicBytes(std::ifstream& fileStream);
     int parseStart(std::ifstream& fileStream);

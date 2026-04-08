@@ -48,7 +48,7 @@ int OASISData::parseStart(std::ifstream& fileStream) {
     mOffsetFlag = OASISParser::parseUInt(fileStream);
     std::cout << "Offset Flag:" << mOffsetFlag << std::endl;
     if (mOffsetFlag == 0) {
-
+        mTableOffsets.parse(fileStream);
     }
     return 0;
 }

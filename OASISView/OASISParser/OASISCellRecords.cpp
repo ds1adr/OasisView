@@ -133,3 +133,37 @@ void PropertyElement::parse(ifstream& fileStream) {
         }
     }
 }
+
+RectangleElement::~RectangleElement() {
+
+}
+
+void RectangleElement::parse(ifstream& fileStream) {
+    RectangleInfoByte infoByte;  // SWHXYRDL
+
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    if (infoByte.isLayerNumber) {
+        mLayerNumber = OASISParser::parseUInt(fileStream);
+    }
+    if (infoByte.isDataType) {
+        mDataType = OASISParser::parseUInt(fileStream);
+    }
+    if (infoByte.isWidth) {
+        mWidth = OASISParser::parseUInt(fileStream);
+    }
+    if (infoByte.isSquare) {
+        mHeight = mWidth;
+    } else if (infoByte.isHeight) {
+        mHeight = OASISParser::parseUInt(fileStream);
+    }
+    if (infoByte.isX) {
+        mX = OASISParser::parseInt(fileStream);
+    }
+    if (infoByte.isY) {
+        mY = OASISParser::parseInt(fileStream);
+    }
+    if (infoByte.isRepetation) {
+        mRepetition = OASISParser::parseRepetition(fileStream);
+    }
+}

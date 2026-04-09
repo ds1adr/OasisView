@@ -61,4 +61,31 @@ private:
     std::vector<std::variant<float, double, unsigned int, int, std::string>> mProperty;
 };
 
+struct RectangleInfoByte {
+    bool isLayerNumber: 1;      // L
+    bool isDataType: 1;         // D
+    bool isRepetation: 1;       // R
+    bool isY: 1;                // Y
+    bool isX: 1;                // X
+    bool isHeight: 1;           // H
+    bool isWidth: 1;            // W
+    bool isSquare: 1;           // S
+};
+
+class RectangleElement: public CellElement {
+public:
+    RectangleElement() = default;
+    ~RectangleElement();
+
+    void parse(std::ifstream& fileStream);
+private:
+    unsigned int mLayerNumber;
+    unsigned int mDataType;
+    std::variant<OASISParser::Repetition, OASISParser::NSpaceRepetition, OASISParser::DiagonalRepetition, OASISParser::NDisplacementRepetition> mRepetition;
+    int mY;
+    int mX;
+    unsigned int mHeight;
+    unsigned int mWidth;
+};
+
 #endif // OASISCELLRECORDS_H

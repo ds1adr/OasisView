@@ -4,6 +4,8 @@
 #include <string>
 #include "OASISElement.h"
 
+namespace OASISParser {
+
 class CellElement {
 public:
     CellElement() = default;
@@ -36,7 +38,7 @@ private:
     unsigned int mTextType;
     int mX = 0;
     int mY = 0;
-    std::variant<OASISParser::Repetition, OASISParser::NSpaceRepetition, OASISParser::DiagonalRepetition, OASISParser::NDisplacementRepetition> mRepetition;
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 
 struct PropertyInfoByte {
@@ -81,11 +83,40 @@ public:
 private:
     unsigned int mLayerNumber;
     unsigned int mDataType;
-    std::variant<OASISParser::Repetition, OASISParser::NSpaceRepetition, OASISParser::DiagonalRepetition, OASISParser::NDisplacementRepetition> mRepetition;
-    int mY;
-    int mX;
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    int mY = 0;
+    int mX = 0;
     unsigned int mHeight;
     unsigned int mWidth;
 };
+
+struct PlacementInfoByte {
+    bool isFlip: 1;     // F
+    bool rotation: 2;   // AA
+    bool isRepetition: 1; // R
+    bool isY: 1;        // Y
+    bool isX: 1;        // X
+    bool isRefrence: 1; // N
+    bool isExplicit: 1; // C
+};
+
+class PlacementElement: public CellElement {
+public:
+    PlacementElement() = default;
+    ~PlacementElement();
+
+    void parse(std::ifstream& fileStream);
+private:
+    bool mIsFlip = false; // x-axis
+    double mRotation = 0;
+    double mMag; // Magnification
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    int mX = 0;
+    int mY = 0;
+    unsigned int mReference;
+    std::string mCellName;
+};
+
+}
 
 #endif // OASISCELLRECORDS_H

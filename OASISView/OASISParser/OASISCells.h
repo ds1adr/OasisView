@@ -6,6 +6,8 @@
 #include "OASISCellRecords.h"
 #include "OASISElementParser.h"
 
+namespace OASISParser {
+
 struct TableOffsetPair {
     unsigned int flag;
     unsigned int offset;
@@ -52,5 +54,7 @@ class OASISCellRef {
 public:
     OASISCellRef();
 };
+
+}
 
 #endif // OASISCELLS_H

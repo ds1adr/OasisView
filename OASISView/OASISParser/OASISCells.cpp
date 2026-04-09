@@ -3,6 +3,8 @@
 
 #include <fstream>
 
+namespace OASISParser {
+
 OASISCell::OASISCell(const std::string& name) {
     mName = name;
 }
@@ -24,8 +26,13 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 16: // XYRELATIVE
         break;
     case 17: // PLACEMENT
+    {
+        CellElement* placementElement = new PlacementElement();
+        placementElement->parse(fileStream);
+        mCellElements.push_back(placementElement);
         break;
-    case 18: // PLASCEMENT
+    }
+    case 18: // PLACEMENT
         break;
     case 19: // TEXT
     {
@@ -35,7 +42,12 @@ void OASISCell::parse(std::ifstream& fileStream) {
     }
         break;
     case 20: // RECTANGLE
+    {
+        CellElement* rectangleElement = new RectangleElement();
+        rectangleElement->parse(fileStream);
+        mCellElements.push_back(rectangleElement);
         break;
+    }
     case 21: // POLYGON
         break;
     case 22: // PATH
@@ -85,3 +97,4 @@ OASISCellRef::OASISCellRef() {
 
 }
 
+}

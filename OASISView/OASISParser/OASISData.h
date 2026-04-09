@@ -6,6 +6,8 @@
 
 #include "OASISCells.h"
 
+namespace OASISParser {
+
 class OASISData
 {
 private:
@@ -23,5 +25,7 @@ public:
 
     void parse(const std::string& filePath);
 };
+
+}
 
 #endif // OASISDATA_H

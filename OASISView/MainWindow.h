@@ -10,7 +10,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
-    OASISData mOASISData;
+    OASISParser::OASISData mOASISData;
     OASISView* mOASISView;
     QMenu* mFileMenu;
     QAction* mOpenAction;

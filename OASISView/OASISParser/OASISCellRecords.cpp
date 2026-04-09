@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace OASISParser {
+
 TextElement::~TextElement() {
 
 }
@@ -145,25 +147,85 @@ void RectangleElement::parse(ifstream& fileStream) {
 
     if (infoByte.isLayerNumber) {
         mLayerNumber = OASISParser::parseUInt(fileStream);
+        cout << "Rect Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = OASISParser::parseUInt(fileStream);
+        cout << "Rect Data type:" << mDataType << endl;
     }
     if (infoByte.isWidth) {
         mWidth = OASISParser::parseUInt(fileStream);
+        cout << "Rect Width" << mWidth << endl;
     }
     if (infoByte.isSquare) {
         mHeight = mWidth;
+        cout << "Rect Height:" << mHeight << endl;
     } else if (infoByte.isHeight) {
         mHeight = OASISParser::parseUInt(fileStream);
+        cout << "Rect Height:" << mHeight << endl;
     }
     if (infoByte.isX) {
         mX = OASISParser::parseInt(fileStream);
+        cout << "Rect X:" << mX << endl;
+    } else {
+        mX = 0;
     }
     if (infoByte.isY) {
         mY = OASISParser::parseInt(fileStream);
+        cout << "Rect Y" << mY << endl;
+    } else {
+        mY = 0;
     }
     if (infoByte.isRepetation) {
         mRepetition = OASISParser::parseRepetition(fileStream);
     }
+}
+
+PlacementElement::~PlacementElement() {
+
+}
+
+void PlacementElement::parse(ifstream& fileStream) {
+    PlacementInfoByte infoByte;
+
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    if (infoByte.isFlip) {
+        mIsFlip = true;
+        cout << "Placement: isFlip" << endl;
+    }
+    switch (infoByte.rotation) {
+    case 0:
+        mRotation = 0;
+        break;
+    case 1:
+        mRotation = M_PI / 2;
+        break;
+    case 2:
+        mRotation = M_PI;
+        break;
+    case 3:
+        mRotation = -M_PI / 2;
+    }
+    cout << "Rotation:" << mRotation << endl;
+    if (infoByte.isRefrence) {
+        mReference = parseUInt(fileStream);
+    } else {
+        mCellName = parseNString(fileStream);
+        cout << "Cell name:" << mCellName << endl;
+    }
+    if (infoByte.isX) {
+        mX = parseInt(fileStream);
+        cout << "X:" << mX << endl;
+    }
+    if (infoByte.isY) {
+        mY = parseInt(fileStream);
+        cout << "Y:" << mY << endl;
+    }
+    if (infoByte.isRepetition) {
+        mRepetition = parseRepetition(fileStream);
+        cout << "Repetition" << endl;
+    }
+}
+
 }

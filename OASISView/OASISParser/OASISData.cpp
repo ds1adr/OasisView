@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+namespace OASISParser {
+
 OASISData::OASISData() {}
 
 // <oasis-file> -> <magic-bytes> START { CBLOCK | PAD | PROPERTY | <cell> | <name> }* END
@@ -84,4 +86,6 @@ int OASISData::parseStart(std::ifstream& fileStream) {
         mTableOffsets.parse(fileStream);
     }
     return 0;
+}
+
 }

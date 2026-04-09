@@ -51,6 +51,7 @@ struct DeltaGForm2SecondByte {
 };
 
 int parseInt(byte_t* mem, unsigned int& offset);
+int parseInt(std::ifstream& fileStream);
 unsigned int parseUInt(byte_t* mem, unsigned int& offset);
 unsigned int parseUInt(std::ifstream& fileStream);
 double parseRealNumber(byte_t* mem, unsigned int& offset);
@@ -65,8 +66,9 @@ Delta2 parse2Delta(byte_t* mem, unsigned int& offset);
 Delta3 parse3Delta(byte_t* mem, unsigned int& offset);
 // g delta
 Delta3 parseGDelta(byte_t* mem, unsigned int& offset);
+Delta3 parseGDelta(std::ifstream& fileStream);
 
-extern byte_t lastRepetition;
+extern std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
 // positive whole number (uint -> real)
 double parseRealType0(byte_t* mem, unsigned int& offset);
 double parseRealType0(std::ifstream& fileStream);
@@ -103,11 +105,14 @@ const std::string parseNString(std::ifstream& fileStream);
 
 // g delta form 1
 Delta3 parseGDeltaForm1(byte_t *mem, unsigned int &offset);
+Delta3 parseGDeltaForm1(std::ifstream& fileStream);
 // g delta form 2
 Delta3 parseGDeltaForm2(byte_t* mem, unsigned int &offset);
+Delta3 parseGDeltaForm2(std::ifstream& fileStream);
 
 // Repetition
 byte_t getRepetitionType(byte_t *mem, unsigned int &offset);
+const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(byte_t *mem, unsigned int &offset);
 Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset);
 Repetition parseRepetitionType2(byte_t *mem, unsigned int &offset);
 Repetition parseRepetitionType3(byte_t *mem, unsigned int &offset);
@@ -120,6 +125,19 @@ DiagonalRepetition parseRepetitionType9(byte_t *mem, unsigned int &offset);
 NDisplacementRepetition parseRepetitionType10(byte_t *mem, unsigned int &offset);
 NDisplacementRepetition parseRepetitionType11(byte_t *mem, unsigned int &offset);
 
+byte_t getRepetitionType(std::ifstream& fileStream);
+const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(std::ifstream& fileStream);
+Repetition parseRepetitionType1(std::ifstream& fileStream);
+Repetition parseRepetitionType2(std::ifstream& fileStream);
+Repetition parseRepetitionType3(std::ifstream& fileStream);
+NSpaceRepetition parseRepetitionType4(std::ifstream& fileStream);
+NSpaceRepetition parseRepetitionType5(std::ifstream& fileStream);
+NSpaceRepetition parseRepetitionType6(std::ifstream& fileStream);
+NSpaceRepetition parseRepetitionType7(std::ifstream& fileStream);
+DiagonalRepetition parseRepetitionType8(std::ifstream& fileStream);
+DiagonalRepetition parseRepetitionType9(std::ifstream& fileStream);
+NDisplacementRepetition parseRepetitionType10(std::ifstream& fileStream);
+NDisplacementRepetition parseRepetitionType11(std::ifstream& fileStream);
 }
 
 #endif // OASISELEMENTPARSER_H

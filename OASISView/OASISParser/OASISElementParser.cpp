@@ -6,11 +6,13 @@
 
 // TODO: will separate parsing from memory / parsing from file
 
+using namespace std;
+
 namespace OASISParser {
 
 const int validBitSize = 7;
 const int validBitSizeForSigned = 6;
-byte_t lastRepetition = 0;
+std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
 
 int parseInt(byte_t* mem, unsigned int& offset) {
     unsigned int result = 0;
@@ -49,6 +51,43 @@ int parseInt(byte_t* mem, unsigned int& offset) {
     return (result * sign);
 }
 
+int parseInt(ifstream& fileStream) {
+    unsigned int result = 0;
+    int totalBitSize = 0;
+    int sign = 1;
+    bool isContinuous = false;
+
+    // TODO: need to check bitSize is larger than int size
+    do {
+        int iValue = 0;
+
+        if (totalBitSize == 0) {
+            IntTypeByte b;
+            fileStream.read((char*)&b, sizeof(char));
+
+            sign = (b.sign == 1) ? -1 : 1;
+            isContinuous = (b.continuous == 1);
+            iValue = b.value;
+
+            iValue = iValue << totalBitSize;
+            result = result | iValue;
+            totalBitSize += validBitSizeForSigned;
+        } else {
+            UIntTypeByte b;
+            fileStream.read((char*)&b, sizeof(char));
+
+            isContinuous = (b.continuous == 1);
+            iValue = b.value;
+
+            iValue = iValue << totalBitSize;
+            result = result | iValue;
+            totalBitSize += validBitSize;
+        }
+    } while (isContinuous);
+
+    return (result * sign);
+}
+
 unsigned int parseUInt(byte_t* mem, unsigned int& offset) {
     bool isContinuous = false;
     unsigned int result = 0;
@@ -79,7 +118,7 @@ unsigned int parseUInt(std::ifstream& fileStream) {
     // TODO: need to check bitSize is larger than int size
     do {
         fileStream.read(&buffer, sizeof(buffer));
-        UIntTypeByte *b = (UIntTypeByte*)&buffer;
+        UIntTypeByte* b = (UIntTypeByte*)&buffer;
 
         int iValue = b->value;
         iValue = iValue << totalBitSize;
@@ -422,6 +461,16 @@ Delta3 parseGDelta(byte_t* mem, unsigned int& offset) {
     }
 }
 
+Delta3 parseGDelta(ifstream& fileStream) {
+    byte_t temp;
+    fileStream.read((char*)&temp, sizeof(temp));
+    if (temp & 0x01) { // type 2
+        return parseGDeltaForm2(fileStream);
+    } else { // type 1
+        return parseGDeltaForm1(fileStream);
+    }
+}
+
 // g delta form 1
 Delta3 parseGDeltaForm1(byte_t *mem, unsigned int &offset) {
     bool isContinuous = false;
@@ -454,6 +503,79 @@ Delta3 parseGDeltaForm1(byte_t *mem, unsigned int &offset) {
             totalBitSize += validBitSize;
         }
         offset++;
+    } while (isContinuous);
+
+    switch (direction) {
+    case 0: // east
+        delta3.dx = result;
+        delta3.dy = 0;
+        break;
+    case 1: // north
+        delta3.dx = 0;
+        delta3.dy = result;
+        break;
+    case 2: // west
+        delta3.dx = -result;
+        delta3.dy = 0;
+        break;
+    case 3: // south
+        delta3.dx = 0;
+        delta3.dy = -result;
+        break;
+    case 4: // northeast
+        delta3.dx = result;
+        delta3.dy = result;
+        break;
+    case 5: // northwest
+        delta3.dx = -result;
+        delta3.dy = result;
+        break;
+    case 6: // southwest
+        delta3.dx = -result;
+        delta3.dy = -result;
+        break;
+    case 7: // southeast
+        delta3.dx = result;
+        delta3.dy = -result;
+        break;
+    default:
+        break;
+    }
+    return delta3;
+}
+
+// g delta form 1
+Delta3 parseGDeltaForm1(ifstream& fileStream) {
+    bool isContinuous = false;
+    unsigned int result = 0;
+    int totalBitSize = 0;
+    unsigned int value = 0;
+    int direction = 0;
+    Delta3 delta3 = Delta3();
+
+    do {
+        if (totalBitSize == 0) {
+            DeltaGForm1Byte b;
+            fileStream.read((char*)&b, sizeof(byte_t));
+
+            direction = b.direction;
+            isContinuous = (b.continuous == 1);
+            value = b.value;
+
+            value = value << totalBitSize;
+            result = result | value;
+            totalBitSize += 3;
+        } else {
+            UIntTypeByte b;
+            fileStream.read((char*)&b, sizeof(byte_t));
+
+            value = b.value;
+            value = value << totalBitSize;
+            isContinuous = (b.continuous == 1);
+
+            result = result | value;
+            totalBitSize += validBitSize;
+        }
     } while (isContinuous);
 
     switch (direction) {
@@ -559,14 +681,135 @@ Delta3 parseGDeltaForm2(byte_t* mem, unsigned int &offset) {
     return Delta3(signX * dx, signY * dy);
 }
 
+// g delta form 2
+Delta3 parseGDeltaForm2(ifstream& fileStream) {
+    bool isContinuous = false;
+    unsigned int dx = 0;
+    unsigned int dy = 0;
+    unsigned int temp = 0;
+    int totalBitSize = 0;
+    int signX = 0;
+    int signY = 0;
+
+    do {
+        if (totalBitSize == 0) {
+            DeltaGForm2FirstByte b;
+            fileStream.read((char*)&b, sizeof(byte_t));
+
+            signX = (b.direction == 0) ? 1 : -1;
+            isContinuous = (b.continuous == 1);
+            temp = b.value;
+
+            temp = temp << totalBitSize;
+            dx = dx | temp;
+            totalBitSize += 5;
+        } else {
+            UIntTypeByte b;
+            fileStream.read((char*)&b, sizeof(byte_t));
+
+            temp = b.value;
+            temp = temp << totalBitSize;
+            isContinuous = (b.continuous == 1);
+
+            dx = dx | temp;
+            totalBitSize += validBitSize;
+        }
+    } while (isContinuous);
+
+    totalBitSize = 0;
+    do {
+        if (totalBitSize == 0) {
+            DeltaGForm2SecondByte b;
+            fileStream.read((char*)&b, sizeof(byte_t));
+
+            signY = (b.direction == 0) ? 1 : -1;
+            isContinuous = (b.continuous == 1);
+            temp = b.value;
+
+            temp = temp << totalBitSize;
+            dy = dy | temp;
+            totalBitSize += 6;
+        } else {
+            UIntTypeByte b;
+            fileStream.read((char*)&b, sizeof(byte_t));
+
+            temp = b.value;
+            temp = temp << totalBitSize;
+            isContinuous = (b.continuous == 1);
+
+            dy = dy | temp;
+            totalBitSize += validBitSize;
+        }
+    } while (isContinuous);
+
+    return Delta3(signX * dx, signY * dy);
+}
+
 byte_t getRepetitionType(byte_t *mem, unsigned int &offset) {
     byte_t type = mem[offset++];
-    if (type == 0) {
-        return lastRepetition;
-    } else {
-        lastRepetition = type;
-    }
     return type;
+}
+
+byte_t getRepetitionType(std::ifstream& fileStream) {
+    byte_t type;
+    fileStream.read((char*)&type, sizeof(type));
+    return type;
+}
+
+const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(byte_t *mem, unsigned int &offset) {
+    byte_t type = getRepetitionType(mem, offset);
+
+    switch (type) {
+    case 0:
+        return lastRepetition;
+    case 1:
+        return parseRepetitionType1(mem, offset);
+    case 2:
+        return parseRepetitionType2(mem, offset);
+    case 3:
+        return parseRepetitionType3(mem, offset);
+    case 4:
+        return parseRepetitionType4(mem, offset);
+    case 5:
+        return parseRepetitionType5(mem, offset);
+    case 6:
+        return parseRepetitionType6(mem, offset);
+    case 7:
+        return parseRepetitionType7(mem, offset);
+    case 8:
+        return parseRepetitionType8(mem, offset);
+    case 9:
+        return parseRepetitionType9(mem, offset);
+    }
+    return Repetition();
+}
+
+const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(ifstream& fileStream) {
+    byte_t type = getRepetitionType(fileStream);
+
+    switch (type) {
+    case 0:
+        return lastRepetition;
+    case 1:
+        return parseRepetitionType1(fileStream);
+    case 2:
+        return parseRepetitionType2(fileStream);
+    case 3:
+        return parseRepetitionType3(fileStream);
+    case 4:
+        return parseRepetitionType4(fileStream);
+    case 5:
+        return parseRepetitionType5(fileStream);
+    case 6:
+        return parseRepetitionType6(fileStream);
+    case 7:
+        return parseRepetitionType7(fileStream);
+    case 8:
+        return parseRepetitionType8(fileStream);
+    case 9:
+        return parseRepetitionType9(fileStream);
+    }
+    return Repetition();
 }
 
 Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset) {
@@ -578,6 +821,15 @@ Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset) {
     return Repetition(xdim, ydim, dx, dy);
 }
 
+Repetition parseRepetitionType1(ifstream& fileStream) {
+    unsigned xdim = parseUInt(fileStream);
+    unsigned ydim = parseUInt(fileStream);
+    unsigned dx = parseUInt(fileStream);
+    unsigned dy = parseUInt(fileStream);
+
+    return Repetition(xdim, ydim, dx, dy);
+}
+
 Repetition parseRepetitionType2(byte_t *mem, unsigned int &offset) {
     unsigned xdim = parseUInt(mem, offset);
     unsigned dx = parseUInt(mem, offset);
@@ -585,9 +837,23 @@ Repetition parseRepetitionType2(byte_t *mem, unsigned int &offset) {
     return Repetition(xdim, 0, dx, 0);
 }
 
+Repetition parseRepetitionType2(ifstream& fileStream) {
+    unsigned xdim = parseUInt(fileStream);
+    unsigned dx = parseUInt(fileStream);
+
+    return Repetition(xdim, 0, dx, 0);
+}
+
 Repetition parseRepetitionType3(byte_t *mem, unsigned int &offset) {
     unsigned ydim = parseUInt(mem, offset);
     unsigned dy = parseUInt(mem, offset);
+
+    return Repetition(0, ydim, 0, dy);
+}
+
+Repetition parseRepetitionType3(ifstream& fileStream) {
+    unsigned ydim = parseUInt(fileStream);
+    unsigned dy = parseUInt(fileStream);
 
     return Repetition(0, ydim, 0, dy);
 }
@@ -602,6 +868,22 @@ NSpaceRepetition parseRepetitionType4(byte_t *mem, unsigned int &offset) {
 
     for (unsigned i = 0; i < xdim - 1; i++) {
         unsigned dx = parseUInt(mem, offset);
+        result.v_dx.push_back(dx);
+    }
+
+    return result;
+}
+
+NSpaceRepetition parseRepetitionType4(ifstream& fileStream) {
+    NSpaceRepetition result;
+
+    unsigned xdim = parseUInt(fileStream);
+    result.nx = xdim;
+    result.ny = 0;
+    result.grid = 1;
+
+    for (unsigned i = 0; i < xdim - 1; i++) {
+        unsigned dx = parseUInt(fileStream);
         result.v_dx.push_back(dx);
     }
 
@@ -625,6 +907,23 @@ NSpaceRepetition parseRepetitionType5(byte_t *mem, unsigned int &offset) {
     return result;
 }
 
+NSpaceRepetition parseRepetitionType5(ifstream& fileStream) {
+    NSpaceRepetition result;
+
+    unsigned xdim = parseUInt(fileStream);
+    unsigned grid = parseUInt(fileStream);
+    result.nx = xdim;
+    result.ny = 0;
+    result.grid = grid;
+
+    for (unsigned i = 0; i < xdim - 1; i++) {
+        unsigned dx = parseUInt(fileStream);
+        result.v_dx.push_back(dx);
+    }
+
+    return result;
+}
+
 NSpaceRepetition parseRepetitionType6(byte_t *mem, unsigned int &offset) {
     NSpaceRepetition result;
 
@@ -635,6 +934,22 @@ NSpaceRepetition parseRepetitionType6(byte_t *mem, unsigned int &offset) {
 
     for (unsigned i = 0; i < ydim - 1; i++) {
         unsigned dy = parseUInt(mem, offset);
+        result.v_dy.push_back(dy);
+    }
+
+    return result;
+}
+
+NSpaceRepetition parseRepetitionType6(ifstream& fileStream) {
+    NSpaceRepetition result;
+
+    unsigned ydim = parseUInt(fileStream);
+    result.ny = ydim;
+    result.nx = 0;
+    result.grid = 1;
+
+    for (unsigned i = 0; i < ydim - 1; i++) {
+        unsigned dy = parseUInt(fileStream);
         result.v_dy.push_back(dy);
     }
 
@@ -658,6 +973,23 @@ NSpaceRepetition parseRepetitionType7(byte_t *mem, unsigned int &offset) {
     return result;
 }
 
+NSpaceRepetition parseRepetitionType7(ifstream& fileStream) {
+    NSpaceRepetition result;
+
+    unsigned ydim = parseUInt(fileStream);
+    unsigned grid = parseUInt(fileStream);
+    result.nx = 0;
+    result.ny = ydim;
+    result.grid = grid;
+
+    for (unsigned i = 0; i < ydim - 1; i++) {
+        unsigned dy = parseUInt(fileStream);
+        result.v_dy.push_back(dy);
+    }
+
+    return result;
+}
+
 DiagonalRepetition parseRepetitionType8(byte_t *mem, unsigned int &offset) {
     DiagonalRepetition result;
 
@@ -670,11 +1002,33 @@ DiagonalRepetition parseRepetitionType8(byte_t *mem, unsigned int &offset) {
     return result;
 }
 
+DiagonalRepetition parseRepetitionType8(ifstream& fileStream) {
+    DiagonalRepetition result;
+
+    result.nDim = parseUInt(fileStream);
+    result.mDim = parseUInt(fileStream);
+
+    result.nDisplacement = parseGDelta(fileStream);
+    result.mDisplacement = parseGDelta(fileStream);
+
+    return result;
+}
+
 DiagonalRepetition parseRepetitionType9(byte_t *mem, unsigned int &offset) {
     DiagonalRepetition result;
 
     result.nDim = parseUInt(mem, offset);
     result.nDisplacement = parseGDelta(mem, offset);
+    result.mDim = 0;
+
+    return result;
+}
+
+DiagonalRepetition parseRepetitionType9(ifstream& fileStream) {
+    DiagonalRepetition result;
+
+    result.nDim = parseUInt(fileStream);
+    result.nDisplacement = parseGDelta(fileStream);
     result.mDim = 0;
 
     return result;
@@ -693,6 +1047,19 @@ NDisplacementRepetition parseRepetitionType10(byte_t *mem, unsigned int &offset)
     return result;
 }
 
+NDisplacementRepetition parseRepetitionType10(ifstream& fileStream) {
+    NDisplacementRepetition result;
+
+    result.n = parseUInt(fileStream);
+    result.grid = 1;
+
+    for (unsigned i = 0; i < result.n - 1; i++) {
+        Delta3 displacement = parseGDelta(fileStream);
+        result.v_d.push_back(displacement);
+    }
+    return result;
+}
+
 NDisplacementRepetition parseRepetitionType11(byte_t *mem, unsigned int &offset) {
     NDisplacementRepetition result;
 
@@ -701,6 +1068,20 @@ NDisplacementRepetition parseRepetitionType11(byte_t *mem, unsigned int &offset)
 
     for (unsigned i = 0; i < result.n - 1; i++) {
         Delta3 displacement = parseGDelta(mem, offset);
+        result.v_d.push_back(displacement);
+    }
+
+    return result;
+}
+
+NDisplacementRepetition parseRepetitionType11(ifstream& fileStream) {
+    NDisplacementRepetition result;
+
+    result.n = parseUInt(fileStream);
+    result.grid = parseUInt(fileStream);
+
+    for (unsigned i = 0; i < result.n - 1; i++) {
+        Delta3 displacement = parseGDelta(fileStream);
         result.v_d.push_back(displacement);
     }
 

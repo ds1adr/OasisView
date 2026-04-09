@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
         OASISParser/OASISCells.cpp
         OASISParser/OASISData.h
         OASISParser/OASISData.cpp
+        OASISParser/OasisCellRecords.h
+        OASISParser/OasisCellRecords.cpp
 )
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(OASISView

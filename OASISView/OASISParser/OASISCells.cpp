@@ -1,5 +1,5 @@
 #include "OASISCells.h"
-#include "OasisCellRecords.h"
+#include "OASISCellRecords.h"
 
 #include <fstream>
 
@@ -11,6 +11,8 @@ OASISCell::OASISCell(const std::string& name) {
 // <element> = { <geometry> | PLACEMENT | TEXT | XELEMENT }
 // <geometry> = { RECTANGLE | POLYGON | PATH | TRAPZOID | CTRAPEZOID | CIRCLE | XGEOMETRY |
 void OASISCell::parse(std::ifstream& fileStream) {
+    bool isQuit = false;
+    while (isQuit == false) {
     char type;
     fileStream.read(&type, sizeof(type));
 
@@ -29,6 +31,7 @@ void OASISCell::parse(std::ifstream& fileStream) {
     {
         CellElement* textElement = new TextElement();
         textElement->parse(fileStream);
+        mCellElements.push_back(textElement);
     }
         break;
     case 20: // RECTANGLE
@@ -48,8 +51,13 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 27: // CIRCLE
         break;
     case 28: // PROPERTY
+    {
+        PropertyElement* propertyElement = new PropertyElement();
+        propertyElement->parse(fileStream);
+        mCellElements.push_back(propertyElement);
+    }
         break;
-    case 29: // BROPERTY (?)
+    case 29: // Last PROPERTY
         break;
     case 32: // XELEMENT
         break;
@@ -57,10 +65,21 @@ void OASISCell::parse(std::ifstream& fileStream) {
         break;
     case 34: // CBLOCK
         break;
+    default:
+        isQuit = true;
+        fileStream.seekg(-1, std::ios::cur);
+        break;
+    }
 
     }
 }
 
+OASISCell::~OASISCell() {
+    for (CellElement* element : mCellElements) {
+        delete element;
+    }
+    mCellElements.clear();
+}
 
 OASISCellRef::OASISCellRef() {
 

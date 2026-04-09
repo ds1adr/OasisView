@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "OASISCellRecords.h"
 #include "OASISElementParser.h"
 
 struct TableOffsetPair {
@@ -39,8 +40,10 @@ class OASISCell
 {
 private:
     std::string mName;
+    std::vector<CellElement*> mCellElements;
 public:
     OASISCell(const std::string& name);
+    ~OASISCell();
 
     void parse(std::ifstream& fileStream);
 };

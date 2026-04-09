@@ -14,14 +14,13 @@ public:
 
 // 0CNXYRTL
 struct TextInfoByte {
-    OASISParser::byte_t isExplicit: 2;  // First byte is always 0 C
-    bool isReferenceNumber: 1;          // N
-    bool isX: 1;                        // X
-    bool isY: 1;                        // Y
-    bool isRepetition: 1;               // R
-    bool isTextTypeNumber: 1;           // T
     bool isTextLayer: 1;                // L
-
+    bool isTextTypeNumber: 1;           // T
+    bool isRepetition: 1;               // R
+    bool isY: 1;                        // Y
+    bool isX: 1;                        // X
+    bool isReferenceNumber: 1;          // N
+    bool isExplicit: 1;  // First byte is always 0 C
 };
 
 class TextElement: public CellElement {

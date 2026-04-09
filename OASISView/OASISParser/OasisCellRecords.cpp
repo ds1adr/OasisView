@@ -11,34 +11,34 @@ TextElement::~TextElement() {
 }
 
 void TextElement::parse(ifstream& fileStream) {
-    OASISParser::byte_t infoByte; // 0CNXYRTL
+    TextInfoByte infoByte; // 0CNXYRTL
 
-    fileStream.read((char*)&infoByte, sizeof(infoByte));
+    fileStream.read((char*)&infoByte, sizeof(char));
 
-    if (infoByte & 0x40) {
+    if (infoByte.isReferenceNumber) {
         mReference = OASISParser::parseUInt(fileStream);
     } else {
         mReference = 0;
         mText = OASISParser::parseAString(fileStream);
         cout << "Text Element:" << mText << endl;
     }
-    if (infoByte & 0x01) {
+    if (infoByte.isTextLayer) {
         mTextLayer = OASISParser::parseUInt(fileStream);
         cout << "TextLayer:" << mTextLayer << endl;
     }
-    if (infoByte & 0x02) {
+    if (infoByte.isTextTypeNumber) {
         mTextType = OASISParser::parseUInt(fileStream);
         cout << "TextType:" << mTextType << endl;
     }
-    if (infoByte & 0x10) {
+    if (infoByte.isX) {
         mX = OASISParser::parseInt(fileStream);
         cout << "mX:" << mX << endl;
     }
-    if (infoByte & 0x08) {
+    if (infoByte.isY) {
         mY = OASISParser::parseInt(fileStream);
         cout << "mY:" << mY << endl;
     }
-    if (infoByte & 0x04) {
+    if (infoByte.isRepetition) {
         mRepetition = OASISParser::parseRepetition(fileStream);
     }
 }

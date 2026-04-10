@@ -4,13 +4,15 @@
 #include <fstream>
 #include <iostream>
 
+using namespace std;
+
 namespace OASISParser {
 
 OASISData::OASISData() {}
 
 // <oasis-file> -> <magic-bytes> START { CBLOCK | PAD | PROPERTY | <cell> | <name> }* END
-void OASISData::parse(const std::string& filePath) {
-    std::ifstream fileStream = std::ifstream(filePath, std::ios::binary);
+void OASISData::parse(const string& filePath) {
+    ifstream fileStream = ifstream(filePath, std::ios::binary);
 
     if (!fileStream.is_open()) {
         // throw error
@@ -29,11 +31,16 @@ void OASISData::parse(const std::string& filePath) {
         fileStream.read(&recordType, sizeof(recordType));
 
         switch (recordType) {
+        case 2:  // End
+            cout << "End" << endl;
+            if (mOffsetFlag == 1) {
+                mTableOffsets.parse(fileStream);
+            }
         case 13: // Cell Record: reference-number, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
         {
-            unsigned int referenceNumber = OASISParser::parseUInt(fileStream);
-            std::string key = std::to_string(referenceNumber);
-            std::cout << "Cell Reference:" << key << std::endl;
+            unsigned int referenceNumber = parseUInt(fileStream);
+            string key = std::to_string(referenceNumber);
+            cout << "Cell Reference:" << key << endl;
             OASISCell cell(key);
             cell.parse(fileStream);
             mCellMap.emplace(key, cell);
@@ -41,8 +48,8 @@ void OASISData::parse(const std::string& filePath) {
         }
         case 14: // Cell Record: cellname-string, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
         {
-            std::string cellName = OASISParser::parseNString(fileStream);
-            std::cout << "Cell Name:" << cellName << std::endl;
+            string cellName = parseNString(fileStream);
+            cout << "Cell Name:" << cellName << endl;
             OASISCell cell(cellName);
             cell.parse(fileStream);
             mCellMap.emplace(cellName, cell);
@@ -62,26 +69,26 @@ void OASISData::parse(const std::string& filePath) {
     fileStream.close();
 }
 
-int OASISData::parseMagicBytes(std::ifstream& fileStream) {
+int OASISData::parseMagicBytes(ifstream& fileStream) {
     char buffer[13];
 
     fileStream.read(buffer, sizeof(buffer));
-    return std::strncmp(buffer, "%SEMI-OASIS\r\n", sizeof(buffer));
+    return strncmp(buffer, "%SEMI-OASIS\r\n", sizeof(buffer));
 }
 
-int OASISData::parseStart(std::ifstream& fileStream) {
+int OASISData::parseStart(ifstream& fileStream) {
     char code;
     fileStream.read(&code, sizeof(code));
     if (code != 1) {
         return -1;
     }
 
-    mVersion = OASISParser::parseAString(fileStream);
-    std::cout << "Version:" << mVersion << std::endl;
-    mUnit = OASISParser::parseRealNumber(fileStream);
-    std::cout << "Unit:" << mUnit << std::endl;
-    mOffsetFlag = OASISParser::parseUInt(fileStream);
-    std::cout << "Offset Flag:" << mOffsetFlag << std::endl;
+    mVersion = parseAString(fileStream);
+    cout << "Version:" << mVersion << endl;
+    mUnit = parseRealNumber(fileStream);
+    cout << "Unit:" << mUnit << endl;
+    mOffsetFlag = parseUInt(fileStream);
+    cout << "Offset Flag:" << mOffsetFlag << endl;
     if (mOffsetFlag == 0) {
         mTableOffsets.parse(fileStream);
     }

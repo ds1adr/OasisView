@@ -1,5 +1,6 @@
 #include <cstring>
 #include <fstream>
+#include <iostream>
 
 #include "OASISElementParser.h"
 #include "OASISParserException.h"
@@ -12,7 +13,7 @@ namespace OASISParser {
 
 const int validBitSize = 7;
 const int validBitSizeForSigned = 6;
-std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
+variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
 
 int parseInt(byte_t* mem, unsigned int& offset) {
     unsigned int result = 0;
@@ -109,7 +110,7 @@ unsigned int parseUInt(byte_t* mem, unsigned int& offset) {
     return result;
 }
 
-unsigned int parseUInt(std::ifstream& fileStream) {
+unsigned int parseUInt(ifstream& fileStream) {
     bool isContinuous = false;
     unsigned int result = 0;
     int totalBitSize = 0;
@@ -157,7 +158,7 @@ double parseRealNumber(byte_t* mem, unsigned int& offset) {
     }
 }
 
-double parseRealNumber(std::ifstream& fileStream) {
+double parseRealNumber(ifstream& fileStream) {
     char type;
     fileStream.read(&type, sizeof(type));
 
@@ -187,7 +188,7 @@ double parseRealType0(byte_t* mem, unsigned int& offset) {
     return (double)parseUInt(mem, offset);
 }
 
-double parseRealType0(std::ifstream& fileStream) {
+double parseRealType0(ifstream& fileStream) {
     return (double)parseUInt(fileStream);
 }
 
@@ -195,7 +196,7 @@ double parseRealType1(byte_t* mem, unsigned int& offset) {
     return -(double)parseUInt(mem, offset);
 }
 
-double parseRealType1(std::ifstream& fileStream) {
+double parseRealType1(ifstream& fileStream) {
     return -(double)parseUInt(fileStream);
 }
 
@@ -203,7 +204,7 @@ double parseRealType2(byte_t* mem, unsigned int& offset) {
     return 1.0 / (double)parseUInt(mem, offset);
 }
 
-double parseRealType2(std::ifstream& fileStream) {
+double parseRealType2(ifstream& fileStream) {
     return 1.0 / (double)parseUInt(fileStream);
 }
 
@@ -211,7 +212,7 @@ double parseRealType3(byte_t* mem, unsigned int& offset) {
     return -1.0 / (double)parseUInt(mem, offset);
 }
 
-double parseRealType3(std::ifstream& fileStream) {
+double parseRealType3(ifstream& fileStream) {
     return -1.0 / (double)parseUInt(fileStream);
 }
 
@@ -219,7 +220,7 @@ double parseRealType4(byte_t* mem, unsigned int& offset) {
     return (double)parseUInt(mem, offset) / (double)parseUInt(mem, offset);
 }
 
-double parseRealType4(std::ifstream& fileStream) {
+double parseRealType4(ifstream& fileStream) {
     return (double)parseUInt(fileStream) / (double)parseUInt(fileStream);
 }
 
@@ -227,7 +228,7 @@ double parseRealType5(byte_t* mem, unsigned int& offset) {
     return -(double)parseUInt(mem, offset) / (double)parseUInt(mem, offset);
 }
 
-double parseRealType5(std::ifstream& fileStream) {
+double parseRealType5(ifstream& fileStream) {
     return -(double)parseUInt(fileStream);
 }
 
@@ -238,7 +239,7 @@ double parseRealType6(byte_t* mem, unsigned int& offset) {
     return (double)value;
 }
 
-double parseRealType6(std::ifstream& fileStream) {
+double parseRealType6(ifstream& fileStream) {
     float value;
     fileStream.read((char*)&value, sizeof(float));
     return (double)value;
@@ -251,7 +252,7 @@ double parseRealType7(byte_t* mem, unsigned int& offset) {
     return value;
 }
 
-double parseRealType7(std::ifstream& fileStream) {
+double parseRealType7(ifstream& fileStream) {
     double value;
     fileStream.read((char*)&value, sizeof(double));
     return value;
@@ -272,7 +273,7 @@ const std::string parseAString(byte_t* mem, unsigned int& offset) {
     return std::string((char *)(mem + initOffset), length);
 }
 
-const std::string parseAString(std::ifstream& fileStream) {
+const std::string parseAString(ifstream& fileStream) {
     unsigned int length = parseUInt(fileStream);
     char* buffer = new char[length];
 
@@ -292,7 +293,7 @@ const std::string parseBString(byte_t* mem, unsigned int& offset) {
     return std::string((char *)(mem + initOffset), length);
 }
 
-const std::string parseBString(std::ifstream& fileStream) {
+const std::string parseBString(ifstream& fileStream) {
     unsigned int length = parseUInt(fileStream);
     char* buffer = new char[length];
 
@@ -324,7 +325,7 @@ const std::string parseNString(byte_t* mem, unsigned int& offset) {
     return std::string((char *)(mem + initOffset), length);
 }
 
-const std::string parseNString(std::ifstream& fileStream) {
+const std::string parseNString(ifstream& fileStream) {
     unsigned int length = parseUInt(fileStream);
 
     if (length == 0) {
@@ -818,6 +819,8 @@ Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset) {
     unsigned dx = parseUInt(mem, offset);
     unsigned dy = parseUInt(mem, offset);
 
+    cout << "Repetition 1: (" << xdim << "," << ydim << ") - (" << dx << "," << dy << ")" << endl;
+
     return Repetition(xdim, ydim, dx, dy);
 }
 
@@ -826,6 +829,8 @@ Repetition parseRepetitionType1(ifstream& fileStream) {
     unsigned ydim = parseUInt(fileStream);
     unsigned dx = parseUInt(fileStream);
     unsigned dy = parseUInt(fileStream);
+
+    cout << "Repetition 1: (" << xdim << "," << ydim << ") - (" << dx << "," << dy << ")" << endl;
 
     return Repetition(xdim, ydim, dx, dy);
 }

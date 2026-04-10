@@ -92,7 +92,7 @@ private:
 
 struct PlacementInfoByte {
     bool isFlip: 1;     // F
-    bool rotation: 2;   // AA
+    char rotation: 2;   // AA
     bool isRepetition: 1; // R
     bool isY: 1;        // Y
     bool isX: 1;        // X

@@ -8,11 +8,11 @@ using namespace std;
 
 namespace OASISParser {
 
-TextElement::~TextElement() {
+Text::~Text() {
 
 }
 
-void TextElement::parse(ifstream& fileStream) {
+void Text::parse(ifstream& fileStream) {
     TextInfoByte infoByte; // 0CNXYRTL
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -45,11 +45,11 @@ void TextElement::parse(ifstream& fileStream) {
     }
 }
 
-PropertyElement::~PropertyElement() {
+Property::~Property() {
 
 }
 
-void PropertyElement::parse(ifstream& fileStream) {
+void Property::parse(ifstream& fileStream) {
     PropertyInfoByte infoByte;  // UUUUVCNS
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -136,11 +136,11 @@ void PropertyElement::parse(ifstream& fileStream) {
     }
 }
 
-PlacementElement::~PlacementElement() {
+Placement::~Placement() {
 
 }
 
-void PlacementElement::parse(ifstream& fileStream) {
+void Placement::parse(ifstream& fileStream) {
     PlacementInfoByte infoByte;
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -183,11 +183,11 @@ void PlacementElement::parse(ifstream& fileStream) {
     }
 }
 
-RectangleElement::~RectangleElement() {
+Rectangle::~Rectangle() {
 
 }
 
-void RectangleElement::parse(ifstream& fileStream) {
+void Rectangle::parse(ifstream& fileStream) {
     RectangleInfoByte infoByte;  // SWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));

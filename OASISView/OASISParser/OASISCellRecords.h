@@ -25,10 +25,10 @@ struct TextInfoByte {
     bool isExplicit: 1;  // First byte is always 0 C
 };
 
-class TextElement: public CellElement {
+class Text: public CellElement {
 public:
-    TextElement() = default;
-    ~TextElement();
+    Text() = default;
+    ~Text();
 
     void parse(std::ifstream& fileStream);
 private:
@@ -49,10 +49,10 @@ struct PropertyInfoByte {
     int numberOfValue: 4;   // UUUU
 };
 
-class PropertyElement: public CellElement {
+class Property: public CellElement {
 public:
-    PropertyElement() = default;
-    ~PropertyElement();
+    Property() = default;
+    ~Property();
 
     void parse(std::ifstream& fileStream);
 private:
@@ -73,10 +73,10 @@ struct PlacementInfoByte {
     bool isExplicit: 1; // C
 };
 
-class PlacementElement: public CellElement {
+class Placement: public CellElement {
 public:
-    PlacementElement() = default;
-    ~PlacementElement();
+    Placement() = default;
+    ~Placement();
 
     void parse(std::ifstream& fileStream);
 private:
@@ -101,10 +101,10 @@ struct RectangleInfoByte {
     bool isSquare: 1;           // S
 };
 
-class RectangleElement: public CellElement {
+class Rectangle: public CellElement {
 public:
-    RectangleElement() = default;
-    ~RectangleElement();
+    Rectangle() = default;
+    ~Rectangle();
 
     void parse(std::ifstream& fileStream);
 private:

@@ -27,25 +27,25 @@ void OASISCell::parse(std::ifstream& fileStream) {
         break;
     case 17: // PLACEMENT
     {
-        CellElement* placementElement = new PlacementElement();
-        placementElement->parse(fileStream);
-        mCellElements.push_back(placementElement);
+        CellElement* placement = new Placement();
+        placement->parse(fileStream);
+        mCellElements.push_back(placement);
         break;
     }
     case 18: // PLACEMENT
         break;
     case 19: // TEXT
     {
-        CellElement* textElement = new TextElement();
-        textElement->parse(fileStream);
-        mCellElements.push_back(textElement);
+        CellElement* text = new Text();
+        text->parse(fileStream);
+        mCellElements.push_back(text);
     }
         break;
     case 20: // RECTANGLE
     {
-        CellElement* rectangleElement = new RectangleElement();
-        rectangleElement->parse(fileStream);
-        mCellElements.push_back(rectangleElement);
+        CellElement* rectangle = new Rectangle();
+        rectangle->parse(fileStream);
+        mCellElements.push_back(rectangle);
         break;
     }
     case 21: // POLYGON
@@ -53,20 +53,23 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 22: // PATH
         break;
     case 23: // TRAPEZOID
+    case 24:
+    case 25:
+    {
+        CellElement* trapzoid = new Trapzoid(type);
+        trapzoid->parse(fileStream);
+        mCellElements.push_back(trapzoid);
         break;
-    case 24: // TRAPEZOID
-        break;
-    case 25: // TRAPEZOID
-        break;
+    }
     case 26: // CTRAPEZOID
         break;
     case 27: // CIRCLE
         break;
     case 28: // PROPERTY
     {
-        PropertyElement* propertyElement = new PropertyElement();
-        propertyElement->parse(fileStream);
-        mCellElements.push_back(propertyElement);
+        Property* property = new Property();
+        property->parse(fileStream);
+        mCellElements.push_back(property);
     }
         break;
     case 29: // Last PROPERTY

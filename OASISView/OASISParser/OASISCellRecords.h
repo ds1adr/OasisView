@@ -132,10 +132,10 @@ enum class Orientation {
     Vertical, Horizontal
 };
 
-class Trapzoid : public CellElement {
+class Trapezoid : public CellElement {
 public:
-    Trapzoid(unsigned int code);
-    ~Trapzoid();
+    Trapezoid(unsigned int code);
+    ~Trapezoid();
 
     void parse(std::ifstream& fileStream);
 private:
@@ -153,6 +153,36 @@ private:
     Orientation mOrientation;
 };
 
+struct CTrapInfoByte {
+    bool isLayerNumber: 1;      // L
+    bool isDataType: 1;         // D
+    bool isRepetition: 1;       // R
+    bool isY: 1;                // Y
+    bool isX: 1;                // X
+    bool isHeight: 1;           // H
+    bool isWidth: 1;            // W
+    bool isType: 1;             // T
+};
+
+class CTrapezoid : public CellElement {
+public:
+    CTrapezoid() = default;
+    ~CTrapezoid();
+
+    void parse(std::ifstream& filestream);
+private:
+    unsigned int mLayerNumber;
+    unsigned int mDataType;
+    unsigned int mType;
+    unsigned int mWidth;
+    unsigned int mHeight;
+    int mX = 0;
+    int mY = 0;
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+};
+
 }
+
+
 
 #endif // OASISCELLRECORDS_H

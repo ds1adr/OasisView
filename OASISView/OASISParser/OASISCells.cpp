@@ -56,9 +56,9 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 24:
     case 25:
     {
-        CellElement* trapzoid = new Trapzoid(type);
-        trapzoid->parse(fileStream);
-        mCellElements.push_back(trapzoid);
+        CellElement* trapezoid = new Trapezoid(type);
+        trapezoid->parse(fileStream);
+        mCellElements.push_back(trapezoid);
         break;
     }
     case 26: // CTRAPEZOID

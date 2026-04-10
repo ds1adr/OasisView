@@ -228,15 +228,15 @@ void Rectangle::parse(ifstream& fileStream) {
     }
 }
 
-Trapzoid::Trapzoid(unsigned int code): mCode(code) {
+Trapezoid::Trapezoid(unsigned int code): mCode(code) {
 
 }
 
-Trapzoid::~Trapzoid() {
+Trapezoid::~Trapezoid() {
 
 }
 
-void Trapzoid::parse(ifstream& fileStream) {
+void Trapezoid::parse(ifstream& fileStream) {
     TrapInfoByte infoByte;  // OWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -275,6 +275,48 @@ void Trapzoid::parse(ifstream& fileStream) {
         mRepetition = parseRepetition(fileStream);
     }
     mOrientation = infoByte.isVertical ? Orientation::Vertical : Orientation::Horizontal;
+}
+
+CTrapezoid::~CTrapezoid() {
+
+}
+
+void CTrapezoid::parse(ifstream& fileStream) {
+    CTrapInfoByte infoByte;  // TWHXYRDL
+
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    if (infoByte.isLayerNumber) {
+        mLayerNumber = parseUInt(fileStream);
+        cout << "CTrapezoid Layer:" << mLayerNumber << endl;
+    }
+    if (infoByte.isDataType) {
+        mDataType = parseUInt(fileStream);
+        cout << "CTrapezoid datatype:" << mDataType << endl;
+    }
+    if (infoByte.isType) {
+        mType = parseUInt(fileStream);
+        cout << "CTrapezoid type:" << mType << endl;
+    }
+    if (infoByte.isWidth) {
+        mWidth = parseUInt(fileStream);
+        cout << "CTrapezoid width:" << mWidth << endl;
+    }
+    if (infoByte.isHeight) {
+        mHeight = parseInt(fileStream);
+        cout << "CTrapezoid Height:" << mHeight << endl;
+    }
+    if (infoByte.isX) {
+        mX = parseUInt(fileStream);
+        cout << "CTrapezoid X:" << mX << endl;
+    }
+    if (infoByte.isY) {
+        mY = parseUInt(fileStream);
+        cout << "CTrapezoid Y:" << mY << endl;
+    }
+    if (infoByte.isRepetition) {
+        mRepetition = parseRepetition(fileStream);
+    }
 }
 
 }

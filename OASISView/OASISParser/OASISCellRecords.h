@@ -63,6 +63,33 @@ private:
     std::vector<std::variant<float, double, unsigned int, int, std::string>> mProperty;
 };
 
+struct PlacementInfoByte {
+    bool isFlip: 1;     // F
+    char rotation: 2;   // AA
+    bool isRepetition: 1; // R
+    bool isY: 1;        // Y
+    bool isX: 1;        // X
+    bool isRefrence: 1; // N
+    bool isExplicit: 1; // C
+};
+
+class PlacementElement: public CellElement {
+public:
+    PlacementElement() = default;
+    ~PlacementElement();
+
+    void parse(std::ifstream& fileStream);
+private:
+    bool mIsFlip = false; // x-axis
+    double mRotation = 0;
+    double mMag; // Magnification
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    int mX = 0;
+    int mY = 0;
+    unsigned int mReference;
+    std::string mCellName;
+};
+
 struct RectangleInfoByte {
     bool isLayerNumber: 1;      // L
     bool isDataType: 1;         // D
@@ -90,31 +117,40 @@ private:
     unsigned int mWidth;
 };
 
-struct PlacementInfoByte {
-    bool isFlip: 1;     // F
-    char rotation: 2;   // AA
-    bool isRepetition: 1; // R
-    bool isY: 1;        // Y
-    bool isX: 1;        // X
-    bool isRefrence: 1; // N
-    bool isExplicit: 1; // C
+struct TrapInfoByte {
+    bool isLayerNumber: 1;      // L
+    bool isDataType: 1;         // D
+    bool isRepetition: 1;       // R
+    bool isY: 1;                // Y
+    bool isX: 1;                // X
+    bool isHeight: 1;           // H
+    bool isWidth:1;             // W
+    bool isVertical: 1;         // O
 };
 
-class PlacementElement: public CellElement {
+enum class Orientation {
+    Vertical, Horizontal
+};
+
+class Trapzoid : public CellElement {
 public:
-    PlacementElement() = default;
-    ~PlacementElement();
+    Trapzoid(unsigned int code);
+    ~Trapzoid();
 
     void parse(std::ifstream& fileStream);
 private:
-    bool mIsFlip = false; // x-axis
-    double mRotation = 0;
-    double mMag; // Magnification
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
+
+    unsigned int mLayerNumber;
+    unsigned int mDataType;
+    unsigned int mWidth;
+    unsigned int mHeight;
+    int mDeltaA = 0;
+    int mDeltaB = 0;
     int mX = 0;
     int mY = 0;
-    unsigned int mReference;
-    std::string mCellName;
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    Orientation mOrientation;
 };
 
 }

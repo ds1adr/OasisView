@@ -136,51 +136,6 @@ void PropertyElement::parse(ifstream& fileStream) {
     }
 }
 
-RectangleElement::~RectangleElement() {
-
-}
-
-void RectangleElement::parse(ifstream& fileStream) {
-    RectangleInfoByte infoByte;  // SWHXYRDL
-
-    fileStream.read((char*)&infoByte, sizeof(char));
-
-    if (infoByte.isLayerNumber) {
-        mLayerNumber = OASISParser::parseUInt(fileStream);
-        cout << "Rect Layer:" << mLayerNumber << endl;
-    }
-    if (infoByte.isDataType) {
-        mDataType = OASISParser::parseUInt(fileStream);
-        cout << "Rect Data type:" << mDataType << endl;
-    }
-    if (infoByte.isWidth) {
-        mWidth = OASISParser::parseUInt(fileStream);
-        cout << "Rect Width" << mWidth << endl;
-    }
-    if (infoByte.isSquare) {
-        mHeight = mWidth;
-        cout << "Rect Height:" << mHeight << endl;
-    } else if (infoByte.isHeight) {
-        mHeight = OASISParser::parseUInt(fileStream);
-        cout << "Rect Height:" << mHeight << endl;
-    }
-    if (infoByte.isX) {
-        mX = OASISParser::parseInt(fileStream);
-        cout << "Rect X:" << mX << endl;
-    } else {
-        mX = 0;
-    }
-    if (infoByte.isY) {
-        mY = OASISParser::parseInt(fileStream);
-        cout << "Rect Y" << mY << endl;
-    } else {
-        mY = 0;
-    }
-    if (infoByte.isRepetation) {
-        mRepetition = OASISParser::parseRepetition(fileStream);
-    }
-}
-
 PlacementElement::~PlacementElement() {
 
 }
@@ -226,6 +181,100 @@ void PlacementElement::parse(ifstream& fileStream) {
         mRepetition = parseRepetition(fileStream);
         cout << "Repetition" << endl;
     }
+}
+
+RectangleElement::~RectangleElement() {
+
+}
+
+void RectangleElement::parse(ifstream& fileStream) {
+    RectangleInfoByte infoByte;  // SWHXYRDL
+
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    if (infoByte.isLayerNumber) {
+        mLayerNumber = OASISParser::parseUInt(fileStream);
+        cout << "Rect Layer:" << mLayerNumber << endl;
+    }
+    if (infoByte.isDataType) {
+        mDataType = OASISParser::parseUInt(fileStream);
+        cout << "Rect Data type:" << mDataType << endl;
+    }
+    if (infoByte.isWidth) {
+        mWidth = OASISParser::parseUInt(fileStream);
+        cout << "Rect Width" << mWidth << endl;
+    }
+    if (infoByte.isSquare) {
+        mHeight = mWidth;
+        cout << "Rect Height:" << mHeight << endl;
+    } else if (infoByte.isHeight) {
+        mHeight = OASISParser::parseUInt(fileStream);
+        cout << "Rect Height:" << mHeight << endl;
+    }
+    if (infoByte.isX) {
+        mX = OASISParser::parseInt(fileStream);
+        cout << "Rect X:" << mX << endl;
+    } else {
+        mX = 0;
+    }
+    if (infoByte.isY) {
+        mY = OASISParser::parseInt(fileStream);
+        cout << "Rect Y" << mY << endl;
+    } else {
+        mY = 0;
+    }
+    if (infoByte.isRepetation) {
+        mRepetition = OASISParser::parseRepetition(fileStream);
+    }
+}
+
+Trapzoid::Trapzoid(unsigned int code): mCode(code) {
+
+}
+
+Trapzoid::~Trapzoid() {
+
+}
+
+void Trapzoid::parse(ifstream& fileStream) {
+    TrapInfoByte infoByte;  // OWHXYRDL
+
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    if (infoByte.isLayerNumber) {
+        mLayerNumber = parseUInt(fileStream);
+        cout << "Trapzoid LayerNumber:" << mLayerNumber << endl;
+    }
+    if (infoByte.isDataType) {
+        mDataType = parseUInt(fileStream);
+         cout << "Trapzoid DataType:" << mDataType << endl;
+    }
+    if (infoByte.isWidth) {
+        mWidth = parseUInt(fileStream);
+        cout << "Trapzoid width:" << mWidth << endl;
+    }
+    if (infoByte.isHeight) {
+        mHeight = parseUInt(fileStream);
+        cout << "Trapzoid height:" << mHeight << endl;
+    }
+    if (mCode == 23) {
+        mDeltaA = parseInt(fileStream);
+        mDeltaB = parseInt(fileStream);
+    } else if (mCode == 24) {
+        mDeltaA = parseInt(fileStream);
+    } else if (mCode == 25) {
+        mDeltaB = parseInt(fileStream);
+    }
+    if (infoByte.isX) {
+        mX = parseInt(fileStream);
+    }
+    if (infoByte.isY) {
+        mY = parseInt(fileStream);
+    }
+    if (infoByte.isRepetition) {
+        mRepetition = parseRepetition(fileStream);
+    }
+    mOrientation = infoByte.isVertical ? Orientation::Vertical : Orientation::Horizontal;
 }
 
 }

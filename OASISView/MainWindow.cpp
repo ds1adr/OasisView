@@ -1,8 +1,10 @@
 #include "MainWindow.h"
 
 #include <QAction>
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QMenuBar>
+#include <QToolBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,6 +16,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     mFileMenu = menuBar()->addMenu(tr("&File"));
     mFileMenu->addAction(mOpenAction);
+
+    mToolBar = addToolBar("File");
+    mToolBar->addAction(mOpenAction);
+
+    mDock = new QDockWidget("", this);
+    mDock->setAllowedAreas(Qt::LeftDockWidgetArea);
+
+    mLayerListWidget = new QListWidget(mDock);
+    QListWidgetItem* item = new QListWidgetItem("Layer 1", mLayerListWidget);
+    item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+    item->setCheckState(Qt::Checked);
+
+    mDock->setWidget(mLayerListWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, mDock);
+
+    resizeDocks({mDock}, {120}, Qt::Horizontal);
 
     mOASISView = new OASISView();
     setCentralWidget(mOASISView);

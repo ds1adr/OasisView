@@ -42,7 +42,7 @@ void OASISData::parse(const string& filePath) {
             string key = std::to_string(referenceNumber);
             cout << "Cell Reference:" << key << endl;
             OASISCell cell(key);
-            cell.parse(fileStream);
+            cell.parse(fileStream, mLayerSet);
             mCellMap.emplace(key, cell);
             break;
         }
@@ -51,7 +51,7 @@ void OASISData::parse(const string& filePath) {
             string cellName = parseNString(fileStream);
             cout << "Cell Name:" << cellName << endl;
             OASISCell cell(cellName);
-            cell.parse(fileStream);
+            cell.parse(fileStream, mLayerSet);
             mCellMap.emplace(cellName, cell);
             break;
         }

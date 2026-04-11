@@ -2,6 +2,7 @@
 #define OASISCELLS_H
 
 #include <string>
+#include <unordered_set>
 
 #include "OASISCellRecords.h"
 #include "OASISElementParser.h"
@@ -41,13 +42,15 @@ struct TableOffsets {
 class OASISCell
 {
 private:
+    unsigned int mReference = 0;
     std::string mName;
     std::vector<CellElement*> mCellElements;
 public:
+    OASISCell(const unsigned int reference);
     OASISCell(const std::string& name);
     ~OASISCell();
 
-    void parse(std::ifstream& fileStream);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 };
 
 class OASISCellRef {

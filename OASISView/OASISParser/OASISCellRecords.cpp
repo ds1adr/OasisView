@@ -12,7 +12,7 @@ Text::~Text() {
 
 }
 
-void Text::parse(ifstream& fileStream) {
+void Text::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     TextInfoByte infoByte; // 0CNXYRTL
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -49,7 +49,15 @@ Property::~Property() {
 
 }
 
-void Property::parse(ifstream& fileStream) {
+void Property::setValues(Property* origin) {
+    mReference = origin->getReference();
+    mStandard =  origin->getStandard();;
+    mPropNameString = origin->getPropName();
+    mPropValueCount = origin->getPropValueCount();
+    mProperty = origin->getProperty();
+}
+
+void Property::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     PropertyInfoByte infoByte;  // UUUUVCNS
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -140,7 +148,7 @@ Placement::~Placement() {
 
 }
 
-void Placement::parse(ifstream& fileStream) {
+void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     PlacementInfoByte infoByte;
 
     fileStream.read((char*)&infoByte, sizeof(char));
@@ -187,13 +195,14 @@ Rectangle::~Rectangle() {
 
 }
 
-void Rectangle::parse(ifstream& fileStream) {
+void Rectangle::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     RectangleInfoByte infoByte;  // SWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
     if (infoByte.isLayerNumber) {
         mLayerNumber = OASISParser::parseUInt(fileStream);
+        layerSet.insert(mLayerNumber);
         cout << "Rect Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
@@ -236,13 +245,14 @@ Trapezoid::~Trapezoid() {
 
 }
 
-void Trapezoid::parse(ifstream& fileStream) {
+void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     TrapInfoByte infoByte;  // OWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
+        layerSet.insert(mLayerNumber);
         cout << "Trapzoid LayerNumber:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
@@ -281,13 +291,14 @@ CTrapezoid::~CTrapezoid() {
 
 }
 
-void CTrapezoid::parse(ifstream& fileStream) {
+void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     CTrapInfoByte infoByte;  // TWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
+        layerSet.insert(mLayerNumber);
         cout << "CTrapezoid Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {

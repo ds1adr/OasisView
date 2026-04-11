@@ -2,6 +2,8 @@
 #define OASISCELLRECORDS_H
 
 #include <string>
+#include <unordered_set>
+
 #include "OASISElement.h"
 
 namespace OASISParser {
@@ -11,7 +13,7 @@ public:
     CellElement() = default;
     virtual ~CellElement() = default;
 
-    virtual void parse(std::ifstream& fileStream) = 0;
+    virtual void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) = 0;
 };
 
 // 0CNXYRTL
@@ -30,12 +32,12 @@ public:
     Text() = default;
     ~Text();
 
-    void parse(std::ifstream& fileStream);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 private:
-    unsigned int mReference = 0;
+    unsigned mReference = 0;
     std::string mText;
-    unsigned int mTextLayer;
-    unsigned int mTextType;
+    unsigned mTextLayer;
+    unsigned mTextType;
     int mX = 0;
     int mY = 0;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
@@ -54,9 +56,16 @@ public:
     Property() = default;
     ~Property();
 
-    void parse(std::ifstream& fileStream);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void setValues(Property* origin);
+
+    unsigned getReference() { return mReference; }
+    bool getStandard() { return mStandard; }
+    std::string getPropName() { return mPropNameString; }
+    unsigned getPropValueCount() { return mPropValueCount; }
+    std::vector<std::variant<float, double, unsigned int, int, std::string>> getProperty() { return mProperty; }
 private:
-    unsigned int mReference;
+    unsigned mReference;
     bool mStandard;
     std::string mPropNameString;
     unsigned int mPropValueCount;
@@ -78,7 +87,7 @@ public:
     Placement() = default;
     ~Placement();
 
-    void parse(std::ifstream& fileStream);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 private:
     bool mIsFlip = false; // x-axis
     double mRotation = 0;
@@ -86,7 +95,7 @@ private:
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     int mX = 0;
     int mY = 0;
-    unsigned int mReference;
+    unsigned mReference;
     std::string mCellName;
 };
 
@@ -106,7 +115,7 @@ public:
     Rectangle() = default;
     ~Rectangle();
 
-    void parse(std::ifstream& fileStream);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 private:
     unsigned int mLayerNumber;
     unsigned int mDataType;
@@ -137,7 +146,7 @@ public:
     Trapezoid(unsigned int code);
     ~Trapezoid();
 
-    void parse(std::ifstream& fileStream);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 
@@ -169,7 +178,7 @@ public:
     CTrapezoid() = default;
     ~CTrapezoid();
 
-    void parse(std::ifstream& filestream);
+    void parse(std::ifstream& filestream, std::unordered_set<unsigned>& layerSet);
 private:
     unsigned int mLayerNumber;
     unsigned int mDataType;

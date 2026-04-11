@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "OASISCells.h"
 
@@ -11,6 +12,7 @@ namespace OASISParser {
 class OASISData
 {
 private:
+    std::unordered_set<unsigned int> mLayerSet;
     std::unordered_map<std::string, OASISCell> mCellMap;  // Key: Cell name or Reference, Value: OASISCell
 
     std::string mVersion;

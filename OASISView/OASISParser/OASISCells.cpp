@@ -2,17 +2,26 @@
 #include "OASISCellRecords.h"
 
 #include <fstream>
+#include <unordered_set>
+
+using namespace std;
 
 namespace OASISParser {
 
-OASISCell::OASISCell(const std::string& name) {
-    mName = name;
+Property* _lastProperty;
+
+OASISCell::OASISCell(unsigned int reference): mReference(reference) {
+
+}
+
+OASISCell::OASISCell(const std::string& name): mName(name) {
+
 }
 
 // { CBLOCK | PAD | PROPERTY | XYRELATIVE | XYABSOLUTE | <element> }*
 // <element> = { <geometry> | PLACEMENT | TEXT | XELEMENT }
 // <geometry> = { RECTANGLE | POLYGON | PATH | TRAPZOID | CTRAPEZOID | CIRCLE | XGEOMETRY |
-void OASISCell::parse(std::ifstream& fileStream) {
+void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     bool isQuit = false;
     while (isQuit == false) {
     char type;
@@ -28,7 +37,7 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 17: // PLACEMENT
     {
         CellElement* placement = new Placement();
-        placement->parse(fileStream);
+        placement->parse(fileStream, layerSet);
         mCellElements.push_back(placement);
         break;
     }
@@ -37,14 +46,14 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 19: // TEXT
     {
         CellElement* text = new Text();
-        text->parse(fileStream);
+        text->parse(fileStream, layerSet);
         mCellElements.push_back(text);
     }
         break;
     case 20: // RECTANGLE
     {
         CellElement* rectangle = new Rectangle();
-        rectangle->parse(fileStream);
+        rectangle->parse(fileStream, layerSet);
         mCellElements.push_back(rectangle);
         break;
     }
@@ -57,23 +66,33 @@ void OASISCell::parse(std::ifstream& fileStream) {
     case 25:
     {
         CellElement* trapezoid = new Trapezoid(type);
-        trapezoid->parse(fileStream);
+        trapezoid->parse(fileStream, layerSet);
         mCellElements.push_back(trapezoid);
         break;
     }
     case 26: // CTRAPEZOID
+    {
+        CellElement* cTrapezoid = new CTrapezoid();
+        cTrapezoid->parse(fileStream, layerSet);
+        mCellElements.push_back(cTrapezoid);
         break;
+    }
     case 27: // CIRCLE
         break;
     case 28: // PROPERTY
     {
         Property* property = new Property();
-        property->parse(fileStream);
+        property->parse(fileStream, layerSet);
+        _lastProperty = property;
         mCellElements.push_back(property);
     }
         break;
     case 29: // Last PROPERTY
+    {
+        Property* property = new Property();
+        property->setValues(_lastProperty);
         break;
+    }
     case 32: // XELEMENT
         break;
     case 33: // XGEOMETRY

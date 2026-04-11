@@ -9,6 +9,11 @@
 
 namespace OASISParser {
 
+struct BoundingBox {
+    int lx = INT_MAX, ly = INT_MAX;
+    int mx = INT_MIN, my = INT_MIN;
+};
+
 struct TableOffsetPair {
     unsigned int flag;
     unsigned int offset;
@@ -45,12 +50,14 @@ private:
     unsigned int mReference = 0;
     std::string mName;
     std::vector<CellElement*> mCellElements;
+    BoundingBox mBoundingBox;
 public:
     OASISCell(const unsigned int reference);
     OASISCell(const std::string& name);
     ~OASISCell();
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    const BoundingBox& getBoundingBox();
 };
 
 class OASISCellRef {

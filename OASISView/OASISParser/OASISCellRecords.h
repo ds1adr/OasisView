@@ -78,20 +78,33 @@ struct PlacementInfoByte {
     bool isRepetition: 1; // R
     bool isY: 1;        // Y
     bool isX: 1;        // X
-    bool isRefrence: 1; // N
+    bool isReference: 1; // N
+    bool isExplicit: 1; // C
+};
+
+// With Maginfication
+struct MPlacementInfoByte {
+    bool isFlip: 1;     // F
+    bool isAngle: 1;    // A
+    bool isMag: 1;      // M
+    bool isRepetition: 1; // R
+    bool isY: 1;        // Y
+    bool isX: 1;        // X
+    bool isReference: 1;// N
     bool isExplicit: 1; // C
 };
 
 class Placement: public CellElement {
 public:
-    Placement() = default;
+    Placement(unsigned code): mCode(code) {};
     ~Placement();
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 private:
+    unsigned mCode;
     bool mIsFlip = false; // x-axis
     double mRotation = 0;
-    double mMag; // Magnification
+    double mMag = 1.0;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     int mX = 0;
     int mY = 0;
@@ -116,14 +129,18 @@ public:
     ~Rectangle();
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    int getLX() { return mX; }
+    int getLY() { return mY; }
+    int getMX() { return mX + mWidth; }
+    int getMY() { return mY + mHeight; }
 private:
-    unsigned int mLayerNumber;
-    unsigned int mDataType;
+    unsigned mLayerNumber;
+    unsigned mDataType;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     int mY = 0;
     int mX = 0;
-    unsigned int mHeight;
-    unsigned int mWidth;
+    unsigned mHeight;
+    unsigned mWidth;
 };
 
 struct TrapInfoByte {
@@ -147,6 +164,10 @@ public:
     ~Trapezoid();
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    int getLX() { return mX; }
+    int getLY() { return mY; }
+    int getMX() { return mX + mWidth; }
+    int getMY() { return mX + mHeight; }
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 

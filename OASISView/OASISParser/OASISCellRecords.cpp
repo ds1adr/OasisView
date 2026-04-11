@@ -149,45 +149,81 @@ Placement::~Placement() {
 }
 
 void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
-    PlacementInfoByte infoByte;
+    if (mCode == 17) {
+        PlacementInfoByte infoByte;
 
-    fileStream.read((char*)&infoByte, sizeof(char));
+        fileStream.read((char*)&infoByte, sizeof(char));
 
-    if (infoByte.isFlip) {
-        mIsFlip = true;
-        cout << "Placement: isFlip" << endl;
-    }
-    switch (infoByte.rotation) {
-    case 0:
-        mRotation = 0;
-        break;
-    case 1:
-        mRotation = M_PI / 2;
-        break;
-    case 2:
-        mRotation = M_PI;
-        break;
-    case 3:
-        mRotation = -M_PI / 2;
-    }
-    cout << "Rotation:" << mRotation << endl;
-    if (infoByte.isRefrence) {
-        mReference = parseUInt(fileStream);
+        if (infoByte.isFlip) {
+            mIsFlip = true;
+            cout << "Placement: isFlip" << endl;
+        }
+        switch (infoByte.rotation) {
+        case 0:
+            mRotation = 0;
+            break;
+        case 1:
+            mRotation = M_PI / 2;
+            break;
+        case 2:
+            mRotation = M_PI;
+            break;
+        case 3:
+            mRotation = -M_PI / 2;
+        }
+        cout << "Rotation:" << mRotation << endl;
+        if (infoByte.isReference) {
+            mReference = parseUInt(fileStream);
+        } else {
+            mCellName = parseNString(fileStream);
+            cout << "Cell name:" << mCellName << endl;
+        }
+        if (infoByte.isX) {
+            mX = parseInt(fileStream);
+            cout << "X:" << mX << endl;
+        }
+        if (infoByte.isY) {
+            mY = parseInt(fileStream);
+            cout << "Y:" << mY << endl;
+        }
+        if (infoByte.isRepetition) {
+            mRepetition = parseRepetition(fileStream);
+            cout << "Repetition" << endl;
+        }
     } else {
-        mCellName = parseNString(fileStream);
-        cout << "Cell name:" << mCellName << endl;
-    }
-    if (infoByte.isX) {
-        mX = parseInt(fileStream);
-        cout << "X:" << mX << endl;
-    }
-    if (infoByte.isY) {
-        mY = parseInt(fileStream);
-        cout << "Y:" << mY << endl;
-    }
-    if (infoByte.isRepetition) {
-        mRepetition = parseRepetition(fileStream);
-        cout << "Repetition" << endl;
+        MPlacementInfoByte infoByte;
+
+        fileStream.read((char*)&infoByte, sizeof(char));
+
+        if (infoByte.isFlip) {
+            mIsFlip = true;
+            cout << "Placement: isFlip" << endl;
+        }
+        if (infoByte.isReference) {
+            mReference = parseUInt(fileStream);
+        } else {
+            mCellName = parseNString(fileStream);
+            cout << "Cell name:" << mCellName << endl;
+        }
+        if (infoByte.isMag) {
+            mMag = parseRealNumber(fileStream);
+        }
+        if (infoByte.isAngle) {
+            mRotation = parseRealNumber(fileStream);
+            cout << "Rotation:" << mRotation << endl;
+        }
+        if (infoByte.isX) {
+            mX = parseInt(fileStream);
+            cout << "X:" << mX << endl;
+        }
+        if (infoByte.isY) {
+            mY = parseInt(fileStream);
+            cout << "Y:" << mY << endl;
+        }
+        if (infoByte.isRepetition) {
+            mRepetition = parseRepetition(fileStream);
+            cout << "Repetition" << endl;
+        }
     }
 }
 

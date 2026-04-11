@@ -35,14 +35,13 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     case 16: // XYRELATIVE
         break;
     case 17: // PLACEMENT
+    case 18:
     {
-        CellElement* placement = new Placement();
+        CellElement* placement = new Placement(type);
         placement->parse(fileStream, layerSet);
         mCellElements.push_back(placement);
         break;
     }
-    case 18: // PLACEMENT
-        break;
     case 19: // TEXT
     {
         CellElement* text = new Text();
@@ -106,6 +105,28 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
 
     }
+}
+
+const BoundingBox& OASISCell::getBoundingBox() {
+    for (CellElement* element : mCellElements) {
+        Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
+        if (rectangle != nullptr) {
+            mBoundingBox.lx = min(mBoundingBox.lx, rectangle->getLX());
+            mBoundingBox.ly = min(mBoundingBox.ly, rectangle->getLY());
+            mBoundingBox.mx = max(mBoundingBox.mx, rectangle->getMX());
+            mBoundingBox.my = max(mBoundingBox.my, rectangle->getMY());
+            continue;
+        }
+        Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
+        if (trapezoid != nullptr) {
+            mBoundingBox.lx = min(mBoundingBox.lx, rectangle->getLX());
+            mBoundingBox.ly = min(mBoundingBox.ly, rectangle->getLY());
+            mBoundingBox.mx = max(mBoundingBox.mx, rectangle->getMX());
+            mBoundingBox.my = max(mBoundingBox.my, rectangle->getMY());
+            continue;
+        }
+    }
+    return mBoundingBox;
 }
 
 OASISCell::~OASISCell() {

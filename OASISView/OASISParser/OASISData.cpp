@@ -1,6 +1,8 @@
 #include "OASISData.h"
 #include "OASISElementParser.h"
 
+#include <algorithm>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 

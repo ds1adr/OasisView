@@ -2,6 +2,7 @@
 #define OASISELEMENTPARSER_H
 
 #include <string>
+#include <variant>
 
 #include "OASISElement.h"
 

@@ -1,6 +1,7 @@
 #ifndef OASISCELLS_H
 #define OASISCELLS_H
 
+#include <climits>
 #include <string>
 #include <unordered_set>
 

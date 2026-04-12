@@ -1,5 +1,6 @@
 #include "OASISView.h"
 
+#include <iostream>
 #include <QPainter>
 
 using namespace OASISParser;
@@ -36,9 +37,9 @@ void OASISView::drawCell(QPainter& painter) {
     unsigned bW = (mBoundBox.maxX - mBoundBox.minX);
     unsigned bH = mBoundBox.maxY - mBoundBox.minY;
 
-    qDebug() << "BBBox Width: " << bW << "BBox Height" << bH << "View Size" << viewSize;
+    std::cout << "BBBox Width: " << bW << "BBox Height" << bH << "View Size" << viewSize.width() << "-" << viewSize.height() << std::endl;
     float ratio = std::min((float)width() / (float)(mBoundBox.maxX - mBoundBox.minX), (float)height() / (float)(mBoundBox.maxY - mBoundBox.minY));
-    qDebug() << "Ratio: " << ratio;
+    std::cout<< "Ratio: " << ratio << std::endl;
 
     const std::vector<CellElement*> elements = mCell->getCellElements();
 
@@ -50,7 +51,7 @@ void OASISView::drawCell(QPainter& painter) {
             int w = (int)(rectangle->getWidth() * ratio);
             int h = (int)(rectangle->getHeight() * ratio);
 
-            qDebug() << "Point:" << p << "Rect W:" << w << "Rect H:" << h;
+            std::cout << "Point:" << p.x() << "," << p.y() << "Rect W:" << w << "Rect H:" << h;
 
             QRect r = QRect(p.x(), p.y(), w, h);
             painter.drawRect(r);

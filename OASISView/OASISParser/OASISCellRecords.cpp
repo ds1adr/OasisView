@@ -5,6 +5,7 @@
 #include "OASISData.h"
 
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 

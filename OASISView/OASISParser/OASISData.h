@@ -13,7 +13,7 @@ class OASISData
 {
 private:
     std::unordered_set<unsigned int> mLayerSet;
-    std::unordered_map<std::string, OASISCell> mCellMap;  // Key: Cell name or Reference, Value: OASISCell
+    std::unordered_map<std::string, OASISCell*> mCellMap;  // Key: Cell name or Reference, Value: OASISCell
 
     std::string mVersion;
     double mUnit;
@@ -26,8 +26,8 @@ public:
     OASISData();
 
     void parse(const std::string& filePath);
-    // OASISCell& getCell(unsigned reference);
-    // OASISCell& getCell(std::string cellName);
+    OASISCell* getCell(unsigned reference);
+    OASISCell* getCell(std::string cellName);
 };
 
 }

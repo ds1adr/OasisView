@@ -47,22 +47,20 @@ struct TableOffsets {
 class OASISCell
 {
 private:
+    OASISData& mOASISData;
     unsigned int mReference = 0;
     std::string mName;
     std::vector<CellElement*> mCellElements;
     BoundingBox mBoundingBox;
 public:
-    OASISCell(const unsigned int reference);
-    OASISCell(const std::string& name);
+    OASISCell(OASISData& oasisData, unsigned reference);
+    OASISCell(OASISData& oasisData, std::string& name);
     ~OASISCell();
+
+    bool isValid() { return (mReference > 0 || !mName.empty()); }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     const BoundingBox& getBoundingBox();
-};
-
-class OASISCellRef {
-public:
-    OASISCellRef();
 };
 
 }

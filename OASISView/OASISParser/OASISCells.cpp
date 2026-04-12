@@ -2,6 +2,7 @@
 #include "OASISCellRecords.h"
 
 #include <fstream>
+#include <iostream>
 #include <unordered_set>
 
 using namespace std;
@@ -10,11 +11,11 @@ namespace OASISParser {
 
 Property* _lastProperty;
 
-OASISCell::OASISCell(unsigned int reference): mReference(reference) {
+OASISCell::OASISCell(OASISData& oasisData, unsigned reference): mOASISData(oasisData), mReference(reference) {
 
 }
 
-OASISCell::OASISCell(const std::string& name): mName(name) {
+OASISCell::OASISCell(OASISData& oasisData, std::string& name): mOASISData(oasisData), mName(name) {
 
 }
 
@@ -109,6 +110,7 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
 const BoundingBox& OASISCell::getBoundingBox() {
     for (CellElement* element : mCellElements) {
+        cout << "Cell Element:" << element->elementName() << endl;
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
         if (rectangle != nullptr) {
             mBoundingBox.lx = min(mBoundingBox.lx, rectangle->getLX());
@@ -119,13 +121,29 @@ const BoundingBox& OASISCell::getBoundingBox() {
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
-            mBoundingBox.lx = min(mBoundingBox.lx, rectangle->getLX());
-            mBoundingBox.ly = min(mBoundingBox.ly, rectangle->getLY());
-            mBoundingBox.mx = max(mBoundingBox.mx, rectangle->getMX());
-            mBoundingBox.my = max(mBoundingBox.my, rectangle->getMY());
+            mBoundingBox.lx = min(mBoundingBox.lx, trapezoid->getLX());
+            mBoundingBox.ly = min(mBoundingBox.ly, trapezoid->getLY());
+            mBoundingBox.mx = max(mBoundingBox.mx, trapezoid->getMX());
+            mBoundingBox.my = max(mBoundingBox.my, trapezoid->getMY());
+            continue;
+        }
+        CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
+        if (cTrapezoid != nullptr) {
+            continue;
+        }
+        Placement* placement = dynamic_cast<Placement*>(element);
+        if (placement != nullptr) {
+            BoundingBox bBox = placement->getBoundingBox(mOASISData);
+            if (bBox.lx != INT_MAX) {
+                mBoundingBox.lx = min(mBoundingBox.lx, bBox.lx);
+                mBoundingBox.ly = min(mBoundingBox.ly, bBox.ly);
+                mBoundingBox.mx = max(mBoundingBox.mx, bBox.mx);
+                mBoundingBox.my = max(mBoundingBox.my, bBox.my);
+            }
             continue;
         }
     }
+    cout << mName << "(" << mBoundingBox.lx << "," << mBoundingBox.ly << ") - (" << mBoundingBox.mx << "," << mBoundingBox.my << ")" << endl;
     return mBoundingBox;
 }
 
@@ -134,10 +152,6 @@ OASISCell::~OASISCell() {
         delete element;
     }
     mCellElements.clear();
-}
-
-OASISCellRef::OASISCellRef() {
-
 }
 
 }

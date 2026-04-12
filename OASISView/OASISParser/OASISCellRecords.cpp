@@ -1,6 +1,10 @@
 #include "OASISCellRecords.h"
+#include "OASISElement.h"
 #include "OASISElementParser.h"
+#include "OASISCells.h"
+#include "OASISData.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 
@@ -225,6 +229,33 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
             cout << "Repetition" << endl;
         }
     }
+}
+
+BoundingBox Placement::getBoundingBox(OASISData& oasisData) {
+    OASISCell* subCell = getCellName().empty() ? oasisData.getCell(getReference()) : oasisData.getCell(getCellName());
+    BoundingBox bBox;
+    if (subCell->isValid()) {
+        BoundingBox subBBox = subCell->getBoundingBox();
+        if (subBBox.lx == INT_MAX) {
+            subBBox = subCell->getBoundingBox();
+        }
+        // TODO: Handle Rotation
+
+        bBox.lx = min(bBox.lx, subBBox.lx + mX);
+        bBox.ly = min(bBox.ly, subBBox.ly + mY);
+
+        // Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition
+        if (holds_alternative<Repetition>(mRepetition)) {
+            Repetition r = get<Repetition>(mRepetition);
+
+            int mx = mX + subBBox.mx + r.dx * (r.nx - 1);
+            int my = mY + subBBox.my + r.dy * (r.ny - 1);
+            bBox.mx = max(bBox.my, mx);
+            bBox.my = max(bBox.my, my);
+            return bBox;
+        }
+    }
+    return BoundingBox();
 }
 
 Rectangle::~Rectangle() {

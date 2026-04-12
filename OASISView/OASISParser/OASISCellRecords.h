@@ -8,12 +8,16 @@
 
 namespace OASISParser {
 
+struct BoundingBox;
+class OASISData;
+
 class CellElement {
 public:
     CellElement() = default;
     virtual ~CellElement() = default;
 
     virtual void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) = 0;
+    virtual std::string elementName() = 0;
 };
 
 // 0CNXYRTL
@@ -33,6 +37,7 @@ public:
     ~Text();
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    std::string elementName() { return "Text"; }
 private:
     unsigned mReference = 0;
     std::string mText;
@@ -55,6 +60,8 @@ class Property: public CellElement {
 public:
     Property() = default;
     ~Property();
+
+    std::string elementName() { return "Property"; }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     void setValues(Property* origin);
@@ -99,7 +106,13 @@ public:
     Placement(unsigned code): mCode(code) {};
     ~Placement();
 
+    std::string elementName() { return "Placement"; }
+
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    const unsigned getReference() { return mReference; }
+    const std::string& getCellName() { return mCellName; }
+
+    BoundingBox getBoundingBox(OASISData& oasisData);
 private:
     unsigned mCode;
     bool mIsFlip = false; // x-axis
@@ -108,7 +121,7 @@ private:
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     int mX = 0;
     int mY = 0;
-    unsigned mReference;
+    unsigned mReference = 0;
     std::string mCellName;
 };
 
@@ -127,6 +140,8 @@ class Rectangle: public CellElement {
 public:
     Rectangle() = default;
     ~Rectangle();
+
+    std::string elementName() { return "Rectangle"; }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     int getLX() { return mX; }
@@ -163,6 +178,8 @@ public:
     Trapezoid(unsigned int code);
     ~Trapezoid();
 
+    std::string elementName() { return "Trapezoid"; }
+
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     int getLX() { return mX; }
     int getLY() { return mY; }
@@ -198,6 +215,8 @@ class CTrapezoid : public CellElement {
 public:
     CTrapezoid() = default;
     ~CTrapezoid();
+
+    std::string elementName() { return "CTrapezoid"; }
 
     void parse(std::ifstream& filestream, std::unordered_set<unsigned>& layerSet);
 private:

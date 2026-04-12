@@ -42,18 +42,18 @@ void OASISData::parse(const string& filePath) {
             const unsigned referenceNumber = parseUInt(fileStream);
             string key = std::to_string(referenceNumber);
             cout << "Cell Reference:" << key << endl;
-            OASISCell cell(referenceNumber);
-            cell.parse(fileStream, mLayerSet);
-            mCellMap.emplace(key, cell);
+            OASISCell* cell = new OASISCell((*this), referenceNumber);
+            cell->parse(fileStream, mLayerSet);
+            mCellMap[key] = cell;
             break;
         }
         case 14: // Cell Record: cellname-string, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
         {
             string cellName = parseNString(fileStream);
             cout << "Cell Name:" << cellName << endl;
-            OASISCell cell(cellName);
-            cell.parse(fileStream, mLayerSet);
-            mCellMap.emplace(cellName, cell);
+            OASISCell* cell = new OASISCell((*this), cellName);
+            cell->parse(fileStream, mLayerSet);
+            mCellMap[cellName] = cell;
             break;
         }
         default:
@@ -69,9 +69,9 @@ void OASISData::parse(const string& filePath) {
 
     fileStream.close();
 
-    // for (auto& [key, cell] : mCellMap) { // Structured bindings (C++17)
-    //     cell.getBoundingBox();
-    // }
+    for (auto& [key, cell] : mCellMap) {
+        cell->getBoundingBox();
+    }
 }
 
 int OASISData::parseMagicBytes(ifstream& fileStream) {
@@ -100,13 +100,13 @@ int OASISData::parseStart(ifstream& fileStream) {
     return 0;
 }
 
-// OASISCell& OASISData::getCell(unsigned reference) {
-//     string key = std::to_string(reference);
-//     return mCellMap[key];
-// }
+OASISCell* OASISData::getCell(unsigned reference) {
+    string key = std::to_string(reference);
+    return mCellMap.at(key);
+}
 
-// OASISCell& OASISData::getCell(std::string cellName) {
-//     return mCellMap[cellName];
-// }
+OASISCell* OASISData::getCell(std::string cellName) {
+    return mCellMap.at(cellName);
+}
 
 }

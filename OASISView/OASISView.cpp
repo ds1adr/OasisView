@@ -83,7 +83,7 @@ void OASISView::drawCell(QPainter& painter) {
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {
-    float ratio = std::min(width() / (mBoundBox.maxX - mBoundBox.minX), height() / (mBoundBox.maxY - mBoundBox.minY));
+    float ratio = std::min((float)width() / (mBoundBox.maxX - mBoundBox.minX), (float)height() / (mBoundBox.maxY - mBoundBox.minY));
     float tX = (float)(x - mBoundBox.minX) * ratio;
     float tY = (float)(mBoundBox.maxY - y) * ratio;
     return QPoint((int)tX, (int) tY);

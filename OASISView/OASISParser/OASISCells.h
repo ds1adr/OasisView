@@ -10,8 +10,8 @@
 namespace OASISParser {
 
 struct BoundingBox {
-    int lx = INT_MAX, ly = INT_MAX;
-    int mx = INT_MIN, my = INT_MIN;
+    int minX = INT_MAX, maxX = INT_MAX;
+    int minY = INT_MIN, maxY = INT_MIN;
 };
 
 struct TableOffsetPair {
@@ -61,6 +61,8 @@ public:
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     const BoundingBox& calculateBoundingBox();
+    const BoundingBox& getBoundingBox() { return mBoundingBox; }
+    const std::vector<CellElement*> getCellElements() { return mCellElements; }
 };
 
 }

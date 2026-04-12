@@ -113,18 +113,18 @@ const BoundingBox& OASISCell::calculateBoundingBox() {
         cout << "Cell Element:" << element->elementName() << endl;
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
         if (rectangle != nullptr) {
-            mBoundingBox.lx = min(mBoundingBox.lx, rectangle->getLX());
-            mBoundingBox.ly = min(mBoundingBox.ly, rectangle->getLY());
-            mBoundingBox.mx = max(mBoundingBox.mx, rectangle->getMX());
-            mBoundingBox.my = max(mBoundingBox.my, rectangle->getMY());
+            mBoundingBox.minX = min(mBoundingBox.minX, rectangle->getLX());
+            mBoundingBox.minY = min(mBoundingBox.minY, rectangle->getLY());
+            mBoundingBox.maxX = max(mBoundingBox.maxX, rectangle->getMX());
+            mBoundingBox.maxY = max(mBoundingBox.maxY, rectangle->getMY());
             continue;
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
-            mBoundingBox.lx = min(mBoundingBox.lx, trapezoid->getLX());
-            mBoundingBox.ly = min(mBoundingBox.ly, trapezoid->getLY());
-            mBoundingBox.mx = max(mBoundingBox.mx, trapezoid->getMX());
-            mBoundingBox.my = max(mBoundingBox.my, trapezoid->getMY());
+            mBoundingBox.minX = min(mBoundingBox.minX, trapezoid->getLX());
+            mBoundingBox.minY = min(mBoundingBox.minY, trapezoid->getLY());
+            mBoundingBox.maxX = max(mBoundingBox.maxX, trapezoid->getMX());
+            mBoundingBox.maxY = max(mBoundingBox.maxY, trapezoid->getMY());
             continue;
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
@@ -134,16 +134,16 @@ const BoundingBox& OASISCell::calculateBoundingBox() {
         Placement* placement = dynamic_cast<Placement*>(element);
         if (placement != nullptr) {
             BoundingBox bBox = placement->calculateBoundingBox(mOASISData);
-            if (bBox.lx != INT_MAX) {
-                mBoundingBox.lx = min(mBoundingBox.lx, bBox.lx);
-                mBoundingBox.ly = min(mBoundingBox.ly, bBox.ly);
-                mBoundingBox.mx = max(mBoundingBox.mx, bBox.mx);
-                mBoundingBox.my = max(mBoundingBox.my, bBox.my);
+            if (bBox.minX != INT_MAX) {
+                mBoundingBox.minX = min(mBoundingBox.minX, bBox.minX);
+                mBoundingBox.minY = min(mBoundingBox.minY, bBox.minY);
+                mBoundingBox.maxX = max(mBoundingBox.maxX, bBox.maxX);
+                mBoundingBox.maxY = max(mBoundingBox.maxY, bBox.maxY);
             }
             continue;
         }
     }
-    cout << mName << "(" << mBoundingBox.lx << "," << mBoundingBox.ly << ") - (" << mBoundingBox.mx << "," << mBoundingBox.my << ")" << endl;
+    cout << mName << "(" << mBoundingBox.minX << "," << mBoundingBox.minY << ") - (" << mBoundingBox.maxX << "," << mBoundingBox.maxY << ")" << endl;
     return mBoundingBox;
 }
 

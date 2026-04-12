@@ -23,6 +23,7 @@ void Text::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
     if (infoByte.isReferenceNumber) {
         mReference = OASISParser::parseUInt(fileStream);
+        cout << "Text Reference:" << mReference << endl;
     } else {
         mReference = 0;
         mText = OASISParser::parseAString(fileStream);
@@ -30,19 +31,15 @@ void Text::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
     if (infoByte.isTextLayer) {
         mTextLayer = OASISParser::parseUInt(fileStream);
-        cout << "TextLayer:" << mTextLayer << endl;
     }
     if (infoByte.isTextTypeNumber) {
         mTextType = OASISParser::parseUInt(fileStream);
-        cout << "TextType:" << mTextType << endl;
     }
     if (infoByte.isX) {
         mX = OASISParser::parseInt(fileStream);
-        cout << "mX:" << mX << endl;
     }
     if (infoByte.isY) {
         mY = OASISParser::parseInt(fileStream);
-        cout << "mY:" << mY << endl;
     }
     if (infoByte.isRepetition) {
         mRepetition = OASISParser::parseRepetition(fileStream);
@@ -78,69 +75,59 @@ void Property::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         } else {
             mPropValueCount = infoByte.numberOfValue;
         }
-        cout << "PropertyValueCount:" << mPropValueCount << endl;
     }
     for (int i = 0; i < mPropValueCount; i++) {
         unsigned int type = OASISParser::parseUInt(fileStream);
         if (type >= 0 && type <= 7) {
             double realNumber = OASISParser::parseRealNumber(fileStream);
-            cout << "PropertyValue (real):" << realNumber << endl;
             mProperty.push_back(realNumber);
         }
         switch (type) {
         case 8:
         {
             unsigned int value = OASISParser::parseUInt(fileStream);
-            cout << "PropertyValue 8:" << value << endl;
             mProperty.push_back(value);
             break;
         }
         case 9:
         {
             int value = OASISParser::parseInt(fileStream);
-            cout << "PropertyValue 9:" << value << endl;
             mProperty.push_back(value);
             break;
         }
         case 10:
         {
             string str = OASISParser::parseAString(fileStream);
-            cout << "PropertyValue 10:" << str << endl;
             mProperty.push_back(str);
             break;
         }
         case 11:
         {
             string str = OASISParser::parseBString(fileStream);
-            cout << "PropertyValue 11:" << str << endl;
             mProperty.push_back(str);
             break;
         }
         case 12:
         {
             string str = OASISParser::parseNString(fileStream);
-            cout << "PropertyValue 12:" << str << endl;
             mProperty.push_back(str);
             break;
         }
         case 13:
         {
             string str = OASISParser::parseAString(fileStream);
-            cout << "PropertyValue 13:" << str << endl;
             mProperty.push_back(str);
             break;
         }
         case 14:
         {
             string str = OASISParser::parseBString(fileStream);
-            cout << "PropertyValue 14:" << str << endl;
             mProperty.push_back(str);
             break;
         }
         case 15:
         {
             string str = OASISParser::parseNString(fileStream);
-            cout << "PropertyValue 15:" << str << endl;
             mProperty.push_back(str);
             break;
         }
@@ -158,9 +145,10 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
         fileStream.read((char*)&infoByte, sizeof(char));
 
+        cout << "Placement, code:" << mCode << endl;
+
         if (infoByte.isFlip) {
             mIsFlip = true;
-            cout << "Placement: isFlip" << endl;
         }
         switch (infoByte.rotation) {
         case 0:
@@ -175,24 +163,19 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         case 3:
             mRotation = -M_PI / 2;
         }
-        cout << "Rotation:" << mRotation << endl;
         if (infoByte.isReference) {
             mReference = parseUInt(fileStream);
         } else {
             mCellName = parseNString(fileStream);
-            cout << "Cell name:" << mCellName << endl;
         }
         if (infoByte.isX) {
             mX = parseInt(fileStream);
-            cout << "X:" << mX << endl;
         }
         if (infoByte.isY) {
             mY = parseInt(fileStream);
-            cout << "Y:" << mY << endl;
         }
         if (infoByte.isRepetition) {
             mRepetition = parseRepetition(fileStream);
-            cout << "Repetition" << endl;
         }
     } else {
         MPlacementInfoByte infoByte;
@@ -201,32 +184,26 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
         if (infoByte.isFlip) {
             mIsFlip = true;
-            cout << "Placement: isFlip" << endl;
         }
         if (infoByte.isReference) {
             mReference = parseUInt(fileStream);
         } else {
             mCellName = parseNString(fileStream);
-            cout << "Cell name:" << mCellName << endl;
         }
         if (infoByte.isMag) {
             mMag = parseRealNumber(fileStream);
         }
         if (infoByte.isAngle) {
             mRotation = parseRealNumber(fileStream);
-            cout << "Rotation:" << mRotation << endl;
         }
         if (infoByte.isX) {
             mX = parseInt(fileStream);
-            cout << "X:" << mX << endl;
         }
         if (infoByte.isY) {
             mY = parseInt(fileStream);
-            cout << "Y:" << mY << endl;
         }
         if (infoByte.isRepetition) {
             mRepetition = parseRepetition(fileStream);
-            cout << "Repetition" << endl;
         }
     }
 }
@@ -236,22 +213,22 @@ BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
     BoundingBox bBox;
     if (subCell->isValid()) {
         BoundingBox subBBox = subCell->calculateBoundingBox();
-        if (subBBox.lx == INT_MAX) {
+        if (subBBox.minX == INT_MAX) {
             subBBox = subCell->calculateBoundingBox();
         }
         // TODO: Handle Rotation
 
-        bBox.lx = min(bBox.lx, subBBox.lx + mX);
-        bBox.ly = min(bBox.ly, subBBox.ly + mY);
+        bBox.minX = min(bBox.minX, subBBox.minX + mX);
+        bBox.minY = min(bBox.minY, subBBox.minY + mY);
 
         // Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition
         if (holds_alternative<Repetition>(mRepetition)) {
             Repetition r = get<Repetition>(mRepetition);
 
-            int mx = mX + subBBox.mx + r.dx * (r.nx - 1);
-            int my = mY + subBBox.my + r.dy * (r.ny - 1);
-            bBox.mx = max(bBox.my, mx);
-            bBox.my = max(bBox.my, my);
+            int mx = mX + subBBox.maxX + r.dx * (r.nx - 1);
+            int my = mY + subBBox.maxY + r.dy * (r.ny - 1);
+            bBox.maxX = max(bBox.maxX, mx);
+            bBox.maxY = max(bBox.maxY, my);
             return bBox;
         }
     }
@@ -267,35 +244,30 @@ void Rectangle::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
+    cout << "Rectangle" << endl;
+
     if (infoByte.isLayerNumber) {
         mLayerNumber = OASISParser::parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
-        cout << "Rect Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = OASISParser::parseUInt(fileStream);
-        cout << "Rect Data type:" << mDataType << endl;
     }
     if (infoByte.isWidth) {
         mWidth = OASISParser::parseUInt(fileStream);
-        cout << "Rect Width" << mWidth << endl;
     }
     if (infoByte.isSquare) {
         mHeight = mWidth;
-        cout << "Rect Height:" << mHeight << endl;
     } else if (infoByte.isHeight) {
         mHeight = OASISParser::parseUInt(fileStream);
-        cout << "Rect Height:" << mHeight << endl;
     }
     if (infoByte.isX) {
         mX = OASISParser::parseInt(fileStream);
-        cout << "Rect X:" << mX << endl;
     } else {
         mX = 0;
     }
     if (infoByte.isY) {
         mY = OASISParser::parseInt(fileStream);
-        cout << "Rect Y" << mY << endl;
     } else {
         mY = 0;
     }
@@ -317,22 +289,20 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
+    cout << "Trapezoid" << endl;
+
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
-        cout << "Trapzoid LayerNumber:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
-         cout << "Trapzoid DataType:" << mDataType << endl;
     }
     if (infoByte.isWidth) {
         mWidth = parseUInt(fileStream);
-        cout << "Trapzoid width:" << mWidth << endl;
     }
     if (infoByte.isHeight) {
         mHeight = parseUInt(fileStream);
-        cout << "Trapzoid height:" << mHeight << endl;
     }
     if (mCode == 23) {
         mDeltaA = parseInt(fileStream);
@@ -363,34 +333,29 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
+    cout << "CTrapezoid" << endl;
+
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
-        cout << "CTrapezoid Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
-        cout << "CTrapezoid datatype:" << mDataType << endl;
     }
     if (infoByte.isType) {
         mType = parseUInt(fileStream);
-        cout << "CTrapezoid type:" << mType << endl;
     }
     if (infoByte.isWidth) {
         mWidth = parseUInt(fileStream);
-        cout << "CTrapezoid width:" << mWidth << endl;
     }
     if (infoByte.isHeight) {
         mHeight = parseInt(fileStream);
-        cout << "CTrapezoid Height:" << mHeight << endl;
     }
     if (infoByte.isX) {
         mX = parseUInt(fileStream);
-        cout << "CTrapezoid X:" << mX << endl;
     }
     if (infoByte.isY) {
         mY = parseUInt(fileStream);
-        cout << "CTrapezoid Y:" << mY << endl;
     }
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);

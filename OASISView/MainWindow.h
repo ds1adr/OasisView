@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QComboBox>
 #include <QListWidget>
 #include <QMainWindow>
 
@@ -12,6 +13,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 private:
     QToolBar* mToolBar;
+    QComboBox* mCellNameComboBox;
     QDockWidget* mDock;
     QListWidget* mLayerListWidget;
     OASISParser::OASISData mOASISData;

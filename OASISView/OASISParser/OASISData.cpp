@@ -109,4 +109,21 @@ OASISCell* OASISData::getCell(std::string cellName) {
     return mCellMap.at(cellName);
 }
 
+vector<unsigned> OASISData::getLayers() {
+    vector<unsigned> sortedVector(mLayerSet.begin(), mLayerSet.end());
+
+    sort(sortedVector.begin(), sortedVector.end());
+    return sortedVector;
+}
+
+vector<std::string> OASISData::getAllCellNames() {
+    vector<string> cellNames;
+
+    for (auto& [key, cell] : mCellMap) {
+        cellNames.push_back(key);
+    }
+
+    return cellNames;
+}
+
 }

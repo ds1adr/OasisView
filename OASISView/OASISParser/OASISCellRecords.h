@@ -144,10 +144,10 @@ public:
     std::string elementName() { return "Rectangle"; }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
-    int getLX() { return mX; }
-    int getLY() { return mY; }
-    int getMX() { return mX + mWidth; }
-    int getMY() { return mY + mHeight; }
+    int getMinX() { return mX; }
+    int getMinY() { return mY; }
+    int getMaxX() { return mX + mWidth; }
+    int getMaxY() { return mY + mHeight; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
@@ -181,10 +181,10 @@ public:
     std::string elementName() { return "Trapezoid"; }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
-    int getLX() { return mX; }
-    int getLY() { return mY; }
-    int getMX() { return mX + mWidth; }
-    int getMY() { return mX + mHeight; }
+    int getMinX() { return mX; }
+    int getMinY() { return mY; }
+    int getMaxX() { return mX + mWidth; }
+    int getMaxY() { return mX + mHeight; }
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 

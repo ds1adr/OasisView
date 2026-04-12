@@ -113,18 +113,18 @@ const BoundingBox& OASISCell::calculateBoundingBox() {
         cout << "Cell Element:" << element->elementName() << endl;
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
         if (rectangle != nullptr) {
-            mBoundingBox.minX = min(mBoundingBox.minX, rectangle->getLX());
-            mBoundingBox.minY = min(mBoundingBox.minY, rectangle->getLY());
-            mBoundingBox.maxX = max(mBoundingBox.maxX, rectangle->getMX());
-            mBoundingBox.maxY = max(mBoundingBox.maxY, rectangle->getMY());
+            mBoundingBox.minX = min(mBoundingBox.minX, rectangle->getMinX());
+            mBoundingBox.minY = min(mBoundingBox.minY, rectangle->getMinY());
+            mBoundingBox.maxX = max(mBoundingBox.maxX, rectangle->getMaxX());
+            mBoundingBox.maxY = max(mBoundingBox.maxY, rectangle->getMaxY());
             continue;
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
-            mBoundingBox.minX = min(mBoundingBox.minX, trapezoid->getLX());
-            mBoundingBox.minY = min(mBoundingBox.minY, trapezoid->getLY());
-            mBoundingBox.maxX = max(mBoundingBox.maxX, trapezoid->getMX());
-            mBoundingBox.maxY = max(mBoundingBox.maxY, trapezoid->getMY());
+            mBoundingBox.minX = min(mBoundingBox.minX, trapezoid->getMinX());
+            mBoundingBox.minY = min(mBoundingBox.minY, trapezoid->getMinY());
+            mBoundingBox.maxX = max(mBoundingBox.maxX, trapezoid->getMaxX());
+            mBoundingBox.maxY = max(mBoundingBox.maxY, trapezoid->getMaxY());
             continue;
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);

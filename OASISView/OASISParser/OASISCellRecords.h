@@ -148,6 +148,8 @@ public:
     int getMinY() { return mY; }
     int getMaxX() { return mX + mWidth; }
     int getMaxY() { return mY + mHeight; }
+    unsigned getWidth() { return mWidth; }
+    unsigned getHeight() { return mHeight; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;

@@ -7,6 +7,12 @@
 
 class OASISView: public QWidget
 {
+private:
+    OASISParser::BoundingBox mBoundBox;
+    OASISParser::OASISCell* mCell = nullptr;
+
+    QPoint calculatePoint(int x, int y);  // From Design to UI
+    void drawCell(QPainter& painter);
 public:
     OASISView();
     ~OASISView();

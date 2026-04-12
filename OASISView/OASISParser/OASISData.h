@@ -26,6 +26,8 @@ public:
     OASISData();
 
     void parse(const std::string& filePath);
+    OASISCell& getCell(unsigned reference);
+    OASISCell& getCell(std::string cellName);
 };
 
 }

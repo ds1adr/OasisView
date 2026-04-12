@@ -36,12 +36,13 @@ void OASISData::parse(const string& filePath) {
             if (mOffsetFlag == 1) {
                 mTableOffsets.parse(fileStream);
             }
+            break;
         case 13: // Cell Record: reference-number, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
         {
-            unsigned int referenceNumber = parseUInt(fileStream);
+            unsigned referenceNumber = parseUInt(fileStream);
             string key = std::to_string(referenceNumber);
             cout << "Cell Reference:" << key << endl;
-            OASISCell cell(key);
+            OASISCell cell(referenceNumber);
             cell.parse(fileStream, mLayerSet);
             mCellMap.emplace(key, cell);
             break;
@@ -67,6 +68,10 @@ void OASISData::parse(const string& filePath) {
     }
 
     fileStream.close();
+
+    // for (auto& [key, cell] : mCellMap) { // Structured bindings (C++17)
+    //     cell.getBoundingBox();
+    // }
 }
 
 int OASISData::parseMagicBytes(ifstream& fileStream) {
@@ -93,6 +98,15 @@ int OASISData::parseStart(ifstream& fileStream) {
         mTableOffsets.parse(fileStream);
     }
     return 0;
+}
+
+OASISCell& OASISData::getCell(unsigned reference) {
+    string key = std::to_string(reference);
+    return mCellMap[key];
+}
+
+OASISCell& OASISData::getCell(std::string cellName) {
+    return mCellMap[cellName];
 }
 
 }

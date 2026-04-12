@@ -39,7 +39,7 @@ void OASISData::parse(const string& filePath) {
             break;
         case 13: // Cell Record: reference-number, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
         {
-            unsigned referenceNumber = parseUInt(fileStream);
+            const unsigned referenceNumber = parseUInt(fileStream);
             string key = std::to_string(referenceNumber);
             cout << "Cell Reference:" << key << endl;
             OASISCell cell(referenceNumber);
@@ -100,13 +100,13 @@ int OASISData::parseStart(ifstream& fileStream) {
     return 0;
 }
 
-OASISCell& OASISData::getCell(unsigned reference) {
-    string key = std::to_string(reference);
-    return mCellMap[key];
-}
+// OASISCell& OASISData::getCell(unsigned reference) {
+//     string key = std::to_string(reference);
+//     return mCellMap[key];
+// }
 
-OASISCell& OASISData::getCell(std::string cellName) {
-    return mCellMap[cellName];
-}
+// OASISCell& OASISData::getCell(std::string cellName) {
+//     return mCellMap[cellName];
+// }
 
 }

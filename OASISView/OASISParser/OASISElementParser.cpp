@@ -814,8 +814,8 @@ const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplaceme
 }
 
 Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset) {
-    unsigned xdim = parseUInt(mem, offset);
-    unsigned ydim = parseUInt(mem, offset);
+    unsigned xdim = parseUInt(mem, offset) + 2;
+    unsigned ydim = parseUInt(mem, offset) + 2;
     unsigned dx = parseUInt(mem, offset);
     unsigned dy = parseUInt(mem, offset);
 
@@ -825,8 +825,8 @@ Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset) {
 }
 
 Repetition parseRepetitionType1(ifstream& fileStream) {
-    unsigned xdim = parseUInt(fileStream);
-    unsigned ydim = parseUInt(fileStream);
+    unsigned xdim = parseUInt(fileStream) + 2;
+    unsigned ydim = parseUInt(fileStream) + 2;
     unsigned dx = parseUInt(fileStream);
     unsigned dy = parseUInt(fileStream);
 
@@ -836,39 +836,39 @@ Repetition parseRepetitionType1(ifstream& fileStream) {
 }
 
 Repetition parseRepetitionType2(byte_t *mem, unsigned int &offset) {
-    unsigned xdim = parseUInt(mem, offset);
+    unsigned xdim = parseUInt(mem, offset) + 2;
     unsigned dx = parseUInt(mem, offset);
 
-    return Repetition(xdim, 0, dx, 0);
+    return Repetition(xdim, 1, dx, 0);
 }
 
 Repetition parseRepetitionType2(ifstream& fileStream) {
-    unsigned xdim = parseUInt(fileStream);
+    unsigned xdim = parseUInt(fileStream) + 2;
     unsigned dx = parseUInt(fileStream);
 
-    return Repetition(xdim, 0, dx, 0);
+    return Repetition(xdim, 1, dx, 0);
 }
 
 Repetition parseRepetitionType3(byte_t *mem, unsigned int &offset) {
-    unsigned ydim = parseUInt(mem, offset);
+    unsigned ydim = parseUInt(mem, offset) + 2;
     unsigned dy = parseUInt(mem, offset);
 
-    return Repetition(0, ydim, 0, dy);
+    return Repetition(1, ydim, 0, dy);
 }
 
 Repetition parseRepetitionType3(ifstream& fileStream) {
-    unsigned ydim = parseUInt(fileStream);
+    unsigned ydim = parseUInt(fileStream) + 2;
     unsigned dy = parseUInt(fileStream);
 
-    return Repetition(0, ydim, 0, dy);
+    return Repetition(1, ydim, 0, dy);
 }
 
 NSpaceRepetition parseRepetitionType4(byte_t *mem, unsigned int &offset) {
     NSpaceRepetition result;
 
-    unsigned xdim = parseUInt(mem, offset);
+    unsigned xdim = parseUInt(mem, offset) + 2;
     result.nx = xdim;
-    result.ny = 0;
+    result.ny = 1;
     result.grid = 1;
 
     for (unsigned i = 0; i < xdim - 1; i++) {
@@ -882,9 +882,9 @@ NSpaceRepetition parseRepetitionType4(byte_t *mem, unsigned int &offset) {
 NSpaceRepetition parseRepetitionType4(ifstream& fileStream) {
     NSpaceRepetition result;
 
-    unsigned xdim = parseUInt(fileStream);
+    unsigned xdim = parseUInt(fileStream) + 2;
     result.nx = xdim;
-    result.ny = 0;
+    result.ny = 1;
     result.grid = 1;
 
     for (unsigned i = 0; i < xdim - 1; i++) {
@@ -898,10 +898,10 @@ NSpaceRepetition parseRepetitionType4(ifstream& fileStream) {
 NSpaceRepetition parseRepetitionType5(byte_t *mem, unsigned int &offset) {
     NSpaceRepetition result;
 
-    unsigned xdim = parseUInt(mem, offset);
+    unsigned xdim = parseUInt(mem, offset) + 2;
     unsigned grid = parseUInt(mem, offset);
     result.nx = xdim;
-    result.ny = 0;
+    result.ny = 1;
     result.grid = grid;
 
     for (unsigned i = 0; i < xdim - 1; i++) {
@@ -915,10 +915,10 @@ NSpaceRepetition parseRepetitionType5(byte_t *mem, unsigned int &offset) {
 NSpaceRepetition parseRepetitionType5(ifstream& fileStream) {
     NSpaceRepetition result;
 
-    unsigned xdim = parseUInt(fileStream);
+    unsigned xdim = parseUInt(fileStream) + 2;
     unsigned grid = parseUInt(fileStream);
     result.nx = xdim;
-    result.ny = 0;
+    result.ny = 1;
     result.grid = grid;
 
     for (unsigned i = 0; i < xdim - 1; i++) {
@@ -932,9 +932,9 @@ NSpaceRepetition parseRepetitionType5(ifstream& fileStream) {
 NSpaceRepetition parseRepetitionType6(byte_t *mem, unsigned int &offset) {
     NSpaceRepetition result;
 
-    unsigned ydim = parseUInt(mem, offset);
+    unsigned ydim = parseUInt(mem, offset) + 2;
     result.ny = ydim;
-    result.nx = 0;
+    result.nx = 1;
     result.grid = 1;
 
     for (unsigned i = 0; i < ydim - 1; i++) {
@@ -948,9 +948,9 @@ NSpaceRepetition parseRepetitionType6(byte_t *mem, unsigned int &offset) {
 NSpaceRepetition parseRepetitionType6(ifstream& fileStream) {
     NSpaceRepetition result;
 
-    unsigned ydim = parseUInt(fileStream);
+    unsigned ydim = parseUInt(fileStream) + 2;
     result.ny = ydim;
-    result.nx = 0;
+    result.nx = 1;
     result.grid = 1;
 
     for (unsigned i = 0; i < ydim - 1; i++) {
@@ -964,9 +964,9 @@ NSpaceRepetition parseRepetitionType6(ifstream& fileStream) {
 NSpaceRepetition parseRepetitionType7(byte_t *mem, unsigned int &offset) {
     NSpaceRepetition result;
 
-    unsigned ydim = parseUInt(mem, offset);
+    unsigned ydim = parseUInt(mem, offset) + 2;
     unsigned grid = parseUInt(mem, offset);
-    result.nx = 0;
+    result.nx = 1;
     result.ny = ydim;
     result.grid = grid;
 
@@ -981,9 +981,9 @@ NSpaceRepetition parseRepetitionType7(byte_t *mem, unsigned int &offset) {
 NSpaceRepetition parseRepetitionType7(ifstream& fileStream) {
     NSpaceRepetition result;
 
-    unsigned ydim = parseUInt(fileStream);
+    unsigned ydim = parseUInt(fileStream) + 2;
     unsigned grid = parseUInt(fileStream);
-    result.nx = 0;
+    result.nx = 1;
     result.ny = ydim;
     result.grid = grid;
 
@@ -998,8 +998,8 @@ NSpaceRepetition parseRepetitionType7(ifstream& fileStream) {
 DiagonalRepetition parseRepetitionType8(byte_t *mem, unsigned int &offset) {
     DiagonalRepetition result;
 
-    result.nDim = parseUInt(mem, offset);
-    result.mDim = parseUInt(mem, offset);
+    result.nDim = parseUInt(mem, offset) + 2;
+    result.mDim = parseUInt(mem, offset) + 2;
 
     result.nDisplacement = parseGDelta(mem, offset);
     result.mDisplacement = parseGDelta(mem, offset);
@@ -1010,8 +1010,8 @@ DiagonalRepetition parseRepetitionType8(byte_t *mem, unsigned int &offset) {
 DiagonalRepetition parseRepetitionType8(ifstream& fileStream) {
     DiagonalRepetition result;
 
-    result.nDim = parseUInt(fileStream);
-    result.mDim = parseUInt(fileStream);
+    result.nDim = parseUInt(fileStream) + 2;
+    result.mDim = parseUInt(fileStream) + 2;
 
     result.nDisplacement = parseGDelta(fileStream);
     result.mDisplacement = parseGDelta(fileStream);
@@ -1022,9 +1022,9 @@ DiagonalRepetition parseRepetitionType8(ifstream& fileStream) {
 DiagonalRepetition parseRepetitionType9(byte_t *mem, unsigned int &offset) {
     DiagonalRepetition result;
 
-    result.nDim = parseUInt(mem, offset);
+    result.nDim = parseUInt(mem, offset) + 2;
     result.nDisplacement = parseGDelta(mem, offset);
-    result.mDim = 0;
+    result.mDim = 1;
 
     return result;
 }
@@ -1032,9 +1032,9 @@ DiagonalRepetition parseRepetitionType9(byte_t *mem, unsigned int &offset) {
 DiagonalRepetition parseRepetitionType9(ifstream& fileStream) {
     DiagonalRepetition result;
 
-    result.nDim = parseUInt(fileStream);
+    result.nDim = parseUInt(fileStream) + 2;
     result.nDisplacement = parseGDelta(fileStream);
-    result.mDim = 0;
+    result.mDim = 1;
 
     return result;
 }
@@ -1042,7 +1042,7 @@ DiagonalRepetition parseRepetitionType9(ifstream& fileStream) {
 NDisplacementRepetition parseRepetitionType10(byte_t *mem, unsigned int &offset) {
     NDisplacementRepetition result;
 
-    result.n = parseUInt(mem, offset);
+    result.n = parseUInt(mem, offset) + 2;
     result.grid = 1;
 
     for (unsigned i = 0; i < result.n - 1; i++) {
@@ -1055,7 +1055,7 @@ NDisplacementRepetition parseRepetitionType10(byte_t *mem, unsigned int &offset)
 NDisplacementRepetition parseRepetitionType10(ifstream& fileStream) {
     NDisplacementRepetition result;
 
-    result.n = parseUInt(fileStream);
+    result.n = parseUInt(fileStream) + 2;
     result.grid = 1;
 
     for (unsigned i = 0; i < result.n - 1; i++) {
@@ -1068,7 +1068,7 @@ NDisplacementRepetition parseRepetitionType10(ifstream& fileStream) {
 NDisplacementRepetition parseRepetitionType11(byte_t *mem, unsigned int &offset) {
     NDisplacementRepetition result;
 
-    result.n = parseUInt(mem, offset);
+    result.n = parseUInt(mem, offset) + 2;
     result.grid = parseUInt(mem, offset);
 
     for (unsigned i = 0; i < result.n - 1; i++) {
@@ -1082,7 +1082,7 @@ NDisplacementRepetition parseRepetitionType11(byte_t *mem, unsigned int &offset)
 NDisplacementRepetition parseRepetitionType11(ifstream& fileStream) {
     NDisplacementRepetition result;
 
-    result.n = parseUInt(fileStream);
+    result.n = parseUInt(fileStream) + 2;
     result.grid = parseUInt(fileStream);
 
     for (unsigned i = 0; i < result.n - 1; i++) {

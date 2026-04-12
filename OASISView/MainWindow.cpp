@@ -48,4 +48,5 @@ void MainWindow::openFileClicked() {
     QString filename = QFileDialog::getOpenFileName();
     qDebug() << "Open File:" << filename;
     mOASISData.parse(filename.toStdString());
+    qDebug() << "Finished";
 }

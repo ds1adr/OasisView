@@ -112,7 +112,7 @@ public:
     const unsigned getReference() { return mReference; }
     const std::string& getCellName() { return mCellName; }
 
-    BoundingBox getBoundingBox(OASISData& oasisData);
+    BoundingBox calculateBoundingBox(OASISData& oasisData);
 private:
     unsigned mCode;
     bool mIsFlip = false; // x-axis

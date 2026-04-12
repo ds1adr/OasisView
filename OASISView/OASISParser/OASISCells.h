@@ -60,7 +60,7 @@ public:
     bool isValid() { return (mReference > 0 || !mName.empty()); }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
-    const BoundingBox& getBoundingBox();
+    const BoundingBox& calculateBoundingBox();
 };
 
 }

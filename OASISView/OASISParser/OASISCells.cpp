@@ -108,7 +108,7 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
 }
 
-const BoundingBox& OASISCell::getBoundingBox() {
+const BoundingBox& OASISCell::calculateBoundingBox() {
     for (CellElement* element : mCellElements) {
         cout << "Cell Element:" << element->elementName() << endl;
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
@@ -133,7 +133,7 @@ const BoundingBox& OASISCell::getBoundingBox() {
         }
         Placement* placement = dynamic_cast<Placement*>(element);
         if (placement != nullptr) {
-            BoundingBox bBox = placement->getBoundingBox(mOASISData);
+            BoundingBox bBox = placement->calculateBoundingBox(mOASISData);
             if (bBox.lx != INT_MAX) {
                 mBoundingBox.lx = min(mBoundingBox.lx, bBox.lx);
                 mBoundingBox.ly = min(mBoundingBox.ly, bBox.ly);

@@ -231,13 +231,13 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
 }
 
-BoundingBox Placement::getBoundingBox(OASISData& oasisData) {
+BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
     OASISCell* subCell = getCellName().empty() ? oasisData.getCell(getReference()) : oasisData.getCell(getCellName());
     BoundingBox bBox;
     if (subCell->isValid()) {
-        BoundingBox subBBox = subCell->getBoundingBox();
+        BoundingBox subBBox = subCell->calculateBoundingBox();
         if (subBBox.lx == INT_MAX) {
-            subBBox = subCell->getBoundingBox();
+            subBBox = subCell->calculateBoundingBox();
         }
         // TODO: Handle Rotation
 

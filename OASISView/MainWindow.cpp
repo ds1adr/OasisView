@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mCellNameComboBox = new QComboBox(this);
     mToolBar->addWidget(mCellNameComboBox);
+    connect(mCellNameComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(cellNameComboBoxChanged(QString)));
 
     mDock = new QDockWidget("", this);
     mDock->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -44,6 +45,8 @@ MainWindow::~MainWindow()
     delete mOpenAction;
     delete mFileMenu;
     delete mCellNameComboBox;
+    delete mDock;
+    delete mLayerListWidget;
     delete mOASISView;
 }
 
@@ -64,4 +67,13 @@ void MainWindow::openFileClicked() {
     for (string& cellName : cellNames) {
         mCellNameComboBox->addItem(QString::fromStdString(cellName));
     }
+}
+
+void MainWindow::cellNameComboBoxChanged(QString cellName) {
+    drawCell(cellName.toStdString());
+}
+
+void MainWindow::drawCell(string cellName) {
+    OASISParser::OASISCell* cell = mOASISData.getCell(cellName);
+
 }

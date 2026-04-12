@@ -24,6 +24,7 @@ private:
     int parseStart(std::ifstream& fileStream);
 public:
     OASISData();
+    ~OASISData();
 
     void parse(const std::string& filePath);
     OASISCell* getCell(unsigned reference);

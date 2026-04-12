@@ -10,6 +10,13 @@ namespace OASISParser {
 
 OASISData::OASISData() {}
 
+OASISData::~OASISData() {
+    for (auto& [key, cell] : mCellMap) {
+        delete cell;
+    }
+    mCellMap.clear();
+}
+
 // <oasis-file> -> <magic-bytes> START { CBLOCK | PAD | PROPERTY | <cell> | <name> }* END
 void OASISData::parse(const string& filePath) {
     ifstream fileStream = ifstream(filePath, std::ios::binary);
@@ -70,7 +77,7 @@ void OASISData::parse(const string& filePath) {
     fileStream.close();
 
     for (auto& [key, cell] : mCellMap) {
-        cell->getBoundingBox();
+        cell->calculateBoundingBox();
     }
 }
 

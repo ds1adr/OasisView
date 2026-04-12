@@ -21,11 +21,13 @@ private:
     QMenu* mFileMenu;
     QAction* mOpenAction;
 
+    void drawCell(std::string cellName);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
     void openFileClicked();
+    void cellNameComboBoxChanged(QString cellName);
 };
 #endif // MAINWINDOW_H

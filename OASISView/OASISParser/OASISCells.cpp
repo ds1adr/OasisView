@@ -129,6 +129,10 @@ const BoundingBox& OASISCell::calculateBoundingBox() {
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
         if (cTrapezoid != nullptr) {
+            mBoundingBox.minX = min(mBoundingBox.minX, cTrapezoid->getMinX());
+            mBoundingBox.minY = min(mBoundingBox.minY, cTrapezoid->getMinY());
+            mBoundingBox.maxX = max(mBoundingBox.maxX, cTrapezoid->getMaxX());
+            mBoundingBox.maxY = max(mBoundingBox.maxY, cTrapezoid->getMaxY());
             continue;
         }
         Placement* placement = dynamic_cast<Placement*>(element);

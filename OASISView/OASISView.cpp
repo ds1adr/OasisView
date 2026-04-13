@@ -66,7 +66,7 @@ void OASISView::drawCell(QPainter& painter) {
         if (trapezoid != nullptr) {
             QPolygon polygon;
             // TODO: Repetition
-            const std::vector<KPoint> points = trapezoid->getPoints();
+            const std::vector<KPoint> points = trapezoid->getInitialPoints();
             for (KPoint p : points) {
                 QPoint qP = calculatePoint(p.x, p.y);
                 polygon << qP;
@@ -117,7 +117,7 @@ void OASISView::drawCell(QPainter& painter) {
 void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
     QPolygon polygon;
     // TODO: Repetition
-    const std::vector<KPoint> points = cTrapezoid->getPoints();
+    const std::vector<KPoint> points = cTrapezoid->getInitialPoints();
     for (KPoint p : points) {
         QPoint qP = calculatePoint(p.x, p.y);
         polygon << qP;

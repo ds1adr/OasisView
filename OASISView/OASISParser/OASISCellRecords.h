@@ -199,7 +199,7 @@ public:
     int getMaxX() { return mX + mWidth; }
     int getMaxY() { return mX + mHeight; }
 
-    const std::vector<KPoint> getPoints();
+    const std::vector<KPoint> getInitialPoints();
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 
@@ -235,7 +235,12 @@ public:
 
     void parse(std::ifstream& filestream, std::unordered_set<unsigned>& layerSet);
     unsigned getType() { return mType; }
-    const std::vector<KPoint> getPoints();
+    const std::vector<KPoint> getInitialPoints();
+
+    int getMinX() { return mX; }
+    int getMinY() { return mY; }
+    int getMaxX();
+    int getMaxY();
 private:
     unsigned mLayerNumber;
     unsigned mDataType;

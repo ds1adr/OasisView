@@ -363,7 +363,7 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     mOrientation = infoByte.isVertical ? Orientation::Vertical : Orientation::Horizontal;
 }
 
-const vector<KPoint> Trapezoid::getPoints() {
+const vector<KPoint> Trapezoid::getInitialPoints() {
     vector<KPoint> result;
 
     if (mOrientation == Orientation::Horizontal) {
@@ -414,6 +414,31 @@ CTrapezoid::~CTrapezoid() {
 
 }
 
+int CTrapezoid::getMaxX() {
+    switch (mType) {
+    case 20:
+    case 21:
+        return mX + 2 * mHeight;
+    default:
+        return mX + mWidth;
+    }
+}
+
+int CTrapezoid::getMaxY() {
+    switch (mType) {
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+        return mY + mWidth;
+    case 22:
+    case 23:
+        return mY + 2 * mWidth;
+    default:
+        return mY + mHeight;
+    }
+}
+
 void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     CTrapInfoByte infoByte;  // TWHXYRDL
 
@@ -461,11 +486,21 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     }
 }
 
-const std::vector<KPoint> CTrapezoid::getPoints() {
+const std::vector<KPoint> CTrapezoid::getInitialPoints() {
     vector<KPoint> result;
     switch (mType) {
     case 0:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth - mHeight, mY + mHeight);
+        result.push_back(p3);
+        KPoint p4(mX, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 1:
         break;
     case 2:

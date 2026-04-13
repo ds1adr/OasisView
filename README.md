@@ -7,9 +7,10 @@ OASIS file viewer
 4. WIP now. Currently parse Rectangle, Trapezoid, CTrapezoid, Text, Placement, Property in the Cell. (6 element types so far) 
 
 Reference:
-<img width="946" height="743" alt="Screenshot 2026-04-12 at 9 19 52 PM" src="https://github.com/user-attachments/assets/06a1be08-5eb9-4722-a008-358e681d8c17" />
+
+<img width="990" height="734" alt="Screenshot 2026-04-13 at 1 50 50 PM" src="https://github.com/user-attachments/assets/7fc707a4-8b6f-488e-be24-aaccb480f3c2" />
+
 
 WIP:
 
-<img width="915" height="694" alt="Screenshot 2026-04-12 at 11 55 38 PM" src="https://github.com/user-attachments/assets/05b62fc9-fdcb-441a-90e9-5b8b9ab92a24" />
-
+<img width="924" height="749" alt="Screenshot 2026-04-13 at 1 51 01 PM" src="https://github.com/user-attachments/assets/4a9d125e-1b8a-470b-a9da-271baf0bb5eb" />

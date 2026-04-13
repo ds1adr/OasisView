@@ -10,4 +10,6 @@ Reference:
 <img width="946" height="743" alt="Screenshot 2026-04-12 at 9 19 52 PM" src="https://github.com/user-attachments/assets/06a1be08-5eb9-4722-a008-358e681d8c17" />
 
 WIP:
-<img width="747" height="585" alt="Screenshot 2026-04-12 at 9 20 01 PM" src="https://github.com/user-attachments/assets/b0efaa1a-3c8a-4f1d-8c13-0b0a18c92cd1" />
+
+<img width="915" height="694" alt="Screenshot 2026-04-12 at 11 55 38 PM" src="https://github.com/user-attachments/assets/05b62fc9-fdcb-441a-90e9-5b8b9ab92a24" />
+

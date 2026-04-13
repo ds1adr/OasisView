@@ -14,12 +14,13 @@ private:
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
     void drawCell(QPainter& painter);
+    void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);
 public:
     OASISView();
     ~OASISView();
 
     void paintEvent(QPaintEvent* event) override;
-    void updateCell(OASISParser::OASISData* oasisData, OASISParser::OASISCell* cell);
+    void updateCell(OASISParser::OASISData* oasisData, OASISParser::OASISCell* cell); 
 };
 
 #endif // OASISVIEW_H

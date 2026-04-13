@@ -24,12 +24,14 @@ void OASISView::paintEvent(QPaintEvent* event) {
     painter.end();
 }
 
+// TODO: need to improve this draw logic
 void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
     mOASISData = oasisData;
     mCell = cell;
     update();
 }
 
+// TODO: need to improve this draw logic
 void OASISView::drawCell(QPainter& painter) {
     if (mCell == nullptr) {
         return;
@@ -72,6 +74,7 @@ void OASISView::drawCell(QPainter& painter) {
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
         if (cTrapezoid != nullptr) {
+            drawCTrapezoid(painter, cTrapezoid);
             continue;
         }
         Placement* placement = dynamic_cast<Placement*>(element);
@@ -107,6 +110,10 @@ void OASISView::drawCell(QPainter& painter) {
             continue;
         }
     }
+}
+
+void OASISView::drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* cTrapezoid) {
+
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {

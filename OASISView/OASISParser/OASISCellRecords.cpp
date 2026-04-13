@@ -402,24 +402,31 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
+        cout << "CTrapezoid Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
+        cout << "CTrapzoid Data type:" << mDataType << endl;
     }
     if (infoByte.isType) {
         mType = parseUInt(fileStream);
+        cout << "CTrapezoid Type:" << mType << endl;
     }
     if (infoByte.isWidth) {
         mWidth = parseUInt(fileStream);
+        cout << "CTrapezoid width:" << mWidth << endl;
     }
     if (infoByte.isHeight) {
-        mHeight = parseInt(fileStream);
+        mHeight = parseUInt(fileStream);
+        cout << "CTrapezoid height:" << mHeight << endl;
     }
     if (infoByte.isX) {
-        mX = parseUInt(fileStream);
+        mX = parseInt(fileStream);
+        cout << "CTrapezoid X:" << mX << endl;
     }
     if (infoByte.isY) {
-        mY = parseUInt(fileStream);
+        mY = parseInt(fileStream);
+        cout << "CTrapezoid Y:" << mY << endl;
     }
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);

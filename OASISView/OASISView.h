@@ -9,6 +9,7 @@ class OASISView: public QWidget
 {
 private:
     OASISParser::BoundingBox mBoundBox;
+    OASISParser::OASISData* mOASISData = nullptr;
     OASISParser::OASISCell* mCell = nullptr;
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
@@ -18,7 +19,7 @@ public:
     ~OASISView();
 
     void paintEvent(QPaintEvent* event) override;
-    void updateCell(OASISParser::OASISCell* cell);
+    void updateCell(OASISParser::OASISData* oasisData, OASISParser::OASISCell* cell);
 };
 
 #endif // OASISVIEW_H

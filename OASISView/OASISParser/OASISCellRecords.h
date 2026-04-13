@@ -114,6 +114,10 @@ public:
     const std::string& getCellName() { return mCellName; }
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
+
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> getRepetition() { return mRepetition; }
+    int getX() { return mX; }
+    int getY() { return mY; }
 private:
     unsigned mCode;
     bool mIsFlip = false; // x-axis

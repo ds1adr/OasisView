@@ -75,5 +75,5 @@ void MainWindow::cellNameComboBoxChanged(QString cellName) {
 
 void MainWindow::drawCell(string cellName) {
     OASISParser::OASISCell* cell = mOASISData.getCell(cellName);
-    mOASISView->updateCell(cell);
+    mOASISView->updateCell(&mOASISData, cell);
 }

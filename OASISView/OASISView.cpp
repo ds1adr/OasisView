@@ -1,4 +1,5 @@
 #include "OASISView.h"
+#include "OASISParser/OASISData.h"
 
 #include <iostream>
 #include <QPainter>
@@ -23,7 +24,8 @@ void OASISView::paintEvent(QPaintEvent* event) {
     painter.end();
 }
 
-void OASISView::updateCell(OASISCell* cell) {
+void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
+    mOASISData = oasisData;
     mCell = cell;
     update();
 }
@@ -74,13 +76,32 @@ void OASISView::drawCell(QPainter& painter) {
         }
         Placement* placement = dynamic_cast<Placement*>(element);
         if (placement != nullptr) {
-            // BoundingBox bBox = placement->calculateBoundingBox(mOASISData);
-            // if (bBox.lx != INT_MAX) {
-            //     mBoundingBox.lx = min(mBoundingBox.lx, bBox.lx);
-            //     mBoundingBox.ly = min(mBoundingBox.ly, bBox.ly);
-            //     mBoundingBox.mx = max(mBoundingBox.mx, bBox.mx);
-            //     mBoundingBox.my = max(mBoundingBox.my, bBox.my);
-            // }
+            OASISCell* subCell;
+            if (placement->getCellName().empty()) {
+                subCell = mOASISData->getCell(placement->getReference());
+            } else {
+                subCell = mOASISData->getCell(placement->getCellName());
+            }
+            BoundingBox subCellBBox = subCell->getBoundingBox();
+            int drawingWidth = subCell->getBoundingWidth() * ratio;
+            int drawingHeight = subCell->getBoundingHeight() * ratio;
+
+            std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
+            if (holds_alternative<Repetition>(repetition)) {
+                Repetition r = get<Repetition>(repetition);
+
+                int placeX = placement->getX();
+                int placeY = placement->getY();
+
+                for (int i = 0; i < r.nx; i++) {
+                    for (int j = 0; j < r.ny; j++) {
+                        int x = placeX + subCellBBox.minX + r.dx * i;
+                        int y = placeY + subCellBBox.minY + r.dy * i;
+                        QRect rect = QRect(x, y, drawingWidth, drawingHeight);
+                        painter.drawRect(rect);
+                    }
+                }
+            }
             continue;
         }
     }

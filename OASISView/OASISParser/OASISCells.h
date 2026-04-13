@@ -64,6 +64,8 @@ public:
     const BoundingBox& calculateBoundingBox();
     const BoundingBox& getBoundingBox() { return mBoundingBox; }
     const std::vector<CellElement*> getCellElements() { return mCellElements; }
+    unsigned getBoundingWidth() { return mBoundingBox.maxX - mBoundingBox.minX; }
+    unsigned getBoundingHeight() { return mBoundingBox.maxY - mBoundingBox.minY; }
 };
 
 }

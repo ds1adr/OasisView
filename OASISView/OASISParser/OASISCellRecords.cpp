@@ -235,6 +235,7 @@ BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
             bBox.maxY = max(bBox.maxY, my);
             return bBox;
         }
+        // TODO: Other Repetition Type
     }
     return BoundingBox();
 }

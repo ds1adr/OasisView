@@ -15,6 +15,8 @@ namespace OASISParser {
 
 unsigned _previousWidth = 0;
 unsigned _previousHeight = 0;
+int _previousX = 0;
+int _previousY = 0;
 
 Text::~Text() {
 
@@ -174,9 +176,15 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         }
         if (infoByte.isX) {
             mX = parseInt(fileStream);
+            _previousX = mX;
+        } else {
+            mX = _previousX;
         }
         if (infoByte.isY) {
             mY = parseInt(fileStream);
+            _previousY = mY;
+        } else {
+            mY = _previousY;
         }
         if (infoByte.isRepetition) {
             mRepetition = parseRepetition(fileStream);
@@ -202,9 +210,15 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         }
         if (infoByte.isX) {
             mX = parseInt(fileStream);
+            _previousX = mX;
+        } else {
+            mX = _previousX;
         }
         if (infoByte.isY) {
             mY = parseInt(fileStream);
+            _previousY = mY;
+        } else {
+            mY = _previousY;
         }
         if (infoByte.isRepetition) {
             mRepetition = parseRepetition(fileStream);
@@ -274,13 +288,15 @@ void Rectangle::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
     if (infoByte.isX) {
         mX = OASISParser::parseInt(fileStream);
+        _previousX = mX;
     } else {
-        mX = 0;
+        mX = _previousX;
     }
     if (infoByte.isY) {
         mY = OASISParser::parseInt(fileStream);
+        _previousY = mY;
     } else {
-        mY = 0;
+        mY = _previousY;
     }
     if (infoByte.isRepetation) {
         mRepetition = OASISParser::parseRepetition(fileStream);
@@ -331,9 +347,15 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
     if (infoByte.isX) {
         mX = parseInt(fileStream);
+        _previousX = mX;
+    } else {
+        mX = _previousX;
     }
     if (infoByte.isY) {
         mY = parseInt(fileStream);
+        _previousY = mY;
+    } else {
+        mY = _previousY;
     }
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);
@@ -423,10 +445,16 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     if (infoByte.isX) {
         mX = parseInt(fileStream);
         cout << "CTrapezoid X:" << mX << endl;
+        _previousX = mX;
+    } else {
+        mX = _previousX;
     }
     if (infoByte.isY) {
         mY = parseInt(fileStream);
         cout << "CTrapezoid Y:" << mY << endl;
+        _previousY = mY;
+    } else {
+        mY = _previousY;
     }
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);
@@ -488,7 +516,7 @@ const std::vector<KPoint> CTrapezoid::getPoints() {
         break;
     case 20:
     {
-        KPoint p1 = KPoint(mX, mY);
+        KPoint p1(mX, mY);
         result.push_back(p1);
         KPoint p2(mX + mHeight * 2, mY);
         result.push_back(p2);
@@ -499,7 +527,15 @@ const std::vector<KPoint> CTrapezoid::getPoints() {
     case 21:
         break;
     case 22:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY + mWidth);
+        result.push_back(p2);
+        KPoint p3(mX, mY + mWidth * 2);
+        result.push_back(p3);
         break;
+    }
     case 23:
         break;
     case 24:

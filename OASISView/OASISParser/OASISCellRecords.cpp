@@ -13,6 +13,9 @@ using namespace std;
 
 namespace OASISParser {
 
+unsigned _previousWidth = 0;
+unsigned _previousHeight = 0;
+
 Text::~Text() {
 
 }
@@ -256,11 +259,17 @@ void Rectangle::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
     if (infoByte.isWidth) {
         mWidth = OASISParser::parseUInt(fileStream);
+        _previousWidth = mWidth;
+    } {
+        mWidth = _previousWidth;
     }
     if (infoByte.isSquare) {
         mHeight = mWidth;
     } else if (infoByte.isHeight) {
         mHeight = OASISParser::parseUInt(fileStream);
+        _previousHeight = mHeight;
+    } else {
+        mHeight = _previousHeight;
     }
     if (infoByte.isX) {
         mX = OASISParser::parseInt(fileStream);
@@ -285,9 +294,6 @@ Trapezoid::~Trapezoid() {
 
 }
 
-unsigned _previousWidth = 0;
-unsigned _previousHeight = 0;
-
 void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     TrapInfoByte infoByte;  // OWHXYRDL
 
@@ -310,6 +316,9 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
     if (infoByte.isHeight) {
         mHeight = parseUInt(fileStream);
+        _previousHeight = mHeight;
+    } else {
+        mHeight = _previousHeight;
     }
     if (mCode == 23) {
         mDeltaA = parseInt(fileStream);
@@ -344,7 +353,7 @@ const vector<KPoint> Trapezoid::getPoints() {
             result.push_back(p3);
             KPoint p4 = KPoint(mX + mDeltaA, mY + mHeight);
             result.push_back(p4);
-        } else if (mDeltaA < 0) {
+        } else {
             KPoint p1 = KPoint(mX - mDeltaA, mY);
             result.push_back(p1);
             KPoint p2 = KPoint(mX + mWidth - mDeltaB, mY);
@@ -355,7 +364,18 @@ const vector<KPoint> Trapezoid::getPoints() {
             result.push_back(p4);
         }
     } else { // Vertical
+        if (mDeltaA >= 0) {
+            KPoint p1 = KPoint(mX, mY + mDeltaA);
+            result.push_back(p1);
+            KPoint p2 = KPoint(mX + mWidth, mY);
+            result.push_back(p2);
+            KPoint p3 = KPoint(mX + mWidth, mY + mHeight);
+            result.push_back(p3);
+            KPoint p4 = KPoint(mX, mY + mHeight + mDeltaB);
+            result.push_back(p4);
+        } else {
 
+        }
     }
     return result;
 }

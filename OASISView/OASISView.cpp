@@ -59,10 +59,13 @@ void OASISView::drawCell(QPainter& painter) {
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
-            // mBoundingBox.lx = min(mBoundingBox.lx, trapezoid->getLX());
-            // mBoundingBox.ly = min(mBoundingBox.ly, trapezoid->getLY());
-            // mBoundingBox.mx = max(mBoundingBox.mx, trapezoid->getMX());
-            // mBoundingBox.my = max(mBoundingBox.my, trapezoid->getMY());
+            QPolygon polygon;
+            const std::vector<KPoint> points = trapezoid->getPoints();
+            for (KPoint p : points) {
+                QPoint qP = calculatePoint(p.x, p.y);
+                polygon << qP;
+            }
+            painter.drawPolygon(polygon);
             continue;
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);

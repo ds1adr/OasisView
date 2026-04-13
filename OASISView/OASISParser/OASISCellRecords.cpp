@@ -285,6 +285,9 @@ Trapezoid::~Trapezoid() {
 
 }
 
+unsigned _previousWidth = 0;
+unsigned _previousHeight = 0;
+
 void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     TrapInfoByte infoByte;  // OWHXYRDL
 
@@ -301,6 +304,9 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
     if (infoByte.isWidth) {
         mWidth = parseUInt(fileStream);
+        _previousWidth = mWidth;
+    } else {
+        mWidth = _previousWidth;
     }
     if (infoByte.isHeight) {
         mHeight = parseUInt(fileStream);
@@ -323,6 +329,35 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         mRepetition = parseRepetition(fileStream);
     }
     mOrientation = infoByte.isVertical ? Orientation::Vertical : Orientation::Horizontal;
+}
+
+const vector<KPoint> Trapezoid::getPoints() {
+    vector<KPoint> result;
+
+    if (mOrientation == Orientation::Horizontal) {
+        if (mDeltaA >= 0) {
+            KPoint p1 = KPoint(mX, mY);
+            result.push_back(p1);
+            KPoint p2 = KPoint(mX + mWidth, mY);
+            result.push_back(p2);
+            KPoint p3 = KPoint(mX + mWidth + mDeltaB, mY + mHeight);
+            result.push_back(p3);
+            KPoint p4 = KPoint(mX + mDeltaA, mY + mHeight);
+            result.push_back(p4);
+        } else if (mDeltaA < 0) {
+            KPoint p1 = KPoint(mX - mDeltaA, mY);
+            result.push_back(p1);
+            KPoint p2 = KPoint(mX + mWidth - mDeltaB, mY);
+            result.push_back(p2);
+            KPoint p3 = KPoint(mX + mWidth, mY + mHeight);
+            result.push_back(p3);
+            KPoint p4 = KPoint(mX, mY + mHeight);
+            result.push_back(p4);
+        }
+    } else { // Vertical
+
+    }
+    return result;
 }
 
 CTrapezoid::~CTrapezoid() {

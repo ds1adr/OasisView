@@ -176,6 +176,12 @@ enum class Orientation {
     Vertical, Horizontal
 };
 
+struct KPoint {
+    int x, y;
+
+    KPoint(int _x, int _y) { x = _x; y = _y;};
+};
+
 class Trapezoid : public CellElement {
 public:
     Trapezoid(unsigned int code);
@@ -188,6 +194,8 @@ public:
     int getMinY() { return mY; }
     int getMaxX() { return mX + mWidth; }
     int getMaxY() { return mX + mHeight; }
+
+    const std::vector<KPoint> getPoints();
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 

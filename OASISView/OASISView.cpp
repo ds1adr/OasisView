@@ -96,8 +96,10 @@ void OASISView::drawCell(QPainter& painter) {
                 for (int i = 0; i < r.nx; i++) {
                     for (int j = 0; j < r.ny; j++) {
                         int x = placeX + subCellBBox.minX + r.dx * i;
-                        int y = placeY + subCellBBox.minY + r.dy * i;
-                        QRect rect = QRect(x, y, drawingWidth, drawingHeight);
+                        int y = placeY + subCellBBox.minY + r.dy * j;
+                        QPoint p = calculatePoint(x, y);
+                        QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+
                         painter.drawRect(rect);
                     }
                 }

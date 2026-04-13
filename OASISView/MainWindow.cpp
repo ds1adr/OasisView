@@ -53,6 +53,7 @@ MainWindow::~MainWindow()
 void MainWindow::openFileClicked() {
     QString filename = QFileDialog::getOpenFileName();
     qDebug() << "Open File:" << filename;
+    mOASISData = OASISParser::OASISData();
     mOASISData.parse(filename.toStdString());
     qDebug() << "Finished";
     vector<unsigned> layers = mOASISData.getLayers();
@@ -70,7 +71,9 @@ void MainWindow::openFileClicked() {
 }
 
 void MainWindow::cellNameComboBoxChanged(QString cellName) {
-    drawCell(cellName.toStdString());
+    if (!cellName.isEmpty()) {
+        drawCell(cellName.toStdString());
+    }
 }
 
 void MainWindow::drawCell(string cellName) {

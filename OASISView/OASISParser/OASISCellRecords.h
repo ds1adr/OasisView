@@ -203,10 +203,10 @@ public:
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 
-    unsigned int mLayerNumber;
-    unsigned int mDataType;
-    unsigned int mWidth;
-    unsigned int mHeight;
+    unsigned mLayerNumber;
+    unsigned mDataType;
+    unsigned mWidth;
+    unsigned mHeight;
     int mDeltaA = 0;
     int mDeltaB = 0;
     int mX = 0;
@@ -234,12 +234,14 @@ public:
     std::string elementName() { return "CTrapezoid"; }
 
     void parse(std::ifstream& filestream, std::unordered_set<unsigned>& layerSet);
+    unsigned getType() { return mType; }
+    const std::vector<KPoint> getPoints();
 private:
-    unsigned int mLayerNumber;
-    unsigned int mDataType;
-    unsigned int mType;
-    unsigned int mWidth;
-    unsigned int mHeight;
+    unsigned mLayerNumber;
+    unsigned mDataType;
+    unsigned mType;
+    unsigned mWidth;
+    unsigned mHeight;
     int mX = 0;
     int mY = 0;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;

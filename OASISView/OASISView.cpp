@@ -57,6 +57,7 @@ void OASISView::drawCell(QPainter& painter) {
 
             std::cout << "Point:" << p.x() << "," << p.y() << "Rect W:" << w << "Rect H:" << h;
 
+            // TODO: Repetition
             QRect r = QRect(p.x(), p.y(), w, h);
             painter.drawRect(r);
             continue;
@@ -64,6 +65,7 @@ void OASISView::drawCell(QPainter& painter) {
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
             QPolygon polygon;
+            // TODO: Repetition
             const std::vector<KPoint> points = trapezoid->getPoints();
             for (KPoint p : points) {
                 QPoint qP = calculatePoint(p.x, p.y);
@@ -112,8 +114,15 @@ void OASISView::drawCell(QPainter& painter) {
     }
 }
 
-void OASISView::drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* cTrapezoid) {
-
+void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
+    QPolygon polygon;
+    // TODO: Repetition
+    const std::vector<KPoint> points = cTrapezoid->getPoints();
+    for (KPoint p : points) {
+        QPoint qP = calculatePoint(p.x, p.y);
+        polygon << qP;
+    }
+    painter.drawPolygon(polygon);
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {

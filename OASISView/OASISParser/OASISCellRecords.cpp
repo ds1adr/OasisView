@@ -374,7 +374,14 @@ const vector<KPoint> Trapezoid::getPoints() {
             KPoint p4 = KPoint(mX, mY + mHeight + mDeltaB);
             result.push_back(p4);
         } else {
-
+            KPoint p1 = KPoint(mX, mY);
+            result.push_back(p1);
+            KPoint p2 = KPoint(mX + mWidth, mY - mDeltaA);
+            result.push_back(p2);
+            KPoint p3 = KPoint(mX + mWidth, mY + mHeight - mDeltaB);
+            result.push_back(p3);
+            KPoint p4 = KPoint(mX, mY + mHeight);
+            result.push_back(p4);
         }
     }
     return result;

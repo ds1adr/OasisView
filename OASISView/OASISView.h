@@ -11,9 +11,11 @@ private:
     OASISParser::BoundingBox mBoundBox;
     OASISParser::OASISData* mOASISData = nullptr;
     OASISParser::OASISCell* mCell = nullptr;
+    float mRatio = 1.0;
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
     void drawCell(QPainter& painter);
+    void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);
 public:
     OASISView();

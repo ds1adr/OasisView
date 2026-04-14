@@ -115,7 +115,7 @@ public:
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
 
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> getRepetition() { return mRepetition; }
+    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
     int getX() { return mX; }
     int getY() { return mY; }
 private:
@@ -155,6 +155,7 @@ public:
     int getMaxY() { return mY + mHeight; }
     unsigned getWidth() { return mWidth; }
     unsigned getHeight() { return mHeight; }
+    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;

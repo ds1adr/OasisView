@@ -42,8 +42,7 @@ void OASISView::drawCell(QPainter& painter) {
     unsigned bH = mBoundBox.maxY - mBoundBox.minY;
 
     std::cout << "BBBox Width: " << bW << "BBox Height" << bH << "View Size" << viewSize.width() << "-" << viewSize.height() << std::endl;
-    float ratio = std::min((float)width() / (float)(mBoundBox.maxX - mBoundBox.minX), (float)height() / (float)(mBoundBox.maxY - mBoundBox.minY));
-    std::cout<< "Ratio: " << ratio << std::endl;
+    mRatio = std::min((float)width() / (float)(mBoundBox.maxX - mBoundBox.minX), (float)height() / (float)(mBoundBox.maxY - mBoundBox.minY));
 
     const std::vector<CellElement*> elements = mCell->getCellElements();
 
@@ -51,15 +50,7 @@ void OASISView::drawCell(QPainter& painter) {
 
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
         if (rectangle != nullptr) {
-            QPoint p = calculatePoint(rectangle->getMinX(), rectangle->getMaxY());
-            int w = (int)(rectangle->getWidth() * ratio);
-            int h = (int)(rectangle->getHeight() * ratio);
-
-            std::cout << "Point:" << p.x() << "," << p.y() << "Rect W:" << w << "Rect H:" << h;
-
-            // TODO: Repetition
-            QRect r = QRect(p.x(), p.y(), w, h);
-            painter.drawRect(r);
+            drawRectangle(painter, rectangle);
             continue;
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
@@ -88,8 +79,8 @@ void OASISView::drawCell(QPainter& painter) {
                 subCell = mOASISData->getCell(placement->getCellName());
             }
             BoundingBox subCellBBox = subCell->getBoundingBox();
-            int drawingWidth = subCell->getBoundingWidth() * ratio;
-            int drawingHeight = subCell->getBoundingHeight() * ratio;
+            int drawingWidth = subCell->getBoundingWidth() * mRatio;
+            int drawingHeight = subCell->getBoundingHeight() * mRatio;
 
             std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
             if (holds_alternative<Repetition>(repetition)) {
@@ -114,6 +105,36 @@ void OASISView::drawCell(QPainter& painter) {
     }
 }
 
+void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle) {
+    int initX = rectangle->getMinX();
+    int initY = rectangle->getMaxY();  // QRect type origin is upper left
+    int w = (int)(rectangle->getWidth() * mRatio);
+    int h = (int)(rectangle->getHeight() * mRatio);
+
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = rectangle->getRepetition();
+    if (holds_alternative<Repetition>(repetition)) {
+        Repetition r = get<Repetition>(repetition);
+        if (r.nx == 0 && r.ny == 0) {
+            QPoint p = calculatePoint(initX, initY);
+            QRect r = QRect(p.x(), p.y(), w, h);
+            painter.drawRect(r);
+        } else {
+            for (int i = 0; i < r.nx; i++) {
+                for (int j = 0; j < r.ny; j++) {
+                    QPoint p = calculatePoint(initX + r.dx * i, initY + r.dy * j);
+                    QRect r = QRect(p.x(), p.y(), w, h);
+                    painter.drawRect(r);
+                }
+            }
+        }
+    } else {
+        QPoint p = calculatePoint(initX, initY);
+        QRect r = QRect(p.x(), p.y(), w, h);
+        painter.drawRect(r);
+    }
+    // TODO: Another type of Repetition
+}
+
 void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
     QPolygon polygon;
     // TODO: Repetition
@@ -126,8 +147,7 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {
-    float ratio = std::min((float)width() / (mBoundBox.maxX - mBoundBox.minX), (float)height() / (mBoundBox.maxY - mBoundBox.minY));
-    float tX = (float)(x - mBoundBox.minX) * ratio;
-    float tY = (float)(mBoundBox.maxY - y) * ratio;
+    float tX = (float)(x - mBoundBox.minX) * mRatio;
+    float tY = (float)(mBoundBox.maxY - y) * mRatio;
     return QPoint((int)tX, (int) tY);
 }

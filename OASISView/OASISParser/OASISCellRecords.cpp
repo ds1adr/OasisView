@@ -520,9 +520,29 @@ const std::vector<KPoint> CTrapezoid::getInitialPoints() {
         break;
     }
     case 2:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY + mHeight);
+        result.push_back(p3);
+        KPoint p4(mX + mHeight, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 3:
+    {
+        KPoint p1(mX, mY + mHeight);
+        result.push_back(p1);
+        KPoint p2(mX + mHeight, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY);
+        result.push_back(p3);
+        KPoint p4(mX + mWidth, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 4:
     {
         KPoint p1 = KPoint(mX, mY);

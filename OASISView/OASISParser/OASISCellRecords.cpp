@@ -592,13 +592,53 @@ const std::vector<KPoint> CTrapezoid::getInitialPoints() {
         break;
     }
     case 8:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY + mHeight - mWidth);
+        result.push_back(p3);
+        KPoint p4(mX, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 9:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY + mHeight);
+        result.push_back(p3);
+        KPoint p4(mX, mY + mWidth);
+        result.push_back(p4);
         break;
+    }
     case 10:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY + mWidth);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY + mHeight);
+        result.push_back(p3);
+        KPoint p4(mX, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 11:
+    {
+        KPoint p1(mX, mY + mWidth);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY + mHeight);
+        result.push_back(p3);
+        KPoint p4(mX, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 12:
         break;
     case 13:

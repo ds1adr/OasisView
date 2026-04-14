@@ -462,10 +462,16 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     if (infoByte.isWidth) {
         mWidth = parseUInt(fileStream);
         cout << "CTrapezoid width:" << mWidth << endl;
+        _previousWidth = mWidth;
+    } else {
+        mWidth = _previousWidth;
     }
     if (infoByte.isHeight) {
         mHeight = parseUInt(fileStream);
         cout << "CTrapezoid height:" << mHeight << endl;
+        _previousHeight = mHeight;
+    } else {
+        mHeight = _previousHeight;
     }
     if (infoByte.isX) {
         mX = parseInt(fileStream);
@@ -502,7 +508,17 @@ const std::vector<KPoint> CTrapezoid::getInitialPoints() {
         break;
     }
     case 1:
+    {
+        KPoint p1(mX, mY);
+        result.push_back(p1);
+        KPoint p2(mX + mWidth - mHeight, mY);
+        result.push_back(p2);
+        KPoint p3(mX + mWidth, mY + mHeight);
+        result.push_back(p3);
+        KPoint p4(mX, mY + mHeight);
+        result.push_back(p4);
         break;
+    }
     case 2:
         break;
     case 3:

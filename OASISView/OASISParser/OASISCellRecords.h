@@ -235,7 +235,7 @@ public:
 
     std::string elementName() { return "CTrapezoid"; }
 
-    void parse(std::ifstream& filestream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     unsigned getType() { return mType; }
     const std::vector<KPoint> getInitialPoints();
 
@@ -253,6 +253,32 @@ private:
     unsigned mHeight;
     int mX = 0;
     int mY = 0;
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+};
+
+struct PloygonInfoByte {
+    bool isLayerNumber: 1;      // L
+    bool isDataType: 1;         // D
+    bool isRepetition: 1;       // R
+    bool isY: 1;                // Y
+    bool isX: 1;                // X
+    bool isPointList: 1;        // P
+};
+
+class Polygon : public CellElement {
+public:
+    Polygon() = default;
+    ~Polygon();
+
+    std::string elementName() { return "Polygon"; }
+
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+private:
+    unsigned mLayerNumber;
+    unsigned mDataType;
+    int mX = 0;
+    int mY = 0;
+    std::vector<KPoint> mPoints;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 

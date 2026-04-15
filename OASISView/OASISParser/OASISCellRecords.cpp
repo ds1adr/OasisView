@@ -801,4 +801,12 @@ const std::vector<KPoint> CTrapezoid::getInitialPoints() {
     return result;
 }
 
+Polygon::~Polygon() {
+
+}
+
+void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) {
+
+}
+
 }

@@ -83,7 +83,7 @@ void OASISView::drawCell(QPainter& painter) {
                 Repetition r = get<Repetition>(repetition);
 
                 int placeX = placement->getX();
-                int placeY = placement->getY() + subCell->getBoundingHeight(); // Rect origin is top left
+                int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
                 for (int i = 0; i < r.nx; i++) {
                     for (int j = 0; j < r.ny; j++) {

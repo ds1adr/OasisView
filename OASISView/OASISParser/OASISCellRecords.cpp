@@ -234,6 +234,12 @@ BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
         if (subBBox.minX == INT_MAX) {
             subBBox = subCell->calculateBoundingBox();
         }
+        if (mIsFlip) {
+            int temp = subBBox.minY;
+            subBBox.minY = -subBBox.maxY;
+            subBBox.maxY = -temp;
+        }
+
         // TODO: Handle Rotation
 
         bBox.minX = min(bBox.minX, subBBox.minX + mX);

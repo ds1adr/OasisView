@@ -1,7 +1,9 @@
+#include "OASISParser/OASISElement.h"
 #include "OASISView.h"
 #include "OASISParser/OASISData.h"
 
 #include <iostream>
+#include <variant>
 #include <QPainter>
 
 using namespace OASISParser;
@@ -72,6 +74,7 @@ void OASISView::drawCell(QPainter& painter) {
                 subCell = mOASISData->getCell(placement->getCellName());
             }
             BoundingBox subCellBBox = subCell->getBoundingBox();
+            std::cout << "Sub Cell bbox:" << subCellBBox.minX << "," << subCellBBox.minY << "," << subCellBBox.maxX << "," << subCellBBox.maxY << std::endl;
             int drawingWidth = subCell->getBoundingWidth() * mRatio;
             int drawingHeight = subCell->getBoundingHeight() * mRatio;
 
@@ -80,7 +83,7 @@ void OASISView::drawCell(QPainter& painter) {
                 Repetition r = get<Repetition>(repetition);
 
                 int placeX = placement->getX();
-                int placeY = placement->getY();
+                int placeY = placement->getY() + subCell->getBoundingHeight(); // Rect origin is top left
 
                 for (int i = 0; i < r.nx; i++) {
                     for (int j = 0; j < r.ny; j++) {

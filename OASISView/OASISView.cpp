@@ -55,14 +55,7 @@ void OASISView::drawCell(QPainter& painter) {
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
-            QPolygon polygon;
-            // TODO: Repetition
-            const std::vector<KPoint> points = trapezoid->getInitialPoints();
-            for (KPoint p : points) {
-                QPoint qP = calculatePoint(p.x, p.y);
-                polygon << qP;
-            }
-            painter.drawPolygon(polygon);
+            drawTrapezoid(painter, trapezoid);
             continue;
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
@@ -135,15 +128,73 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
     // TODO: Another type of Repetition
 }
 
-void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
+void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid) {
     QPolygon polygon;
     // TODO: Repetition
-    const std::vector<KPoint> points = cTrapezoid->getInitialPoints();
-    for (KPoint p : points) {
-        QPoint qP = calculatePoint(p.x, p.y);
-        polygon << qP;
+    const std::vector<KPoint> points = trapezoid->getInitialPoints();
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = trapezoid->getRepetition();
+
+    // TODO: Another type of Repetition
+    if (holds_alternative<Repetition>(repetition)) {
+        Repetition r = get<Repetition>(repetition);
+        if (r.nx == 0 && r.ny == 0) {
+            for (KPoint p : points) {
+                QPoint qP = calculatePoint(p.x, p.y);
+                polygon << qP;
+            }
+            painter.drawPolygon(polygon);
+        } else {
+            for (int i = 0; i < r.nx; i++) {
+                for (int j = 0; j < r.ny; j++) {
+                    for (KPoint p : points) {
+                        QPoint qP = calculatePoint(p.x + r.dx * i, p.y + r.dy * j);
+                        polygon << qP;
+                    }
+                    painter.drawPolygon(polygon);
+                }
+            }
+        }
+    } else {
+        for (KPoint p : points) {
+            QPoint qP = calculatePoint(p.x, p.y);
+            polygon << qP;
+        }
+        painter.drawPolygon(polygon);
     }
-    painter.drawPolygon(polygon);
+}
+
+void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
+    QPolygon polygon;
+    const std::vector<KPoint> points = cTrapezoid->getInitialPoints();
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = cTrapezoid->getRepetition();
+
+    // TODO: Repetition
+    if (holds_alternative<Repetition>(repetition)) {
+        Repetition r = get<Repetition>(repetition);
+        if (r.nx == 0 && r.ny == 0) {
+            for (KPoint p : points) {
+                QPoint qP = calculatePoint(p.x, p.y);
+                polygon << qP;
+            }
+            painter.drawPolygon(polygon);
+        } else {
+            for (int i = 0; i < r.nx; i++) {
+                for (int j = 0; j < r.ny; j++) {
+                    for (KPoint p : points) {
+                        QPoint qP = calculatePoint(p.x + r.dx * i, p.y + r.dy * j);
+                        polygon << qP;
+                    }
+                    painter.drawPolygon(polygon);
+                }
+            }
+        }
+    } else {
+        for (KPoint p : points) {
+            QPoint qP = calculatePoint(p.x, p.y);
+            polygon << qP;
+        }
+        painter.drawPolygon(polygon);
+    }
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {

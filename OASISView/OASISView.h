@@ -16,6 +16,7 @@ private:
     QPoint calculatePoint(int x, int y);  // From Design to UI
     void drawCell(QPainter& painter);
     void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle);
+    void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);
 public:
     OASISView();

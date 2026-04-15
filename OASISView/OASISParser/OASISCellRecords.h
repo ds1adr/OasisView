@@ -201,6 +201,7 @@ public:
     int getMaxY() { return mX + mHeight; }
 
     const std::vector<KPoint> getInitialPoints();
+    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 
@@ -242,6 +243,8 @@ public:
     int getMinY() { return mY; }
     int getMaxX();
     int getMaxY();
+
+    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;

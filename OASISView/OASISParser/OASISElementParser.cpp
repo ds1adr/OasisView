@@ -381,6 +381,44 @@ Delta2 parse2Delta(byte_t* mem, unsigned int& offset) {
     return delta2;
 }
 
+Delta2 parse2Delta(std::ifstream& fileStream) {
+    bool isContinuous = false;
+    unsigned int result = 0;
+    int totalBitSize = 0;
+    unsigned int value = 0;
+    Delta2 delta2 = Delta2();
+
+    // TODO: need to check bitSize is larger than int size
+    do {
+        if (totalBitSize == 0) {
+            Delta2TypeByte b;
+            fileStream.read((char*)&b, sizeof(Delta2TypeByte));
+
+            delta2.direction = (Direction)b.direction;
+            isContinuous = (b.continuous == 1);
+            value = b.value;
+
+            value = value << totalBitSize;
+            result = result | value;
+            totalBitSize += 5;
+        } else {
+
+            UIntTypeByte b;
+            fileStream.read((char*)&b, sizeof(UIntTypeByte));
+
+            value = b.value;
+            value = value << totalBitSize;
+            isContinuous = (b.continuous == 1);
+
+            result = result | value;
+            totalBitSize += validBitSize;
+        }
+    } while (isContinuous);
+    delta2.value = result;
+
+    return delta2;
+}
+
 Delta3 parse3Delta(byte_t* mem, unsigned int& offset) {
     bool isContinuous = false;
     unsigned int result = 0;

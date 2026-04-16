@@ -806,7 +806,80 @@ Polygon::~Polygon() {
 }
 
 void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) {
+    PolygonInfoByte infoByte;  // TWHXYRDL
 
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    cout << "Polygon" << endl;
+    if (infoByte.isLayerNumber) {
+        mLayerNumber = parseUInt(fileStream);
+        layerSet.insert(mLayerNumber);
+        cout << "Polygon Layer:" << mLayerNumber << endl;
+    }
+    if (infoByte.isDataType) {
+        mDataType = parseUInt(fileStream);
+        cout << "Polygon Data type:" << mDataType << endl;
+    }
+    if (infoByte.isPointList) {
+        unsigned type = parseUInt(fileStream);
+        unsigned count = parseUInt(fileStream);
+
+        switch (type) {
+        case 0: // Horizontal First 1Delta
+            for (int i = 0; i < count; i++) {
+                int value = parseInt(fileStream);
+                if ((i % 2) == 0) {
+                    mDeltas.push_back(KDelta(value, 0));
+                } else {
+                    mDeltas.push_back(KDelta(0, value));
+                }
+            }
+            break;
+        case 1: // Vertical first 1Delta
+            for (int i = 0; i < count; i++) {
+                int value = parseInt(fileStream);
+                if ((i % 2) == 0) {
+                    mDeltas.push_back(KDelta(0, value));
+                } else {
+                    mDeltas.push_back(KDelta(value, 0));
+                }
+            }
+            break;
+        case 2: // 2Delta
+            for (int i = 0; i < count; i++) {
+                Delta2 delta = parse2Delta(fileStream);
+                switch(delta.direction) {
+                case east: //
+                    mDeltas.push_back(KDelta(delta.value, 0));
+                    break;
+                case north:
+                    mDeltas.push_back(KDelta(0, delta.value));
+                    break;
+                case west:
+                    mDeltas.push_back(KDelta(-delta.value, 0));
+                    break;
+                case south:
+                    mDeltas.push_back(KDelta(0, -delta.value));
+                    break;
+                }
+            }
+        }
+    }
+    if (infoByte.isX) {
+        mX = parseInt(fileStream);
+        _previousX = mX;
+    } else {
+        mX = _previousX;
+    }
+    if (infoByte.isY) {
+        mY = parseInt(fileStream);
+        _previousY = mY;
+    } else {
+        mY = _previousY;
+    }
+    if (infoByte.isRepetition) {
+        mRepetition = parseRepetition(fileStream);
+    }
 }
 
 }

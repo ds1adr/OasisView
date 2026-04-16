@@ -187,6 +187,12 @@ struct KPoint {
     KPoint(int _x, int _y) { x = _x; y = _y;};
 };
 
+struct KDelta {
+    int dx, dy;
+
+    KDelta(int _dx, int _dy) { dx = _dx; dy = _dy; }
+};
+
 class Trapezoid : public CellElement {
 public:
     Trapezoid(unsigned int code);
@@ -256,7 +262,7 @@ private:
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 
-struct PloygonInfoByte {
+struct PolygonInfoByte {
     bool isLayerNumber: 1;      // L
     bool isDataType: 1;         // D
     bool isRepetition: 1;       // R
@@ -278,7 +284,7 @@ private:
     unsigned mDataType;
     int mX = 0;
     int mY = 0;
-    std::vector<KPoint> mPoints;
+    std::vector<KDelta> mDeltas;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 

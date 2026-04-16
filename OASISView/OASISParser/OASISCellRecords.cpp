@@ -863,6 +863,19 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
                     break;
                 }
             }
+            break;
+        case 3: // 3Delta
+            for (int i = 0; i < count; i++) {
+                Delta3 delta = parse3Delta(fileStream);
+                mDeltas.push_back(KDelta(delta.dx, delta.dy));
+            }
+            break;
+        case 4:  // G-Delta
+            break;
+            for (int i = 0; i < count; i++) {
+                Delta3 delta = parseGDelta(fileStream);
+                mDeltas.push_back(KDelta(delta.dx, delta.dy));
+            }
         }
     }
     if (infoByte.isX) {

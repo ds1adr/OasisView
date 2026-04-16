@@ -63,8 +63,10 @@ double parseRealNumber(std::ifstream& fileStream);
 int parse1Delta(byte_t* mem, unsigned int& offset);
 // 2 delta
 Delta2 parse2Delta(byte_t* mem, unsigned int& offset);
+Delta2 parse2Delta(std::ifstream& fileStream);
 // 3 delta
 Delta3 parse3Delta(byte_t* mem, unsigned int& offset);
+Delta3 parse3Delta(std::ifstream& fileStream);
 // g delta
 Delta3 parseGDelta(byte_t* mem, unsigned int& offset);
 Delta3 parseGDelta(std::ifstream& fileStream);

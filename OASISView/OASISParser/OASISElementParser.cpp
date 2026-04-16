@@ -491,6 +491,79 @@ Delta3 parse3Delta(byte_t* mem, unsigned int& offset) {
     return delta3;
 }
 
+Delta3 parse3Delta(std::ifstream& fileStream) {
+    bool isContinuous = false;
+    unsigned int result = 0;
+    int totalBitSize = 0;
+    unsigned int value = 0;
+    int direction = 0;
+    Delta3 delta3 = Delta3();
+
+    do {
+        if (totalBitSize == 0) {
+            Delta3TypeByte b;
+            fileStream.read((char*)&b, sizeof(Delta3TypeByte));
+
+            direction = b.direction;
+            isContinuous = (b.continuous == 1);
+            value = b.value;
+
+            value = value << totalBitSize;
+            result = result | value;
+            totalBitSize += 4;
+        } else {
+
+            UIntTypeByte b;
+            fileStream.read((char*)&b, sizeof(UIntTypeByte));
+
+            value = b.value;
+            value = value << totalBitSize;
+            isContinuous = (b.continuous == 1);
+
+            result = result | value;
+            totalBitSize += validBitSize;
+        }
+    } while (isContinuous);
+
+    switch (direction) {
+    case 0: // east
+        delta3.dx = result;
+        delta3.dy = 0;
+        break;
+    case 1: // north
+        delta3.dx = 0;
+        delta3.dy = result;
+        break;
+    case 2: // west
+        delta3.dx = -result;
+        delta3.dy = 0;
+        break;
+    case 3: // south
+        delta3.dx = 0;
+        delta3.dy = -result;
+        break;
+    case 4: // northeast
+        delta3.dx = result;
+        delta3.dy = result;
+        break;
+    case 5: // northwest
+        delta3.dx = -result;
+        delta3.dy = result;
+        break;
+    case 6: // southwest
+        delta3.dx = -result;
+        delta3.dy = -result;
+        break;
+    case 7: // southeast
+        delta3.dx = result;
+        delta3.dy = -result;
+        break;
+    default:
+        break;
+    }
+    return delta3;
+}
+
 Delta3 parseGDelta(byte_t* mem, unsigned int& offset) {
     byte_t temp = mem[offset];
     if (temp & 0x01) { // type 2

@@ -18,6 +18,7 @@ private:
     void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle);
     void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);
+    void drawPolygon(QPainter& painter, OASISParser::Polygon* polygon);
 public:
     OASISView();
     ~OASISView();

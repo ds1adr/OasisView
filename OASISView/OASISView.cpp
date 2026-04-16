@@ -98,6 +98,10 @@ void OASISView::drawCell(QPainter& painter) {
             }
             continue;
         }
+        Polygon* polygon = dynamic_cast<Polygon*>(element);
+        if (polygon != nullptr) {
+            drawPolygon(painter, polygon);
+        }
     }
 }
 
@@ -198,6 +202,10 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
         }
         painter.drawPolygon(polygon);
     }
+}
+
+void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* polygon) {
+
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {

@@ -820,18 +820,21 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
         mDataType = parseUInt(fileStream);
         cout << "Polygon Data type:" << mDataType << endl;
     }
-    if (infoByte.isPointList) {
-        unsigned type = parseUInt(fileStream);
-        unsigned count = parseUInt(fileStream);
+    vector<KDelta> deltas;
 
-        switch (type) {
+    if (infoByte.isPointList) {
+        mType = parseUInt(fileStream);
+        unsigned count = parseUInt(fileStream);
+        cout << "Polygon Type:" << type << " Count:" << count << endl;
+
+        switch (mType) {
         case 0: // Horizontal First 1Delta
             for (int i = 0; i < count; i++) {
                 int value = parseInt(fileStream);
                 if ((i % 2) == 0) {
-                    mDeltas.push_back(KDelta(value, 0));
+                    deltas.push_back(KDelta(value, 0));
                 } else {
-                    mDeltas.push_back(KDelta(0, value));
+                    deltas.push_back(KDelta(0, value));
                 }
             }
             break;
@@ -839,27 +842,28 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
             for (int i = 0; i < count; i++) {
                 int value = parseInt(fileStream);
                 if ((i % 2) == 0) {
-                    mDeltas.push_back(KDelta(0, value));
+                    deltas.push_back(KDelta(0, value));
                 } else {
-                    mDeltas.push_back(KDelta(value, 0));
+                    deltas.push_back(KDelta(value, 0));
                 }
             }
             break;
         case 2: // 2Delta
             for (int i = 0; i < count; i++) {
                 Delta2 delta = parse2Delta(fileStream);
+                cout << "2Delta: direction:" << delta.direction << "," << delta.value;
                 switch(delta.direction) {
                 case east: //
-                    mDeltas.push_back(KDelta(delta.value, 0));
+                    deltas.push_back(KDelta(delta.value, 0));
                     break;
                 case north:
-                    mDeltas.push_back(KDelta(0, delta.value));
+                    deltas.push_back(KDelta(0, delta.value));
                     break;
                 case west:
-                    mDeltas.push_back(KDelta(-delta.value, 0));
+                    deltas.push_back(KDelta(-delta.value, 0));
                     break;
                 case south:
-                    mDeltas.push_back(KDelta(0, -delta.value));
+                    deltas.push_back(KDelta(0, -delta.value));
                     break;
                 }
             }
@@ -867,15 +871,16 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
         case 3: // 3Delta
             for (int i = 0; i < count; i++) {
                 Delta3 delta = parse3Delta(fileStream);
-                mDeltas.push_back(KDelta(delta.dx, delta.dy));
+                deltas.push_back(KDelta(delta.dx, delta.dy));
             }
             break;
         case 4:  // G-Delta
-            break;
             for (int i = 0; i < count; i++) {
                 Delta3 delta = parseGDelta(fileStream);
-                mDeltas.push_back(KDelta(delta.dx, delta.dy));
+                cout << "G-Delta:" << delta.dx << "," << delta.dy << endl;
+                deltas.push_back(KDelta(delta.dx, delta.dy));
             }
+            break;
         }
     }
     if (infoByte.isX) {
@@ -890,9 +895,25 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
     } else {
         mY = _previousY;
     }
+    // Make points
+    KPoint last = KPoint(mX, mY);
+    mPoints.push_back(last);
+    for (KDelta delta : deltas) {
+        last = KPoint(last.x + delta.dx, last.y + delta.dy);
+        mPoints.push_back(last);
+    }
+
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);
     }
+}
+
+BoundingBox Polygon::calculateBoundingBox(OASISData& oasisData) {
+    BoundingBox bBox;
+    bBox.minX = 0;
+    bBox.minY = 0;
+    bBox.maxX = 10;
+    bBox.maxY = 10;
 }
 
 }

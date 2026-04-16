@@ -58,7 +58,12 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         break;
     }
     case 21: // POLYGON
+    {
+        CellElement* polygon = new Polygon();
+        polygon->parse(fileStream, layerSet);
+        mCellElements.push_back(polygon);
         break;
+    }
     case 22: // PATH
         break;
     case 23: // TRAPEZOID
@@ -145,6 +150,16 @@ const BoundingBox& OASISCell::calculateBoundingBox() {
                 mBoundingBox.maxY = max(mBoundingBox.maxY, bBox.maxY);
             }
             continue;
+        }
+        Polygon* polygon = dynamic_cast<Polygon*>(element);
+        if (polygon != nullptr) {
+            BoundingBox bBox = polygon->calculateBoundingBox(mOASISData);
+            if (bBox.minX != INT_MAX) {
+                mBoundingBox.minX = min(mBoundingBox.minX, bBox.minX);
+                mBoundingBox.minY = min(mBoundingBox.minY, bBox.minY);
+                mBoundingBox.maxX = max(mBoundingBox.maxX, bBox.maxX);
+                mBoundingBox.maxY = max(mBoundingBox.maxY, bBox.maxY);
+            }
         }
     }
     cout << mName << "(" << mBoundingBox.minX << "," << mBoundingBox.minY << ") - (" << mBoundingBox.maxX << "," << mBoundingBox.maxY << ")" << endl;

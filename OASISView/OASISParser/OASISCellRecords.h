@@ -279,12 +279,16 @@ public:
     std::string elementName() { return "Polygon"; }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+
+    BoundingBox calculateBoundingBox(OASISData& oasisData);
+
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
+    unsigned mType = 0;
     int mX = 0;
     int mY = 0;
-    std::vector<KDelta> mDeltas;
+    std::vector<KPoint> mPoints;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 

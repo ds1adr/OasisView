@@ -934,8 +934,6 @@ Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset) {
     unsigned dx = parseUInt(mem, offset);
     unsigned dy = parseUInt(mem, offset);
 
-    cout << "Repetition 1: (" << xdim << "," << ydim << ") - (" << dx << "," << dy << ")" << endl;
-
     return Repetition(xdim, ydim, dx, dy);
 }
 
@@ -944,8 +942,6 @@ Repetition parseRepetitionType1(ifstream& fileStream) {
     unsigned ydim = parseUInt(fileStream) + 2;
     unsigned dx = parseUInt(fileStream);
     unsigned dy = parseUInt(fileStream);
-
-    cout << "Repetition 1: (" << xdim << "," << ydim << ") - (" << dx << "," << dy << ")" << endl;
 
     return Repetition(xdim, ydim, dx, dy);
 }

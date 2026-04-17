@@ -73,7 +73,6 @@ void Property::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         mReference = OASISParser::parseUInt(fileStream);
     } else {
         mPropNameString = OASISParser::parseNString(fileStream);
-        cout << "Property" << mPropNameString << endl;
     }
     if (!infoByte.isPropertyValue) {
         if (infoByte.numberOfValue == 15) {
@@ -455,40 +454,33 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
-        cout << "CTrapezoid Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
-        cout << "CTrapzoid Data type:" << mDataType << endl;
     }
     if (infoByte.isType) {
         mType = parseUInt(fileStream);
-        cout << "CTrapezoid Type:" << mType << endl;
     }
     if (infoByte.isWidth) {
         mWidth = parseUInt(fileStream);
-        cout << "CTrapezoid width:" << mWidth << endl;
         _previousWidth = mWidth;
     } else {
         mWidth = _previousWidth;
     }
     if (infoByte.isHeight) {
         mHeight = parseUInt(fileStream);
-        cout << "CTrapezoid height:" << mHeight << endl;
         _previousHeight = mHeight;
     } else {
         mHeight = _previousHeight;
     }
     if (infoByte.isX) {
         mX = parseInt(fileStream);
-        cout << "CTrapezoid X:" << mX << endl;
         _previousX = mX;
     } else {
         mX = _previousX;
     }
     if (infoByte.isY) {
         mY = parseInt(fileStream);
-        cout << "CTrapezoid Y:" << mY << endl;
         _previousY = mY;
     } else {
         mY = _previousY;
@@ -818,7 +810,6 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
-        cout << "Polygon Data type:" << mDataType << endl;
     }
     vector<KDelta> deltas;
 

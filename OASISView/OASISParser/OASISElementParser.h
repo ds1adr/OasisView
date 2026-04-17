@@ -35,7 +35,7 @@ struct DeltaGForm1Byte {
     byte_t type: 1;
     byte_t direction: 3;
     byte_t value: 3;
-    byte_t continuous: 1;
+    bool continuous: 1;
 };
 
 struct DeltaGForm2FirstByte {

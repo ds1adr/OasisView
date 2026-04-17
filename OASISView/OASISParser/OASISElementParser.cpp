@@ -576,11 +576,13 @@ Delta3 parseGDelta(byte_t* mem, unsigned int& offset) {
 Delta3 parseGDelta(ifstream& fileStream) {
     byte_t temp;
     fileStream.read((char*)&temp, sizeof(temp));
-    if (temp & 0x80) { // type 2
+    if (temp & 0x01) { // type 2
         cout << "G-Delta type 2" << endl;
+        fileStream.seekg(-1, std::ios::cur);
         return parseGDeltaForm2(fileStream);
     } else { // type 1
         cout << "G-Delta type 1" << endl;
+        fileStream.seekg(-1, std::ios::cur);
         return parseGDeltaForm1(fileStream);
     }
 }

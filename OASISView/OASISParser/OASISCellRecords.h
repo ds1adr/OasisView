@@ -185,6 +185,10 @@ struct KPoint {
     int x, y;
 
     KPoint(int _x, int _y) { x = _x; y = _y;};
+
+    bool operator==(const KPoint& point) {
+        return (x == point.x) && (y == point.y);
+    }
 };
 
 struct KDelta {
@@ -281,7 +285,8 @@ public:
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
-
+    const std::vector<KPoint>& getInitialPoints() { return mPoints; };
+    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;

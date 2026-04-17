@@ -7,6 +7,7 @@
 #include <QPainter>
 
 using namespace OASISParser;
+using namespace std;
 
 OASISView::OASISView()
 {
@@ -204,8 +205,37 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
     }
 }
 
-void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* polygon) {
+void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
+    QPolygon polygon;
+    const vector<KPoint> points = _polygon->getInitialPoints();
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = _polygon->getRepetition();
 
+    if (holds_alternative<Repetition>(repetition)) {
+        Repetition r = get<Repetition>(repetition);
+        if (r.nx == 0 && r.ny == 0) {
+            for (KPoint p : points) {
+                QPoint qP = calculatePoint(p.x, p.y);
+                polygon << qP;
+            }
+            painter.drawPolygon(polygon);
+        } else {
+            for (int i = 0; i < r.nx; i++) {
+                for (int j = 0; j < r.ny; j++) {
+                    for (KPoint p : points) {
+                        QPoint qP = calculatePoint(p.x + r.dx * i, p.y + r.dy * j);
+                        polygon << qP;
+                    }
+                    painter.drawPolygon(polygon);
+                }
+            }
+        }
+    } else {
+        for (KPoint p : points) {
+            QPoint qP = calculatePoint(p.x, p.y);
+            polygon << qP;
+        }
+        painter.drawPolygon(polygon);
+    }
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {

@@ -825,7 +825,7 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
     if (infoByte.isPointList) {
         mType = parseUInt(fileStream);
         unsigned count = parseUInt(fileStream);
-        cout << "Polygon Type:" << type << " Count:" << count << endl;
+        cout << "Polygon Type:" << mType << " Count:" << count << endl;
 
         switch (mType) {
         case 0: // Horizontal First 1Delta
@@ -836,6 +836,7 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
                 } else {
                     deltas.push_back(KDelta(0, value));
                 }
+                cout << "Type 0, 1 Delta:" << value << endl;
             }
             break;
         case 1: // Vertical first 1Delta
@@ -846,6 +847,7 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
                 } else {
                     deltas.push_back(KDelta(value, 0));
                 }
+                cout << "Type 0, 1 Delta:" << value << endl;
             }
             break;
         case 2: // 2Delta
@@ -896,13 +898,24 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
         mY = _previousY;
     }
     // Make points
+    cout << "mX:" << mX << "," << mY << endl;
     KPoint last = KPoint(mX, mY);
     mPoints.push_back(last);
     for (KDelta delta : deltas) {
         last = KPoint(last.x + delta.dx, last.y + delta.dy);
+        cout << "Point:" << last.x << "," << last.y << endl;
         mPoints.push_back(last);
     }
-
+    if (mType == 0 || mType ==1) {
+        if (deltas.back().dx == 0) {
+            mPoints.push_back(KPoint(mPoints[0].x, mPoints.back().y));
+        } else {
+            mPoints.push_back(KPoint(mPoints.back().x, mPoints[0].y));
+        }
+        mPoints.push_back(KPoint(mPoints[0].x, mPoints[0].y));
+    } else {
+        mPoints.push_back(KPoint(mPoints[0].x, mPoints[0].y));
+    }
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);
     }
@@ -910,10 +923,13 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
 
 BoundingBox Polygon::calculateBoundingBox(OASISData& oasisData) {
     BoundingBox bBox;
-    bBox.minX = 0;
-    bBox.minY = 0;
-    bBox.maxX = 10;
-    bBox.maxY = 10;
+    for (KPoint p : mPoints) {
+        bBox.minX = min(p.x, bBox.minX);
+        bBox.minY = min(p.y, bBox.minY);
+        bBox.maxX = max(p.x, bBox.maxX);
+        bBox.maxY = max(p.y, bBox.maxY);
+    }
+    return bBox;
 }
 
 }

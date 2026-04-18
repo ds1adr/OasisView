@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <variant>
+#include <QMouseEvent>
 #include <QPainter>
 
 using namespace OASISParser;
@@ -68,35 +69,7 @@ void OASISView::drawCell(QPainter& painter, int currentDepth, KPoint cellOrigin)
         }
         Placement* placement = dynamic_cast<Placement*>(element);
         if (placement != nullptr) {
-            OASISCell* subCell;
-            if (placement->getCellName().empty()) {
-                subCell = mOASISData->getCell(placement->getReference());
-            } else {
-                subCell = mOASISData->getCell(placement->getCellName());
-            }
-            BoundingBox subCellBBox = subCell->getBoundingBox();
-            std::cout << "Sub Cell bbox:" << subCellBBox.minX << "," << subCellBBox.minY << "," << subCellBBox.maxX << "," << subCellBBox.maxY << std::endl;
-            int drawingWidth = subCell->getBoundingWidth() * mRatio;
-            int drawingHeight = subCell->getBoundingHeight() * mRatio;
-
-            std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
-            if (holds_alternative<Repetition>(repetition)) {
-                Repetition r = get<Repetition>(repetition);
-
-                int placeX = placement->getX();
-                int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
-
-                for (int i = 0; i < r.nx; i++) {
-                    for (int j = 0; j < r.ny; j++) {
-                        int x = placeX + subCellBBox.minX + r.dx * i;
-                        int y = placeY + subCellBBox.minY + r.dy * j;
-                        QPoint p = calculatePoint(x, y);
-                        QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
-
-                        painter.drawRect(rect);
-                    }
-                }
-            }
+            drawPlacement(painter, placement, currentDepth);
             continue;
         }
         Polygon* polygon = dynamic_cast<Polygon*>(element);
@@ -238,8 +211,55 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
     }
 }
 
+void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placement, int currentDepth) {
+    OASISCell* subCell;
+    if (placement->getCellName().empty()) {
+        subCell = mOASISData->getCell(placement->getReference());
+    } else {
+        subCell = mOASISData->getCell(placement->getCellName());
+    }
+    BoundingBox subCellBBox = subCell->getBoundingBox();
+    std::cout << "Sub Cell bbox:" << subCellBBox.minX << "," << subCellBBox.minY << "," << subCellBBox.maxX << "," << subCellBBox.maxY << std::endl;
+    int drawingWidth = subCell->getBoundingWidth() * mRatio;
+    int drawingHeight = subCell->getBoundingHeight() * mRatio;
+
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
+    if (holds_alternative<Repetition>(repetition)) {
+        Repetition r = get<Repetition>(repetition);
+
+        int placeX = placement->getX();
+        int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
+
+        for (int i = 0; i < r.nx; i++) {
+            for (int j = 0; j < r.ny; j++) {
+                int x = placeX + subCellBBox.minX + r.dx * i;
+                int y = placeY + subCellBBox.minY + r.dy * j;
+                QPoint p = calculatePoint(x, y);
+                QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+
+                painter.drawRect(rect);
+            }
+        }
+    }
+}
+
 QPoint OASISView::calculatePoint(int x, int y) {
     float tX = (float)(x - mDrawBBox.minX) * mRatio;
     float tY = (float)(mDrawBBox.maxY - y) * mRatio;
     return QPoint((int)tX, (int) tY);
+}
+
+KPoint OASISView::calculateLayoutPoint(QPoint& p) {
+    float tX = (float)p.x() / mRatio + mDrawBBox.minX;
+    float tY = (float)-p.y() / mRatio + mDrawBBox.maxY;
+    return KPoint((int)tX, (int)tY);
+}
+
+// Mouse event
+void OASISView::mousePressEvent(QMouseEvent* event) {
+    qDebug() << "Position:" << event->pos() << "," << event->position();
+}
+
+void OASISView::mouseReleaseEvent(QMouseEvent* event) {
+    qDebug() << "Position:" << event->pos() << "," << event->position();
 }

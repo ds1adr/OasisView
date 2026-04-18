@@ -811,71 +811,13 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
     }
+    unsigned type;
     vector<KDelta> deltas;
 
     if (infoByte.isPointList) {
-        mType = parseUInt(fileStream);
-        unsigned count = parseUInt(fileStream);
-        cout << "Polygon Type:" << mType << " Count:" << count << endl;
-
-        switch (mType) {
-        case 0: // Horizontal First 1Delta
-            for (int i = 0; i < count; i++) {
-                int value = parseInt(fileStream);
-                if ((i % 2) == 0) {
-                    deltas.push_back(KDelta(value, 0));
-                } else {
-                    deltas.push_back(KDelta(0, value));
-                }
-                cout << "Type 0, 1 Delta:" << value << endl;
-            }
-            break;
-        case 1: // Vertical first 1Delta
-            for (int i = 0; i < count; i++) {
-                int value = parseInt(fileStream);
-                if ((i % 2) == 0) {
-                    deltas.push_back(KDelta(0, value));
-                } else {
-                    deltas.push_back(KDelta(value, 0));
-                }
-                cout << "Type 0, 1 Delta:" << value << endl;
-            }
-            break;
-        case 2: // 2Delta
-            for (int i = 0; i < count; i++) {
-                Delta2 delta = parse2Delta(fileStream);
-                cout << "2Delta: direction:" << delta.direction << "," << delta.value;
-                switch(delta.direction) {
-                case east: //
-                    deltas.push_back(KDelta(delta.value, 0));
-                    break;
-                case north:
-                    deltas.push_back(KDelta(0, delta.value));
-                    break;
-                case west:
-                    deltas.push_back(KDelta(-delta.value, 0));
-                    break;
-                case south:
-                    deltas.push_back(KDelta(0, -delta.value));
-                    break;
-                }
-            }
-            break;
-        case 3: // 3Delta
-            for (int i = 0; i < count; i++) {
-                Delta3 delta = parse3Delta(fileStream);
-                deltas.push_back(KDelta(delta.dx, delta.dy));
-            }
-            break;
-        case 4:  // G-Delta
-            for (int i = 0; i < count; i++) {
-                Delta3 delta = parseGDelta(fileStream);
-                cout << "G-Delta:" << delta.dx << "," << delta.dy << endl;
-                deltas.push_back(KDelta(delta.dx, delta.dy));
-            }
-            break;
-        }
+        deltas = parsePointLists(fileStream, type);
     }
+
     if (infoByte.isX) {
         mX = parseInt(fileStream);
         _previousX = mX;
@@ -897,7 +839,7 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
         cout << "Point:" << last.x << "," << last.y << endl;
         mPoints.push_back(last);
     }
-    if (mType == 0 || mType ==1) {
+    if (type == 0 || type ==1) {
         if (deltas.back().dx == 0) {
             mPoints.push_back(KPoint(mPoints[0].x, mPoints.back().y));
         } else {
@@ -921,6 +863,59 @@ BoundingBox Polygon::calculateBoundingBox(OASISData& oasisData) {
         bBox.maxY = max(p.y, bBox.maxY);
     }
     return bBox;
+}
+
+Path::~Path() {
+
+}
+
+void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) {
+    PathInfoByte infoByte;  // EWPXYRDL
+    ExtensionByte extByte;
+
+    fileStream.read((char*)&infoByte, sizeof(char));
+
+    cout << "Polygon" << endl;
+    if (infoByte.isLayerNumber) {
+        mLayerNumber = parseUInt(fileStream);
+        layerSet.insert(mLayerNumber);
+        cout << "Polygon Layer:" << mLayerNumber << endl;
+    }
+    if (infoByte.isDataType) {
+        mDataType = parseUInt(fileStream);
+    }
+    if (infoByte.isHalfWidth) {
+        mHalfWidth = parseUInt(fileStream);
+    }
+    if (infoByte.isExtensionScheme) {
+        fileStream.read((char*)&extByte, sizeof(char));
+        cout << "Ext" << " SS:" << extByte.startExtension << " End:" << extByte.endExension << " Value:" << extByte.value << endl;
+        if (extByte.startExtension == 3) {
+            mStartExt = parseInt(fileStream);
+        }
+        if (extByte.endExension == 3) {
+            mEndExt = parseInt(fileStream);
+        }
+    }
+    if (infoByte.isPointLists) {
+        unsigned type;
+        vector<KDelta> deltas = parsePointLists(fileStream, type);
+    }
+    if (infoByte.isX) {
+        mX = parseInt(fileStream);
+        _previousX = mX;
+    } else {
+        mX = _previousX;
+    }
+    if (infoByte.isY) {
+        mY = parseInt(fileStream);
+        _previousY = mY;
+    } else {
+        mY = _previousY;
+    }
+    if (infoByte.isRepetition) {
+        mRepetition = parseRepetition(fileStream);
+    }
 }
 
 }

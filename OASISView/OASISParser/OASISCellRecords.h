@@ -191,12 +191,6 @@ struct KPoint {
     }
 };
 
-struct KDelta {
-    int dx, dy;
-
-    KDelta(int _dx, int _dy) { dx = _dx; dy = _dy; }
-};
-
 class Trapezoid : public CellElement {
 public:
     Trapezoid(unsigned int code);
@@ -290,10 +284,46 @@ public:
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
-    unsigned mType = 0;
     int mX = 0;
     int mY = 0;
     std::vector<KPoint> mPoints;
+    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+};
+
+struct PathInfoByte {
+    bool isLayerNumber: 1;      // L
+    bool isDataType: 1;         // D
+    bool isRepetition: 1;       // R
+    bool isY: 1;                // Y
+    bool isX: 1;                // X
+    bool isPointLists: 1;       // P
+    bool isHalfWidth: 1;        // W
+    bool isExtensionScheme: 1;  // E
+};
+
+struct ExtensionByte {
+    byte_t startExtension: 2;   // SS
+    byte_t endExension: 2;      // EE
+    unsigned value: 4;
+};
+
+class Path : public CellElement {
+public:
+    Path() = default;
+    ~Path();
+
+    std::string elementName() { return "Path"; }
+
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+
+private:
+    unsigned mLayerNumber;
+    unsigned mDataType;
+    int mX = 0;
+    int mY = 0;
+    unsigned mHalfWidth;
+    int mStartExt = 0;
+    int mEndExt = 0;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 

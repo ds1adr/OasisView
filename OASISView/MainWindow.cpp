@@ -4,6 +4,7 @@
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QMenuBar>
+#include <QStatusBar>
 #include <QToolBar>
 
 using namespace std;
@@ -38,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     mOASISView = new OASISView();
     setCentralWidget(mOASISView);
+
+    connect(mOASISView, SIGNAL(statusChanged(const QString&)), this, SLOT(statusChanged(const QString&)));
 }
 
 MainWindow::~MainWindow()
@@ -48,6 +51,10 @@ MainWindow::~MainWindow()
     delete mDock;
     delete mLayerListWidget;
     delete mOASISView;
+}
+
+void MainWindow::statusChanged(const QString& message) {
+    statusBar()->showMessage(message);
 }
 
 void MainWindow::openFileClicked() {

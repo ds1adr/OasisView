@@ -1204,4 +1204,71 @@ NDisplacementRepetition parseRepetitionType11(ifstream& fileStream) {
     return result;
 }
 
+std::vector<OASISParser::KDelta> parsePointLists(std::ifstream& fileStream, unsigned& type) {
+    vector<KDelta> deltas;
+
+    type = parseUInt(fileStream);
+    unsigned count = parseUInt(fileStream);
+    cout << "Polygon Type:" << type << " Count:" << count << endl;
+
+    switch (type) {
+    case 0: // Horizontal First 1Delta
+        for (int i = 0; i < count; i++) {
+            int value = parseInt(fileStream);
+            if ((i % 2) == 0) {
+                deltas.push_back(KDelta(value, 0));
+            } else {
+                deltas.push_back(KDelta(0, value));
+            }
+            cout << "Type 0, 1 Delta:" << value << endl;
+        }
+        break;
+    case 1: // Vertical first 1Delta
+        for (int i = 0; i < count; i++) {
+            int value = parseInt(fileStream);
+            if ((i % 2) == 0) {
+                deltas.push_back(KDelta(0, value));
+            } else {
+                deltas.push_back(KDelta(value, 0));
+            }
+            cout << "Type 0, 1 Delta:" << value << endl;
+        }
+        break;
+    case 2: // 2Delta
+        for (int i = 0; i < count; i++) {
+            Delta2 delta = parse2Delta(fileStream);
+            cout << "2Delta: direction:" << delta.direction << "," << delta.value;
+            switch(delta.direction) {
+            case east: //
+                deltas.push_back(KDelta(delta.value, 0));
+                break;
+            case north:
+                deltas.push_back(KDelta(0, delta.value));
+                break;
+            case west:
+                deltas.push_back(KDelta(-delta.value, 0));
+                break;
+            case south:
+                deltas.push_back(KDelta(0, -delta.value));
+                break;
+            }
+        }
+        break;
+    case 3: // 3Delta
+        for (int i = 0; i < count; i++) {
+            Delta3 delta = parse3Delta(fileStream);
+            deltas.push_back(KDelta(delta.dx, delta.dy));
+        }
+        break;
+    case 4:  // G-Delta
+        for (int i = 0; i < count; i++) {
+            Delta3 delta = parseGDelta(fileStream);
+            cout << "G-Delta:" << delta.dx << "," << delta.dy << endl;
+            deltas.push_back(KDelta(delta.dx, delta.dy));
+        }
+        break;
+    }
+    return deltas;
+}
+
 }

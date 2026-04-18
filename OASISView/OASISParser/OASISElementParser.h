@@ -51,6 +51,12 @@ struct DeltaGForm2SecondByte {
     byte_t continuous: 1;
 };
 
+struct KDelta {
+    int dx, dy;
+
+    KDelta(int _dx, int _dy) { dx = _dx; dy = _dy; }
+};
+
 int parseInt(byte_t* mem, unsigned int& offset);
 int parseInt(std::ifstream& fileStream);
 unsigned int parseUInt(byte_t* mem, unsigned int& offset);
@@ -141,6 +147,9 @@ DiagonalRepetition parseRepetitionType8(std::ifstream& fileStream);
 DiagonalRepetition parseRepetitionType9(std::ifstream& fileStream);
 NDisplacementRepetition parseRepetitionType10(std::ifstream& fileStream);
 NDisplacementRepetition parseRepetitionType11(std::ifstream& fileStream);
+
+std::vector<OASISParser::KDelta> parsePointLists(std::ifstream& fileStream, unsigned& type);
+
 }
 
 #endif // OASISELEMENTPARSER_H

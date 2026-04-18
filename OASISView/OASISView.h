@@ -16,11 +16,19 @@ private:
     int mMaxDrawDelpth = 1;
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
+    OASISParser::KPoint calculateLayoutPoint(QPoint& p);  // From UI to Design
     void drawCell(QPainter& painter, int currentDepth, OASISParser::KPoint cellOrigin);
     void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle);
     void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);
     void drawPolygon(QPainter& painter, OASISParser::Polygon* polygon);
+    void drawPlacement(QPainter& painter, OASISParser::Placement* placement, int currentDepth);
+
+    // Mouse
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+signals:
+    void statusChanged(const QString& message);
 public:
     OASISView();
     ~OASISView();

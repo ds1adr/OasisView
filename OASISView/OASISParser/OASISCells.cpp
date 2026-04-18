@@ -65,7 +65,12 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         break;
     }
     case 22: // PATH
+    {
+        CellElement* path = new Path();
+        path->parse(fileStream, layerSet);
+        mCellElements.push_back(path);
         break;
+    }
     case 23: // TRAPEZOID
     case 24:
     case 25:

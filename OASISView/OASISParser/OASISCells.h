@@ -13,6 +13,13 @@ namespace OASISParser {
 struct BoundingBox {
     int minX = INT_MAX, maxX = INT_MIN;
     int minY = INT_MAX, maxY = INT_MIN;
+
+    BoundingBox(int _minX = INT_MAX, int _minY = INT_MAX, int _maxX = INT_MIN, int _maxY = INT_MIN) {
+        minX = _minX;
+        minY = _minY;
+        maxX = _maxX;
+        maxY = _maxY;
+    }
 };
 
 struct TableOffsetPair {

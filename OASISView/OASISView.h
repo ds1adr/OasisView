@@ -8,13 +8,15 @@
 class OASISView: public QWidget
 {
 private:
-    OASISParser::BoundingBox mBoundBox;
+    OASISParser::BoundingBox mDrawBBox;  // Draw Area bounding box
     OASISParser::OASISData* mOASISData = nullptr;
     OASISParser::OASISCell* mCell = nullptr;
+    OASISParser::KPoint mCellOrigin = OASISParser::KPoint(0,0);
     float mRatio = 1.0;
+    int mMaxDrawDelpth = 1;
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
-    void drawCell(QPainter& painter);
+    void drawCell(QPainter& painter, int currentDepth, OASISParser::KPoint cellOrigin);
     void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle);
     void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);

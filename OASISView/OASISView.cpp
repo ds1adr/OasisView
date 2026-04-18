@@ -22,7 +22,7 @@ void OASISView::paintEvent(QPaintEvent* event) {
     QPainter painter;
     painter.begin(this);
 
-    drawCell(painter);
+    drawCell(painter, 0, KPoint(0,0));
 
     painter.end();
 }
@@ -31,21 +31,21 @@ void OASISView::paintEvent(QPaintEvent* event) {
 void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
     mOASISData = oasisData;
     mCell = cell;
+    mDrawBBox = cell->getBoundingBox();
     update();
 }
 
 // TODO: need to improve this draw logic
-void OASISView::drawCell(QPainter& painter) {
+void OASISView::drawCell(QPainter& painter, int currentDepth, KPoint cellOrigin) {
     if (mCell == nullptr) {
         return;
     }
     QSize viewSize = this->size();
-    mBoundBox = mCell->getBoundingBox();
-    unsigned bW = (mBoundBox.maxX - mBoundBox.minX);
-    unsigned bH = mBoundBox.maxY - mBoundBox.minY;
+    unsigned bW = (mDrawBBox.maxX - mDrawBBox.minX);
+    unsigned bH = mDrawBBox.maxY - mDrawBBox.minY;
 
     std::cout << "BBBox Width: " << bW << "BBox Height" << bH << "View Size" << viewSize.width() << "-" << viewSize.height() << std::endl;
-    mRatio = std::min((float)width() / (float)(mBoundBox.maxX - mBoundBox.minX), (float)height() / (float)(mBoundBox.maxY - mBoundBox.minY));
+    mRatio = std::min((float)width() / (float)(mDrawBBox.maxX - mDrawBBox.minX), (float)height() / (float)(mDrawBBox.maxY - mDrawBBox.minY));
 
     const std::vector<CellElement*> elements = mCell->getCellElements();
 
@@ -239,7 +239,7 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {
-    float tX = (float)(x - mBoundBox.minX) * mRatio;
-    float tY = (float)(mBoundBox.maxY - y) * mRatio;
+    float tX = (float)(x - mDrawBBox.minX) * mRatio;
+    float tY = (float)(mDrawBBox.maxY - y) * mRatio;
     return QPoint((int)tX, (int) tY);
 }

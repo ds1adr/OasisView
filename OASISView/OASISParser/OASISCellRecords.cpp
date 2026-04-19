@@ -17,6 +17,9 @@ unsigned _previousWidth = 0;
 unsigned _previousHeight = 0;
 int _previousX = 0;
 int _previousY = 0;
+unsigned _previousPathHalfWidth = 0;
+vector<KDelta> _previousPolygonDeltas;
+vector<KDelta> _previousPathDeltas;
 
 Text::~Text() {
 
@@ -816,6 +819,9 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
 
     if (infoByte.isPointList) {
         deltas = parsePointLists(fileStream, type);
+        _previousPolygonDeltas = deltas;
+    } else {
+        deltas = _previousPolygonDeltas;
     }
 
     if (infoByte.isX) {
@@ -886,6 +892,9 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
     }
     if (infoByte.isHalfWidth) {
         mHalfWidth = parseUInt(fileStream);
+        _previousPathHalfWidth = mHalfWidth;
+    } else {
+        mHalfWidth = _previousPathHalfWidth;
     }
     if (infoByte.isExtensionScheme) {
         fileStream.read((char*)&extByte, sizeof(char));
@@ -897,9 +906,13 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
             mEndExt = parseInt(fileStream);
         }
     }
+    vector<KDelta> deltas;
     if (infoByte.isPointLists) {
         unsigned type;
-        vector<KDelta> deltas = parsePointLists(fileStream, type);
+        deltas = parsePointLists(fileStream, type);
+        _previousPathDeltas = deltas;
+    } else {
+        deltas = _previousPathDeltas;
     }
     if (infoByte.isX) {
         mX = parseInt(fileStream);

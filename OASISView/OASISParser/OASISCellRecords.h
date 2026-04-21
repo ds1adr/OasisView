@@ -114,6 +114,7 @@ public:
     const std::string& getCellName() { return mCellName; }
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
+    BoundingBox getRotatedBoundingBox(BoundingBox bBox);
 
     const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
     int getX() { return mX; }

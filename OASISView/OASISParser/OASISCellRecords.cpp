@@ -209,6 +209,7 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         }
         if (infoByte.isAngle) {
             mRotation = parseRealNumber(fileStream);
+            cout << "Rotation: " << mRotation << endl;
         }
         if (infoByte.isX) {
             mX = parseInt(fileStream);
@@ -228,6 +229,15 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
 }
 
+BoundingBox Placement::getRotatedBoundingBox(BoundingBox bBox) {
+    int x1 = cos(mRotation) * (float)bBox.minX - sin(mRotation) * (float)bBox.minY;
+    int y1 = sin(mRotation) * (float)bBox.minX + cos(mRotation) * (float)bBox.minY;
+    int x2 = cos(mRotation) * (float)bBox.maxX - sin(mRotation) * (float)bBox.maxY;
+    int y2 = sin(mRotation) * (float)bBox.maxX + cos(mRotation) * (float)bBox.maxY;
+
+    return BoundingBox(min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2));
+}
+
 BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
     OASISCell* subCell = getCellName().empty() ? oasisData.getCell(getReference()) : oasisData.getCell(getCellName());
     BoundingBox bBox;
@@ -236,13 +246,16 @@ BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
         if (subBBox.minX == INT_MAX) {
             subBBox = subCell->calculateBoundingBox();
         }
+
+        if (mRotation != 0) {
+            subBBox = getRotatedBoundingBox(subBBox);
+        }
+
         if (mIsFlip) {
             int temp = subBBox.minY;
             subBBox.minY = -subBBox.maxY;
             subBBox.maxY = -temp;
         }
-
-        // TODO: Handle Rotation
 
         bBox.minX = min(bBox.minX, subBBox.minX + mX);
         bBox.minY = min(bBox.minY, subBBox.minY + mY);

@@ -219,6 +219,7 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
         subCell = mOASISData->getCell(placement->getCellName());
     }
     BoundingBox subCellBBox = subCell->getBoundingBox();
+    subCellBBox = placement->getRotatedBoundingBox(subCellBBox);
     std::cout << "Sub Cell bbox:" << subCellBBox.minX << "," << subCellBBox.minY << "," << subCellBBox.maxX << "," << subCellBBox.maxY << std::endl;
     int drawingWidth = subCell->getBoundingWidth() * mRatio;
     int drawingHeight = subCell->getBoundingHeight() * mRatio;

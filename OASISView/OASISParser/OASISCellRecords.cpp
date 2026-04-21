@@ -170,6 +170,7 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
             break;
         case 3:
             mRotation = -M_PI / 2;
+            break;
         }
         if (infoByte.isReference) {
             mReference = parseUInt(fileStream);

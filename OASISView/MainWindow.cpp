@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 
+#include <thread>
+
 #include <QAction>
 #include <QDockWidget>
 #include <QFileDialog>
@@ -61,7 +63,10 @@ void MainWindow::openFileClicked() {
     QString filename = QFileDialog::getOpenFileName();
     qDebug() << "Open File:" << filename;
     mOASISData = OASISParser::OASISData();
-    mOASISData.parse(filename.toStdString());
+
+    std::thread th(&OASISParser::OASISData::parse, &mOASISData, filename.toStdString());
+    th.join();
+
     qDebug() << "Finished";
     vector<unsigned> layers = mOASISData.getLayers();
     mLayerListWidget->clear();

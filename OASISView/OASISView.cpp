@@ -295,6 +295,12 @@ void OASISView::mouseReleaseEvent(QMouseEvent* event) {
         mDrawBBox.maxY = p1.y;
         update();
     } else if (p.x() < mMousePress.x() && p.y() < mMousePress.y()) {  // Zoom out
-
+        KPoint p1 = calculateLayoutPoint(mMousePress);
+        KPoint p2 = calculateLayoutPoint(p);
+        mDrawBBox.minX = mDrawBBox.minX - (p2.x - mDrawBBox.minX);
+        mDrawBBox.minY = mDrawBBox.minY - (p1.y - mDrawBBox.minY);
+        mDrawBBox.maxX = mDrawBBox.maxX + (mDrawBBox.maxX - p1.x);
+        mDrawBBox.maxY = mDrawBBox.maxY + (mDrawBBox.maxY - p2.y);
+        update();
     }
 }

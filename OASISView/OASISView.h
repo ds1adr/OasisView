@@ -15,6 +15,8 @@ private:
     float mRatio = 1.0;
     int mMaxDrawDelpth = 1;
 
+    QPoint mMousePress;
+
     QPoint calculatePoint(int x, int y);  // From Design to UI
     OASISParser::KPoint calculateLayoutPoint(QPoint& p);  // From UI to Design
     void drawCell(QPainter& painter, int currentDepth, OASISParser::KPoint cellOrigin);

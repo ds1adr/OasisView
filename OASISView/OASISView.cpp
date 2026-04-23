@@ -280,8 +280,21 @@ KPoint OASISView::calculateLayoutPoint(QPoint& p) {
 // Mouse event
 void OASISView::mousePressEvent(QMouseEvent* event) {
     qDebug() << "Position:" << event->pos() << "," << event->position();
+    mMousePress = event->pos();
 }
 
 void OASISView::mouseReleaseEvent(QMouseEvent* event) {
     qDebug() << "Position:" << event->pos() << "," << event->position();
+    QPoint p = event->pos();
+    if (p.x() > mMousePress.x() && p.y() > mMousePress.y()) {  // Zoom in
+        KPoint p1 = calculateLayoutPoint(mMousePress);
+        KPoint p2 = calculateLayoutPoint(p);
+        mDrawBBox.minX = p1.x;
+        mDrawBBox.minY = p2.y;
+        mDrawBBox.maxX = p2.x;
+        mDrawBBox.maxY = p1.y;
+        update();
+    } else if (p.x() < mMousePress.x() && p.y() < mMousePress.y()) {  // Zoom out
+
+    }
 }

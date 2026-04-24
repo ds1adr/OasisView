@@ -42,7 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
     mOASISView = new OASISView();
     setCentralWidget(mOASISView);
 
-    connect(mOASISView, SIGNAL(statusChanged(const QString&)), this, SLOT(statusChanged(const QString&)));
+    connect(mOASISView, SIGNAL(statusChanged(QString&)), this, SLOT(statusChanged(QString&)));
+
+    centralWidget()->setMouseTracking(true);
 }
 
 MainWindow::~MainWindow()
@@ -55,7 +57,7 @@ MainWindow::~MainWindow()
     delete mOASISView;
 }
 
-void MainWindow::statusChanged(const QString& message) {
+void MainWindow::statusChanged(QString& message) {
     statusBar()->showMessage(message);
 }
 

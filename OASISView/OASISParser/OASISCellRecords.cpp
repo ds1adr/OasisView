@@ -385,47 +385,47 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     mOrientation = infoByte.isVertical ? Orientation::Vertical : Orientation::Horizontal;
 }
 
-const vector<KPoint> Trapezoid::getInitialPoints() {
-    vector<KPoint> result;
+const vector<KPoint<int>> Trapezoid::getInitialPoints() {
+    vector<KPoint<int>> result;
 
     if (mOrientation == Orientation::Horizontal) {
         if (mDeltaA >= 0) {
-            KPoint p1 = KPoint(mX, mY);
+            KPoint<int> p1 = KPoint<int>(mX, mY);
             result.push_back(p1);
-            KPoint p2 = KPoint(mX + mWidth, mY);
+            KPoint<int> p2 = KPoint<int>(mX + mWidth, mY);
             result.push_back(p2);
-            KPoint p3 = KPoint(mX + mWidth + mDeltaB, mY + mHeight);
+            KPoint<int> p3 = KPoint<int>(mX + mWidth + mDeltaB, mY + mHeight);
             result.push_back(p3);
-            KPoint p4 = KPoint(mX + mDeltaA, mY + mHeight);
+            KPoint<int> p4 = KPoint<int>(mX + mDeltaA, mY + mHeight);
             result.push_back(p4);
         } else {
-            KPoint p1 = KPoint(mX - mDeltaA, mY);
+            KPoint<int> p1 = KPoint<int>(mX - mDeltaA, mY);
             result.push_back(p1);
-            KPoint p2 = KPoint(mX + mWidth - mDeltaB, mY);
+            KPoint<int> p2 = KPoint<int>(mX + mWidth - mDeltaB, mY);
             result.push_back(p2);
-            KPoint p3 = KPoint(mX + mWidth, mY + mHeight);
+            KPoint<int> p3 = KPoint<int>(mX + mWidth, mY + mHeight);
             result.push_back(p3);
-            KPoint p4 = KPoint(mX, mY + mHeight);
+            KPoint<int> p4 = KPoint<int>(mX, mY + mHeight);
             result.push_back(p4);
         }
     } else { // Vertical
         if (mDeltaA >= 0) {
-            KPoint p1 = KPoint(mX, mY + mDeltaA);
+            KPoint<int> p1 = KPoint<int>(mX, mY + mDeltaA);
             result.push_back(p1);
-            KPoint p2 = KPoint(mX + mWidth, mY);
+            KPoint<int> p2 = KPoint<int>(mX + mWidth, mY);
             result.push_back(p2);
-            KPoint p3 = KPoint(mX + mWidth, mY + mHeight);
+            KPoint<int> p3 = KPoint<int>(mX + mWidth, mY + mHeight);
             result.push_back(p3);
-            KPoint p4 = KPoint(mX, mY + mHeight + mDeltaB);
+            KPoint<int> p4 = KPoint<int>(mX, mY + mHeight + mDeltaB);
             result.push_back(p4);
         } else {
-            KPoint p1 = KPoint(mX, mY);
+            KPoint<int> p1 = KPoint<int>(mX, mY);
             result.push_back(p1);
-            KPoint p2 = KPoint(mX + mWidth, mY - mDeltaA);
+            KPoint<int> p2 = KPoint<int>(mX + mWidth, mY - mDeltaA);
             result.push_back(p2);
-            KPoint p3 = KPoint(mX + mWidth, mY + mHeight - mDeltaB);
+            KPoint<int> p3 = KPoint<int>(mX + mWidth, mY + mHeight - mDeltaB);
             result.push_back(p3);
-            KPoint p4 = KPoint(mX, mY + mHeight);
+            KPoint<int> p4 = KPoint<int>(mX, mY + mHeight);
             result.push_back(p4);
         }
     }
@@ -507,301 +507,301 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     }
 }
 
-const std::vector<KPoint> CTrapezoid::getInitialPoints() {
-    vector<KPoint> result;
+const std::vector<KPoint<int>> CTrapezoid::getInitialPoints() {
+    vector<KPoint<int>> result;
     switch (mType) {
     case 0:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth - mHeight, mY + mHeight);
+        KPoint<int> p3(mX + mWidth - mHeight, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 1:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth - mHeight, mY);
+        KPoint<int> p2(mX + mWidth - mHeight, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 2:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX + mHeight, mY + mHeight);
+        KPoint<int> p4(mX + mHeight, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 3:
     {
-        KPoint p1(mX, mY + mHeight);
+        KPoint<int> p1(mX, mY + mHeight);
         result.push_back(p1);
-        KPoint p2(mX + mHeight, mY);
+        KPoint<int> p2(mX + mHeight, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY);
+        KPoint<int> p3(mX + mWidth, mY);
         result.push_back(p3);
-        KPoint p4(mX + mWidth, mY + mHeight);
+        KPoint<int> p4(mX + mWidth, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 4:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth - mHeight, mY + mHeight);
+        KPoint<int> p3(mX + mWidth - mHeight, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX + mHeight, mY + mHeight);
+        KPoint<int> p4(mX + mHeight, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 5:
     {
-        KPoint p1(mX, mY + mHeight);
+        KPoint<int> p1(mX, mY + mHeight);
         result.push_back(p1);
-        KPoint p2(mX + mHeight, mY);
+        KPoint<int> p2(mX + mHeight, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth - mHeight, mY);
+        KPoint<int> p3(mX + mWidth - mHeight, mY);
         result.push_back(p3);
-        KPoint p4(mX + mWidth, mY + mHeight);
+        KPoint<int> p4(mX + mWidth, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 6:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth - mHeight, mY);
+        KPoint<int> p2(mX + mWidth - mHeight, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX + mHeight, mY + mHeight);
+        KPoint<int> p4(mX + mHeight, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 7:
     {
-        KPoint p1(mX, mY + mHeight);
+        KPoint<int> p1(mX, mY + mHeight);
         result.push_back(p1);
-        KPoint p2(mX + mHeight, mY);
+        KPoint<int> p2(mX + mHeight, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY);
+        KPoint<int> p3(mX + mWidth, mY);
         result.push_back(p3);
-        KPoint p4(mX + mWidth - mHeight, mY + mHeight);
+        KPoint<int> p4(mX + mWidth - mHeight, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 8:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight - mWidth);
+        KPoint<int> p3(mX + mWidth, mY + mHeight - mWidth);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 9:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mWidth);
+        KPoint<int> p4(mX, mY + mWidth);
         result.push_back(p4);
         break;
     }
     case 10:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY + mWidth);
+        KPoint<int> p2(mX + mWidth, mY + mWidth);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 11:
     {
-        KPoint p1(mX, mY + mWidth);
+        KPoint<int> p1(mX, mY + mWidth);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 12:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY + mWidth);
+        KPoint<int> p2(mX + mWidth, mY + mWidth);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight - mWidth);
+        KPoint<int> p3(mX + mWidth, mY + mHeight - mWidth);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 13:
     {
-        KPoint p1(mX, mY + mWidth);
+        KPoint<int> p1(mX, mY + mWidth);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight - mWidth);
+        KPoint<int> p4(mX, mY + mHeight - mWidth);
         result.push_back(p4);
         break;
     }
     case 14:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY + mWidth);
+        KPoint<int> p2(mX + mWidth, mY + mWidth);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight - mWidth);
+        KPoint<int> p4(mX, mY + mHeight - mWidth);
         result.push_back(p4);
         break;
     }
     case 15:
     {
-        KPoint p1(mX, mY + mWidth);
+        KPoint<int> p1(mX, mY + mWidth);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight - mWidth);
+        KPoint<int> p3(mX + mWidth, mY + mHeight - mWidth);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         result.push_back(p4);
         break;
     }
     case 16:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX, mY + mWidth);
+        KPoint<int> p3(mX, mY + mWidth);
         result.push_back(p3);
         break;
     }
     case 17:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY + mWidth);
+        KPoint<int> p2(mX + mWidth, mY + mWidth);
         result.push_back(p2);
-        KPoint p3(mX, mY + mWidth);
+        KPoint<int> p3(mX, mY + mWidth);
         result.push_back(p3);
         break;
     }
     case 18:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mWidth);
+        KPoint<int> p3(mX + mWidth, mY + mWidth);
         result.push_back(p3);
         break;
     }
     case 19:
     {
-        KPoint p1(mX, mY + mWidth);
+        KPoint<int> p1(mX, mY + mWidth);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mWidth);
+        KPoint<int> p3(mX + mWidth, mY + mWidth);
         result.push_back(p3);
         break;
     }
     case 20:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mHeight * 2, mY);
+        KPoint<int> p2(mX + mHeight * 2, mY);
         result.push_back(p2);
-        KPoint p3(mX + mHeight, mY + mHeight);
+        KPoint<int> p3(mX + mHeight, mY + mHeight);
         result.push_back(p3);
         break;
     }
     case 21:
     {
-        KPoint p1(mX, mY + mHeight);
+        KPoint<int> p1(mX, mY + mHeight);
         result.push_back(p1);
-        KPoint p2(mX + mHeight, mY);
+        KPoint<int> p2(mX + mHeight, mY);
         result.push_back(p2);
-        KPoint p3(mX + 2* mHeight, mY + mHeight);
+        KPoint<int> p3(mX + 2* mHeight, mY + mHeight);
         result.push_back(p3);
         break;
     }
     case 22:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY + mWidth);
+        KPoint<int> p2(mX + mWidth, mY + mWidth);
         result.push_back(p2);
-        KPoint p3(mX, mY + mWidth * 2);
+        KPoint<int> p3(mX, mY + mWidth * 2);
         result.push_back(p3);
         break;
     }
     case 23:
     {
-        KPoint p1(mX, mY + mWidth);
+        KPoint<int> p1(mX, mY + mWidth);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mWidth * 2);
+        KPoint<int> p3(mX + mWidth, mY + mWidth * 2);
         result.push_back(p3);
         break;
     }
     case 24:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mHeight);
+        KPoint<int> p3(mX + mWidth, mY + mHeight);
         result.push_back(p3);
-        KPoint p4(mX, mY + mHeight);
+        KPoint<int> p4(mX, mY + mHeight);
         break;
     }
     case 25:
     {
-        KPoint p1(mX, mY);
+        KPoint<int> p1(mX, mY);
         result.push_back(p1);
-        KPoint p2(mX + mWidth, mY);
+        KPoint<int> p2(mX + mWidth, mY);
         result.push_back(p2);
-        KPoint p3(mX + mWidth, mY + mWidth);
+        KPoint<int> p3(mX + mWidth, mY + mWidth);
         result.push_back(p3);
-        KPoint p4(mX, mY + mWidth);
+        KPoint<int> p4(mX, mY + mWidth);
         break;
     }
     default:
@@ -852,22 +852,22 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
     }
     // Make points
     cout << "mX:" << mX << "," << mY << endl;
-    KPoint last = KPoint(mX, mY);
+    KPoint<int> last = KPoint(mX, mY);
     mPoints.push_back(last);
     for (KDelta delta : deltas) {
-        last = KPoint(last.x + delta.dx, last.y + delta.dy);
-        cout << "Point:" << last.x << "," << last.y << endl;
+        last = KPoint(last.x() + delta.dx, last.y() + delta.dy);
+        cout << "Point:" << last.x() << "," << last.y() << endl;
         mPoints.push_back(last);
     }
     if (type == 0 || type ==1) {
         if (deltas.back().dx == 0) {
-            mPoints.push_back(KPoint(mPoints[0].x, mPoints.back().y));
+            mPoints.push_back(KPoint<int>(mPoints[0].x(), mPoints.back().y()));
         } else {
-            mPoints.push_back(KPoint(mPoints.back().x, mPoints[0].y));
+            mPoints.push_back(KPoint<int>(mPoints.back().x(), mPoints[0].y()));
         }
-        mPoints.push_back(KPoint(mPoints[0].x, mPoints[0].y));
+        mPoints.push_back(KPoint<int>(mPoints[0].x(), mPoints[0].y()));
     } else {
-        mPoints.push_back(KPoint(mPoints[0].x, mPoints[0].y));
+        mPoints.push_back(KPoint<int>(mPoints[0].x(), mPoints[0].y()));
     }
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);
@@ -876,11 +876,11 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
 
 BoundingBox Polygon::calculateBoundingBox(OASISData& oasisData) {
     BoundingBox bBox;
-    for (KPoint p : mPoints) {
-        bBox.minX = min(p.x, bBox.minX);
-        bBox.minY = min(p.y, bBox.minY);
-        bBox.maxX = max(p.x, bBox.maxX);
-        bBox.maxY = max(p.y, bBox.maxY);
+    for (KPoint<int> p : mPoints) {
+        bBox.minX = min(p.x(), bBox.minX);
+        bBox.minY = min(p.y(), bBox.minY);
+        bBox.maxX = max(p.x(), bBox.maxX);
+        bBox.maxY = max(p.y(), bBox.maxY);
     }
     return bBox;
 }

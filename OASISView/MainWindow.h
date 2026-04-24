@@ -29,6 +29,6 @@ public:
 private slots:
     void openFileClicked();
     void cellNameComboBoxChanged(QString cellName);
-    void statusChanged(const QString& message);
+    void statusChanged(QString& message);
 };
 #endif // MAINWINDOW_H

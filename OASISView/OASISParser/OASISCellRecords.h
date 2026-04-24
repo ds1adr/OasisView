@@ -182,13 +182,19 @@ enum class Orientation {
     Vertical, Horizontal
 };
 
-struct KPoint {
-    int x, y;
+template <typename T>
+class KPoint {
+    T _x, _y;
 
-    KPoint(int _x, int _y) { x = _x; y = _y;};
+public:
+    KPoint(T x, T y): _x(x), _y(y) {};
+    T x() { return _x; }
+    T y() { return _y; }
+    void setX(T x) { _x = x; }
+    void setY(T y) { _y = y; }
 
     bool operator==(const KPoint& point) {
-        return (x == point.x) && (y == point.y);
+        return (_x == point.x()) && (_y == point.y());
     }
 };
 
@@ -205,7 +211,7 @@ public:
     int getMaxX() { return mX + mWidth; }
     int getMaxY() { return mX + mHeight; }
 
-    const std::vector<KPoint> getInitialPoints();
+    const std::vector<KPoint<int>> getInitialPoints();
     const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
@@ -242,7 +248,7 @@ public:
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
     unsigned getType() { return mType; }
-    const std::vector<KPoint> getInitialPoints();
+    const std::vector<KPoint<int>> getInitialPoints();
 
     int getMinX() { return mX; }
     int getMinY() { return mY; }
@@ -280,14 +286,14 @@ public:
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
-    const std::vector<KPoint>& getInitialPoints() { return mPoints; };
+    const std::vector<KPoint<int>>& getInitialPoints() { return mPoints; };
     const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
     int mX = 0;
     int mY = 0;
-    std::vector<KPoint> mPoints;
+    std::vector<KPoint<int>> mPoints;
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 

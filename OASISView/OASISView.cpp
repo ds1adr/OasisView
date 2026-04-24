@@ -23,7 +23,7 @@ void OASISView::paintEvent(QPaintEvent* event) {
     QPainter painter;
     painter.begin(this);
 
-    drawCell(painter, 0, KPoint(0,0));
+    drawCell(painter, 0, KPoint<int>(0,0));
 
     painter.end();
 }
@@ -37,7 +37,7 @@ void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
 }
 
 // TODO: need to improve this draw logic
-void OASISView::drawCell(QPainter& painter, int currentDepth, KPoint cellOrigin) {
+void OASISView::drawCell(QPainter& painter, int currentDepth, KPoint<int> cellOrigin) {
     if (mCell == nullptr) {
         return;
     }
@@ -126,7 +126,7 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
 }
 
 void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid) {
-    const std::vector<KPoint> points = trapezoid->getInitialPoints();
+    const std::vector<KPoint<int>> points = trapezoid->getInitialPoints();
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = trapezoid->getRepetition();
 
     // TODO: Another type of Repetition
@@ -134,8 +134,8 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
         Repetition r = get<Repetition>(repetition);
         if (r.nx == 0 && r.ny == 0) {
             QPolygon polygon;
-            for (KPoint p : points) {
-                QPoint qP = calculatePoint(p.x, p.y);
+            for (KPoint<int> p : points) {
+                QPoint qP = calculatePoint(p.x(), p.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
@@ -143,8 +143,8 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
             for (int i = 0; i < r.nx; i++) {
                 for (int j = 0; j < r.ny; j++) {
                     QPolygon polygon;
-                    for (KPoint p : points) {
-                        QPoint qP = calculatePoint(p.x + r.dx * i, p.y + r.dy * j);
+                    for (KPoint<int> p : points) {
+                        QPoint qP = calculatePoint(p.x() + r.dx * i, p.y() + r.dy * j);
                         polygon << qP;
                     }
                     painter.drawPolygon(polygon);
@@ -154,7 +154,7 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
     } else {
         QPolygon polygon;
         for (KPoint p : points) {
-            QPoint qP = calculatePoint(p.x, p.y);
+            QPoint qP = calculatePoint(p.x(), p.y());
             polygon << qP;
         }
         painter.drawPolygon(polygon);
@@ -162,7 +162,7 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
 }
 
 void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
-    const std::vector<KPoint> points = cTrapezoid->getInitialPoints();
+    const std::vector<KPoint<int>> points = cTrapezoid->getInitialPoints();
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = cTrapezoid->getRepetition();
 
     // TODO: Repetition
@@ -170,8 +170,8 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
         Repetition r = get<Repetition>(repetition);
         if (r.nx == 0 && r.ny == 0) {
             QPolygon polygon;
-            for (KPoint p : points) {
-                QPoint qP = calculatePoint(p.x, p.y);
+            for (KPoint<int> p : points) {
+                QPoint qP = calculatePoint(p.x(), p.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
@@ -179,8 +179,8 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
             for (int i = 0; i < r.nx; i++) {
                 for (int j = 0; j < r.ny; j++) {
                     QPolygon polygon;
-                    for (KPoint p : points) {
-                        QPoint qP = calculatePoint(p.x + r.dx * i, p.y + r.dy * j);
+                    for (KPoint<int> p : points) {
+                        QPoint qP = calculatePoint(p.x() + r.dx * i, p.y() + r.dy * j);
                         polygon << qP;
                     }
                     painter.drawPolygon(polygon);
@@ -189,8 +189,8 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
         }
     } else {
         QPolygon polygon;
-        for (KPoint p : points) {
-            QPoint qP = calculatePoint(p.x, p.y);
+        for (KPoint<int> p : points) {
+            QPoint qP = calculatePoint(p.x(), p.y());
             polygon << qP;
         }
         painter.drawPolygon(polygon);
@@ -198,15 +198,15 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
 }
 
 void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
-    const vector<KPoint> points = _polygon->getInitialPoints();
+    const vector<KPoint<int>> points = _polygon->getInitialPoints();
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = _polygon->getRepetition();
 
     if (holds_alternative<Repetition>(repetition)) {
         Repetition r = get<Repetition>(repetition);
         if (r.nx == 0 && r.ny == 0) {
             QPolygon polygon;
-            for (KPoint p : points) {
-                QPoint qP = calculatePoint(p.x, p.y);
+            for (KPoint<int> p : points) {
+                QPoint qP = calculatePoint(p.x(), p.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
@@ -214,8 +214,8 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
             for (int i = 0; i < r.nx; i++) {
                 for (int j = 0; j < r.ny; j++) {
                     QPolygon polygon;
-                    for (KPoint p : points) {
-                        QPoint qP = calculatePoint(p.x + r.dx * i, p.y + r.dy * j);
+                    for (KPoint<int> p : points) {
+                        QPoint qP = calculatePoint(p.x() + r.dx * i, p.y() + r.dy * j);
                         polygon << qP;
                     }
                     painter.drawPolygon(polygon);
@@ -224,8 +224,8 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
         }
     } else {
         QPolygon polygon;
-        for (KPoint p : points) {
-            QPoint qP = calculatePoint(p.x, p.y);
+        for (KPoint<int> p : points) {
+            QPoint qP = calculatePoint(p.x(), p.y());
             polygon << qP;
         }
         painter.drawPolygon(polygon);
@@ -271,13 +271,24 @@ QPoint OASISView::calculatePoint(int x, int y) {
     return QPoint((int)tX, (int) tY);
 }
 
-KPoint OASISView::calculateLayoutPoint(QPoint& p) {
+KPoint<int> OASISView::calculateLayoutPoint(QPoint& p) {
     float tX = (float)p.x() / mRatio + mDrawBBox.minX;
     float tY = (float)-p.y() / mRatio + mDrawBBox.maxY;
-    return KPoint((int)tX, (int)tY);
+    return KPoint<int>((int)tX, (int)tY);
 }
 
 // Mouse event
+void OASISView::mouseMoveEvent(QMouseEvent* event) {
+    if (mDrawBBox.minX == INT_MAX) {
+        return;
+    }
+    QPoint p = event->pos();
+    KPoint<int> layoutPos = calculateLayoutPoint(p);
+
+    QString sP = QString::asprintf("(%.3f, %.3f)",(float)layoutPos.x()/1000, (float)layoutPos.y()/1000);
+    updateStatus(sP);
+}
+
 void OASISView::mousePressEvent(QMouseEvent* event) {
     qDebug() << "Position:" << event->pos() << "," << event->position();
     mMousePress = event->pos();
@@ -287,20 +298,20 @@ void OASISView::mouseReleaseEvent(QMouseEvent* event) {
     qDebug() << "Position:" << event->pos() << "," << event->position();
     QPoint p = event->pos();
     if (p.x() > mMousePress.x() && p.y() > mMousePress.y()) {  // Zoom in
-        KPoint p1 = calculateLayoutPoint(mMousePress);
-        KPoint p2 = calculateLayoutPoint(p);
-        mDrawBBox.minX = p1.x;
-        mDrawBBox.minY = p2.y;
-        mDrawBBox.maxX = p2.x;
-        mDrawBBox.maxY = p1.y;
+        KPoint<int> p1 = calculateLayoutPoint(mMousePress);
+        KPoint<int> p2 = calculateLayoutPoint(p);
+        mDrawBBox.minX = p1.x();
+        mDrawBBox.minY = p2.y();
+        mDrawBBox.maxX = p2.x();
+        mDrawBBox.maxY = p1.y();
         update();
     } else if (p.x() < mMousePress.x() && p.y() < mMousePress.y()) {  // Zoom out
         KPoint p1 = calculateLayoutPoint(mMousePress);
         KPoint p2 = calculateLayoutPoint(p);
-        mDrawBBox.minX = mDrawBBox.minX - (p2.x - mDrawBBox.minX);
-        mDrawBBox.minY = mDrawBBox.minY - (p1.y - mDrawBBox.minY);
-        mDrawBBox.maxX = mDrawBBox.maxX + (mDrawBBox.maxX - p1.x);
-        mDrawBBox.maxY = mDrawBBox.maxY + (mDrawBBox.maxY - p2.y);
+        mDrawBBox.minX = mDrawBBox.minX - (p2.x() - mDrawBBox.minX);
+        mDrawBBox.minY = mDrawBBox.minY - (p1.y() - mDrawBBox.minY);
+        mDrawBBox.maxX = mDrawBBox.maxX + (mDrawBBox.maxX - p1.x());
+        mDrawBBox.maxY = mDrawBBox.maxY + (mDrawBBox.maxY - p2.y());
         update();
     }
 }

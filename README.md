@@ -7,7 +7,7 @@ OASIS file viewer
 4. FFTW Libaray
   - Mac OS
     * brew install fftw
-  - Linux
+  - Linux (Ubuntu)
     * sudo apt update
     * sudo apt install libfftw3-dev
 5. WIP now. Currently parse Rectangle, Trapezoid, CTrapezoid, Text, Placement, Property in the Cell. (6 element types so far) 

@@ -10,13 +10,19 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(APPLE)
+    find_library(FFTW3_LIB NAMES fftw3 PATHS /opt/homebrew/lib)
+    find_path(FFTW3_INCLUDE_DIR NAMES fftw3.h PATHS /opt/homebrew/include)
+    find_package(FFTW3_LIB REQUIRED)
+endif()
 
-find_library(FFTW3_LIB NAMES fftw3 PATHS /opt/homebrew/lib)
-find_path(FFTW3_INCLUDE_DIR NAMES fftw3.h PATHS /opt/homebrew/include)
+if(UNIX AND NOT APPLE)
+    find_library(FFTW3_LIB NAMES fftw3 PATHS /usr/lib/aarch64-linux-gnu)
+    find_path(FFTW3_INCLUDE_DIR NAMES fftw3.h PATHS /usr/include)
+endif()
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
-find_package(FFTW3 REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp

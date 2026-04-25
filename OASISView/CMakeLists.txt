@@ -11,8 +11,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_library(FFTW3_LIB NAMES fftw3 PATHS /opt/homebrew/lib)
+find_path(FFTW3_INCLUDE_DIR NAMES fftw3.h PATHS /opt/homebrew/include)
+
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(FFTW3 REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -52,6 +56,13 @@ else()
             ${PROJECT_SOURCES}
         )
     endif()
+endif()
+
+if(FFTW3_LIB AND FFTW3_INCLUDE_DIR)
+    include_directories(${FFTW3_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${FFTW3_LIB})
+else()
+    message(FATAL_ERROR "FFTW3 not found")
 endif()
 
 target_link_libraries(OASISView PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

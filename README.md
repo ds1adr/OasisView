@@ -5,9 +5,9 @@ OASIS file viewer
 2. Qt Project
 3. C++ 17 or more.
 4. FFTW Libaray
-  Mac OS
+  - Mac OS
     > brew install fftw
-  Linux
+  - Linux
     > sudo apt update
     > sudo apt install libfftw3-dev
 5. WIP now. Currently parse Rectangle, Trapezoid, CTrapezoid, Text, Placement, Property in the Cell. (6 element types so far) 

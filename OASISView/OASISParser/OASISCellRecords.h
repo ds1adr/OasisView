@@ -196,6 +196,10 @@ public:
     bool operator==(const KPoint& point) {
         return (_x == point.x()) && (_y == point.y());
     }
+
+    KPoint<T> operator-(KPoint& p) {
+        return KPoint<T>(_x - p.x(), _y - p.y());
+    }
 };
 
 class Trapezoid : public CellElement {

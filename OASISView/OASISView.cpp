@@ -283,10 +283,26 @@ void OASISView::mouseMoveEvent(QMouseEvent* event) {
         return;
     }
     QPoint p = event->pos();
+    KPoint<int> layoutP = calculateLayoutPoint(p);
+    KPoint<int> pressP = calculateLayoutPoint(mMousePress);
+
+    if (p.x() < 0 || p.y() < 0 || p.x() > this->size().width() || p.y() > this->size().height()) {
+        return;
+    }
     KPoint<int> layoutPos = calculateLayoutPoint(p);
 
     QString sP = QString::asprintf("(%.3f, %.3f)",(float)layoutPos.x()/1000, (float)layoutPos.y()/1000);
     updateStatus(sP);
+
+    if (event->buttons() & Qt::RightButton) {
+        KPoint<int> delta = pressP - layoutP;
+        mMousePress = p;
+        mDrawBBox.minX += delta.x();
+        mDrawBBox.minY += delta.y();
+        mDrawBBox.maxX += delta.x();
+        mDrawBBox.maxY += delta.y();
+        update();
+    }
 }
 
 void OASISView::mousePressEvent(QMouseEvent* event) {
@@ -296,6 +312,9 @@ void OASISView::mousePressEvent(QMouseEvent* event) {
 
 void OASISView::mouseReleaseEvent(QMouseEvent* event) {
     qDebug() << "Position:" << event->pos() << "," << event->position();
+    if (event->button() != Qt::LeftButton) {
+        return;
+    }
     QPoint p = event->pos();
     if (p.x() > mMousePress.x() && p.y() > mMousePress.y()) {  // Zoom in
         KPoint<int> p1 = calculateLayoutPoint(mMousePress);

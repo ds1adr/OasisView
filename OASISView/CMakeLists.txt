@@ -13,7 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(APPLE)
     find_library(FFTW3_LIB NAMES fftw3 PATHS /opt/homebrew/lib)
     find_path(FFTW3_INCLUDE_DIR NAMES fftw3.h PATHS /opt/homebrew/include)
-    find_package(FFTW3_LIB REQUIRED)
 endif()
 
 if(UNIX AND NOT APPLE)

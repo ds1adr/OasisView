@@ -252,6 +252,15 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
         int placeX = placement->getX();
         int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
+        if (r.nx == 0 && r.ny == 0) {
+            int x = placeX + subCellBBox.minX;
+            int y = placeY + subCellBBox.minY;
+            QPoint p = calculatePoint(x, y);
+            QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+
+            painter.drawRect(rect);
+        }
+
         for (int i = 0; i < r.nx; i++) {
             for (int j = 0; j < r.ny; j++) {
                 int x = placeX + subCellBBox.minX + r.dx * i;
@@ -262,6 +271,17 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
                 painter.drawRect(rect);
             }
         }
+    }
+    else {
+        int placeX = placement->getX();
+        int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
+
+        int x = placeX + subCellBBox.minX;
+        int y = placeY + subCellBBox.minY;
+        QPoint p = calculatePoint(x, y);
+        QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+
+        painter.drawRect(rect);
     }
 }
 
@@ -291,7 +311,7 @@ void OASISView::mouseMoveEvent(QMouseEvent* event) {
     }
     KPoint<int> layoutPos = calculateLayoutPoint(p);
 
-    QString sP = QString::asprintf("(%.3f, %.3f)",(float)layoutPos.x()/1000, (float)layoutPos.y()/1000);
+    QString sP = QString::asprintf("(%.3f, %.3f)",(float)layoutPos.x()/mOASISData->unit(), (float)layoutPos.y()/mOASISData->unit());
     updateStatus(sP);
 
     if (event->buttons() & Qt::RightButton) {

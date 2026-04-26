@@ -45,7 +45,6 @@ void OASISView::drawCell(QPainter& painter, int currentDepth, KPoint<int> cellOr
     unsigned bW = (mDrawBBox.maxX - mDrawBBox.minX);
     unsigned bH = mDrawBBox.maxY - mDrawBBox.minY;
 
-    std::cout << "Cell minX-Y:" << mDrawBBox.minX << "," << mDrawBBox.minY << "BBBox Width: " << bW << ", BBox Height" << bH << ", View Size" << viewSize.width() << "-" << viewSize.height() << std::endl;
     mRatio = std::min((float)width() / (float)(mDrawBBox.maxX - mDrawBBox.minX), (float)height() / (float)(mDrawBBox.maxY - mDrawBBox.minY));
 
     const std::vector<CellElement*> elements = mCell->getCellElements();
@@ -84,7 +83,6 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
     int initY = rectangle->getMinY();  // QRect type origin is upper left
     int w = rectangle->getWidth();
     int h = rectangle->getHeight();
-    cout << "X:" << initX << ",Y:" << initY << ",W:" << rectangle->getWidth() << ",H:" << rectangle->getHeight() << endl;
 
     // TODO: Another type of Repetition
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = rectangle->getRepetition();
@@ -94,7 +92,6 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
             QPolygon polygon;
             QPoint p = calculatePoint(initX, initY);
             polygon << p;
-            cout << "QX:" << p.x() << ",QY:" << p.y() << ",W:" << w << ",H:" << h << endl;
             polygon << QPoint(calculatePoint(initX + w, initY));
             polygon << QPoint(calculatePoint(initX + w, initY + h));
             polygon << QPoint(calculatePoint(initX, initY + h));
@@ -138,6 +135,7 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
                 QPoint qP = calculatePoint(p.x(), p.y());
                 polygon << qP;
             }
+            cout << "Trap --------------" << endl;
             painter.drawPolygon(polygon);
         } else {
             for (int i = 0; i < r.nx; i++) {
@@ -241,7 +239,6 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
     }
     BoundingBox subCellBBox = subCell->getBoundingBox();
     subCellBBox = placement->getRotatedBoundingBox(subCellBBox);
-    std::cout << "Sub Cell bbox:" << subCellBBox.minX << "," << subCellBBox.minY << "," << subCellBBox.maxX << "," << subCellBBox.maxY << std::endl;
     int drawingWidth = subCell->getBoundingWidth() * mRatio;
     int drawingHeight = subCell->getBoundingHeight() * mRatio;
 
@@ -326,12 +323,10 @@ void OASISView::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void OASISView::mousePressEvent(QMouseEvent* event) {
-    qDebug() << "Position:" << event->pos() << "," << event->position();
     mMousePress = event->pos();
 }
 
 void OASISView::mouseReleaseEvent(QMouseEvent* event) {
-    qDebug() << "Position:" << event->pos() << "," << event->position();
     if (event->button() != Qt::LeftButton) {
         return;
     }

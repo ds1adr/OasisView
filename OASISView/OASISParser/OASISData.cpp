@@ -41,7 +41,6 @@ void OASISData::parse(const string& filePath) {
 
         switch (recordType) {
         case 2:  // End
-            cout << "End" << endl;
             if (mOffsetFlag == 1) {
                 mTableOffsets.parse(fileStream);
             }
@@ -50,7 +49,6 @@ void OASISData::parse(const string& filePath) {
         {
             const unsigned referenceNumber = parseUInt(fileStream);
             string key = std::to_string(referenceNumber);
-            cout << "Cell Reference:" << key << endl;
             OASISCell* cell = new OASISCell((*this), referenceNumber);
             cell->parse(fileStream, mLayerSet);
             mCellMap[key] = cell;
@@ -59,7 +57,6 @@ void OASISData::parse(const string& filePath) {
         case 14: // Cell Record: cellname-string, CELL{CBLOCK|PAD|PROPERTY|XYRELATIVE|XVABSOLUTE|<element>}*
         {
             string cellName = parseNString(fileStream);
-            cout << "Cell Name:" << cellName << endl;
             OASISCell* cell = new OASISCell((*this), cellName);
             cell->parse(fileStream, mLayerSet);
             mCellMap[cellName] = cell;
@@ -98,11 +95,9 @@ int OASISData::parseStart(ifstream& fileStream) {
     }
 
     mVersion = parseAString(fileStream);
-    cout << "Version:" << mVersion << endl;
     mUnit = parseRealNumber(fileStream);
-    cout << "Unit:" << mUnit << endl;
     mOffsetFlag = parseUInt(fileStream);
-    cout << "Offset Flag:" << mOffsetFlag << endl;
+
     if (mOffsetFlag == 0) {
         mTableOffsets.parse(fileStream);
     }

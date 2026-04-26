@@ -577,11 +577,9 @@ Delta3 parseGDelta(ifstream& fileStream) {
     byte_t temp;
     fileStream.read((char*)&temp, sizeof(temp));
     if (temp & 0x01) { // type 2
-        cout << "G-Delta type 2" << endl;
         fileStream.seekg(-1, std::ios::cur);
         return parseGDeltaForm2(fileStream);
     } else { // type 1
-        cout << "G-Delta type 1" << endl;
         fileStream.seekg(-1, std::ios::cur);
         return parseGDeltaForm1(fileStream);
     }
@@ -1209,7 +1207,6 @@ std::vector<OASISParser::KDelta> parsePointLists(std::ifstream& fileStream, unsi
 
     type = parseUInt(fileStream);
     unsigned count = parseUInt(fileStream);
-    cout << "Polygon Type:" << type << " Count:" << count << endl;
 
     switch (type) {
     case 0: // Horizontal First 1Delta
@@ -1220,7 +1217,6 @@ std::vector<OASISParser::KDelta> parsePointLists(std::ifstream& fileStream, unsi
             } else {
                 deltas.push_back(KDelta(0, value));
             }
-            cout << "Type 0, 1 Delta:" << value << endl;
         }
         break;
     case 1: // Vertical first 1Delta
@@ -1231,13 +1227,11 @@ std::vector<OASISParser::KDelta> parsePointLists(std::ifstream& fileStream, unsi
             } else {
                 deltas.push_back(KDelta(value, 0));
             }
-            cout << "Type 0, 1 Delta:" << value << endl;
         }
         break;
     case 2: // 2Delta
         for (int i = 0; i < count; i++) {
             Delta2 delta = parse2Delta(fileStream);
-            cout << "2Delta: direction:" << delta.direction << "," << delta.value;
             switch(delta.direction) {
             case east: //
                 deltas.push_back(KDelta(delta.value, 0));
@@ -1263,7 +1257,6 @@ std::vector<OASISParser::KDelta> parsePointLists(std::ifstream& fileStream, unsi
     case 4:  // G-Delta
         for (int i = 0; i < count; i++) {
             Delta3 delta = parseGDelta(fileStream);
-            cout << "G-Delta:" << delta.dx << "," << delta.dy << endl;
             deltas.push_back(KDelta(delta.dx, delta.dy));
         }
         break;

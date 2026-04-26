@@ -32,11 +32,9 @@ void Text::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
     if (infoByte.isReferenceNumber) {
         mReference = OASISParser::parseUInt(fileStream);
-        cout << "Text Reference:" << mReference << endl;
     } else {
         mReference = 0;
         mText = OASISParser::parseAString(fileStream);
-        cout << "Text Element:" << mText << endl;
     }
     if (infoByte.isTextLayer) {
         mTextLayer = OASISParser::parseUInt(fileStream);
@@ -153,8 +151,6 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
         fileStream.read((char*)&infoByte, sizeof(char));
 
-        cout << "Placement, code:" << mCode << endl;
-
         if (infoByte.isFlip) {
             mIsFlip = true;
         }
@@ -210,7 +206,6 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         }
         if (infoByte.isAngle) {
             mRotation = parseRealNumber(fileStream);
-            cout << "Rotation: " << mRotation << endl;
         }
         if (infoByte.isX) {
             mX = parseInt(fileStream);
@@ -285,8 +280,6 @@ void Rectangle::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
-    cout << "Rectangle" << endl;
-
     if (infoByte.isLayerNumber) {
         mLayerNumber = OASISParser::parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
@@ -337,8 +330,6 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     TrapInfoByte infoByte;  // OWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));
-
-    cout << "Trapezoid" << endl;
 
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
@@ -465,8 +456,6 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
     CTrapInfoByte infoByte;  // TWHXYRDL
 
     fileStream.read((char*)&infoByte, sizeof(char));
-
-    cout << "CTrapezoid" << endl;
 
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
@@ -819,11 +808,9 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
-    cout << "Polygon" << endl;
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
-        cout << "Polygon Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
@@ -851,12 +838,10 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
         mY = _previousY;
     }
     // Make points
-    cout << "mX:" << mX << "," << mY << endl;
     KPoint<int> last = KPoint(mX, mY);
     mPoints.push_back(last);
     for (KDelta delta : deltas) {
         last = KPoint(last.x() + delta.dx, last.y() + delta.dy);
-        cout << "Point:" << last.x() << "," << last.y() << endl;
         mPoints.push_back(last);
     }
     if (type == 0 || type ==1) {
@@ -895,11 +880,9 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
 
     fileStream.read((char*)&infoByte, sizeof(char));
 
-    cout << "Polygon" << endl;
     if (infoByte.isLayerNumber) {
         mLayerNumber = parseUInt(fileStream);
         layerSet.insert(mLayerNumber);
-        cout << "Polygon Layer:" << mLayerNumber << endl;
     }
     if (infoByte.isDataType) {
         mDataType = parseUInt(fileStream);
@@ -912,7 +895,6 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
     }
     if (infoByte.isExtensionScheme) {
         fileStream.read((char*)&extByte, sizeof(char));
-        cout << "Ext" << " SS:" << extByte.startExtension << " End:" << extByte.endExension << " Value:" << extByte.value << endl;
         if (extByte.startExtension == 3) {
             mStartExt = parseInt(fileStream);
         }

@@ -120,7 +120,6 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 
 const BoundingBox& OASISCell::calculateBoundingBox() {
     for (CellElement* element : mCellElements) {
-        cout << "Cell Element:" << element->elementName() << endl;
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
         if (rectangle != nullptr) {
             mBoundingBox.minX = min(mBoundingBox.minX, rectangle->getMinX());
@@ -167,7 +166,6 @@ const BoundingBox& OASISCell::calculateBoundingBox() {
             }
         }
     }
-    cout << mName << "(" << mBoundingBox.minX << "," << mBoundingBox.minY << ") - (" << mBoundingBox.maxX << "," << mBoundingBox.maxY << ")" << endl;
     return mBoundingBox;
 }
 

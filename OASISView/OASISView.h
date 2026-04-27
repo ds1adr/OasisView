@@ -20,12 +20,12 @@ private:
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
     OASISParser::KPoint<int> calculateLayoutPoint(QPoint& p);  // From UI to Design
-    void drawCell(QPainter& painter, int currentDepth, OASISParser::KPoint<int> cellOrigin);
-    void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle);
-    void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid);
-    void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid);
-    void drawPolygon(QPainter& painter, OASISParser::Polygon* polygon);
-    void drawPlacement(QPainter& painter, OASISParser::Placement* placement, int currentDepth);
+    void drawCell(QPainter& painter, OASISParser::OASISCell* cell, int currentDepth, OASISParser::KPoint<int> cellOrigin);
+    void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle, OASISParser::KPoint<int> offset);
+    void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid, OASISParser::KPoint<int> offset);
+    void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid, OASISParser::KPoint<int> offset);
+    void drawPolygon(QPainter& painter, OASISParser::Polygon* polygon, OASISParser::KPoint<int> offset);
+    void drawPlacement(QPainter& painter, OASISParser::Placement* placement, OASISParser::KPoint<int> offset, int currentDepth);
 
     // Mouse
     void mouseMoveEvent(QMouseEvent* event) override;

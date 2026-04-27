@@ -23,7 +23,7 @@ void OASISView::paintEvent(QPaintEvent* event) {
     QPainter painter;
     painter.begin(this);
 
-    drawCell(painter, 0, KPoint<int>(0,0));
+    drawCell(painter, mCell, 0, KPoint<int>(0,0));
 
     painter.end();
 }
@@ -37,50 +37,47 @@ void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
 }
 
 // TODO: need to improve this draw logic
-void OASISView::drawCell(QPainter& painter, int currentDepth, KPoint<int> cellOrigin) {
-    if (mCell == nullptr) {
+void OASISView::drawCell(QPainter& painter, OASISCell* cell, int currentDepth, KPoint<int> cellOrigin) {
+    if (cell == nullptr) {
         return;
     }
-    QSize viewSize = this->size();
-    unsigned bW = (mDrawBBox.maxX - mDrawBBox.minX);
-    unsigned bH = mDrawBBox.maxY - mDrawBBox.minY;
 
     mRatio = std::min((float)width() / (float)(mDrawBBox.maxX - mDrawBBox.minX), (float)height() / (float)(mDrawBBox.maxY - mDrawBBox.minY));
 
-    const std::vector<CellElement*> elements = mCell->getCellElements();
+    const std::vector<CellElement*> elements = cell->getCellElements();
 
     for (CellElement* element: elements) {
 
         Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
         if (rectangle != nullptr) {
-            drawRectangle(painter, rectangle);
+            drawRectangle(painter, rectangle, cellOrigin);
             continue;
         }
         Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
         if (trapezoid != nullptr) {
-            drawTrapezoid(painter, trapezoid);
+            drawTrapezoid(painter, trapezoid, cellOrigin);
             continue;
         }
         CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
         if (cTrapezoid != nullptr) {
-            drawCTrapezoid(painter, cTrapezoid);
+            drawCTrapezoid(painter, cTrapezoid, cellOrigin);
             continue;
         }
         Placement* placement = dynamic_cast<Placement*>(element);
         if (placement != nullptr) {
-            drawPlacement(painter, placement, currentDepth);
+            drawPlacement(painter, placement, cellOrigin, currentDepth);
             continue;
         }
         Polygon* polygon = dynamic_cast<Polygon*>(element);
         if (polygon != nullptr) {
-            drawPolygon(painter, polygon);
+            drawPolygon(painter, polygon, cellOrigin);
         }
     }
 }
 
-void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle) {
-    int initX = rectangle->getMinX();
-    int initY = rectangle->getMinY();  // QRect type origin is upper left
+void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle, KPoint<int> offset) {
+    int initX = rectangle->getMinX() + offset.x();
+    int initY = rectangle->getMinY() + offset.y();
     int w = rectangle->getWidth();
     int h = rectangle->getHeight();
 
@@ -122,7 +119,7 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
     }
 }
 
-void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid) {
+void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid, KPoint<int> offset) {
     const std::vector<KPoint<int>> points = trapezoid->getInitialPoints();
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = trapezoid->getRepetition();
 
@@ -132,7 +129,7 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
         if (r.nx == 0 && r.ny == 0) {
             QPolygon polygon;
             for (KPoint<int> p : points) {
-                QPoint qP = calculatePoint(p.x(), p.y());
+                QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
                 polygon << qP;
             }
             cout << "Trap --------------" << endl;
@@ -142,7 +139,7 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
                 for (int j = 0; j < r.ny; j++) {
                     QPolygon polygon;
                     for (KPoint<int> p : points) {
-                        QPoint qP = calculatePoint(p.x() + r.dx * i, p.y() + r.dy * j);
+                        QPoint qP = calculatePoint(p.x() + offset.x() + r.dx * i, p.y() + offset.y() + r.dy * j);
                         polygon << qP;
                     }
                     painter.drawPolygon(polygon);
@@ -152,14 +149,14 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
     } else {
         QPolygon polygon;
         for (KPoint p : points) {
-            QPoint qP = calculatePoint(p.x(), p.y());
+            QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
             polygon << qP;
         }
         painter.drawPolygon(polygon);
     }
 }
 
-void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
+void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid, OASISParser::KPoint<int> offset) {
     const std::vector<KPoint<int>> points = cTrapezoid->getInitialPoints();
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = cTrapezoid->getRepetition();
 
@@ -169,7 +166,7 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
         if (r.nx == 0 && r.ny == 0) {
             QPolygon polygon;
             for (KPoint<int> p : points) {
-                QPoint qP = calculatePoint(p.x(), p.y());
+                QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
@@ -178,7 +175,7 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
                 for (int j = 0; j < r.ny; j++) {
                     QPolygon polygon;
                     for (KPoint<int> p : points) {
-                        QPoint qP = calculatePoint(p.x() + r.dx * i, p.y() + r.dy * j);
+                        QPoint qP = calculatePoint(p.x() + offset.x() + r.dx * i, p.y() + offset.y() + r.dy * j);
                         polygon << qP;
                     }
                     painter.drawPolygon(polygon);
@@ -188,14 +185,14 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid) {
     } else {
         QPolygon polygon;
         for (KPoint<int> p : points) {
-            QPoint qP = calculatePoint(p.x(), p.y());
+            QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
             polygon << qP;
         }
         painter.drawPolygon(polygon);
     }
 }
 
-void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
+void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon, OASISParser::KPoint<int> offset) {
     const vector<KPoint<int>> points = _polygon->getInitialPoints();
     std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = _polygon->getRepetition();
 
@@ -204,7 +201,7 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
         if (r.nx == 0 && r.ny == 0) {
             QPolygon polygon;
             for (KPoint<int> p : points) {
-                QPoint qP = calculatePoint(p.x(), p.y());
+                QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
@@ -213,7 +210,7 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
                 for (int j = 0; j < r.ny; j++) {
                     QPolygon polygon;
                     for (KPoint<int> p : points) {
-                        QPoint qP = calculatePoint(p.x() + r.dx * i, p.y() + r.dy * j);
+                        QPoint qP = calculatePoint(p.x() + offset.x() + r.dx * i, p.y() + offset.y() + r.dy * j);
                         polygon << qP;
                     }
                     painter.drawPolygon(polygon);
@@ -230,7 +227,7 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon) {
     }
 }
 
-void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placement, int currentDepth) {
+void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placement, OASISParser::KPoint<int> offset, int currentDepth) {
     OASISCell* subCell;
     if (placement->getCellName().empty()) {
         subCell = mOASISData->getCell(placement->getReference());
@@ -250,22 +247,33 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
         int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
         if (r.nx == 0 && r.ny == 0) {
-            int x = placeX + subCellBBox.minX;
-            int y = placeY + subCellBBox.minY;
-            QPoint p = calculatePoint(x, y);
-            QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
-
-            painter.drawRect(rect);
-        }
-
-        for (int i = 0; i < r.nx; i++) {
-            for (int j = 0; j < r.ny; j++) {
-                int x = placeX + subCellBBox.minX + r.dx * i;
-                int y = placeY + subCellBBox.minY + r.dy * j;
+            if (mMaxDrawDelpth >= currentDepth) {
+                drawCell(painter, subCell, currentDepth + 1, KPoint<int>(placement->getX() + offset.x(), placement->getY() + offset.y()));
+            } else {
+                int x = placeX + subCellBBox.minX;
+                int y = placeY + subCellBBox.minY;
                 QPoint p = calculatePoint(x, y);
                 QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
 
                 painter.drawRect(rect);
+            }
+        }
+
+        for (int i = 0; i < r.nx; i++) {
+            for (int j = 0; j < r.ny; j++) {
+                if (mMaxDrawDelpth >= currentDepth) {
+                    int x = placement->getX() + offset.x() + subCellBBox.minX + r.dx * i;
+                    int y = placement->getY() + offset.y() + subCellBBox.minY + r.dy * j;
+
+                    drawCell(painter, subCell, currentDepth + 1, KPoint<int>(x, y));
+                } else {
+                    int x = placeX + subCellBBox.minX + r.dx * i;
+                    int y = placeY + subCellBBox.minY + r.dy * j;
+                    QPoint p = calculatePoint(x, y);
+                    QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+
+                    painter.drawRect(rect);
+                }
             }
         }
     }

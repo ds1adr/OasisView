@@ -46,7 +46,7 @@ private:
     unsigned mTextType;
     int mX = 0;
     int mY = 0;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 
 struct PropertyInfoByte {
@@ -116,7 +116,7 @@ public:
     BoundingBox calculateBoundingBox(OASISData& oasisData);
     BoundingBox getRotatedBoundingBox(BoundingBox bBox);
 
-    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
     int getX() { return mX; }
     int getY() { return mY; }
 private:
@@ -124,7 +124,7 @@ private:
     bool mIsFlip = false; // x-axis
     double mRotation = 0;
     double mMag = 1.0;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     int mX = 0;
     int mY = 0;
     unsigned mReference = 0;
@@ -156,11 +156,11 @@ public:
     int getMaxY() { return mY + mHeight; }
     unsigned getWidth() { return mWidth; }
     unsigned getHeight() { return mHeight; }
-    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     int mY = 0;
     int mX = 0;
     unsigned mHeight;
@@ -216,7 +216,7 @@ public:
     int getMaxY() { return mX + mHeight; }
 
     const std::vector<KPoint<int>> getInitialPoints();
-    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 
@@ -228,7 +228,7 @@ private:
     int mDeltaB = 0;
     int mX = 0;
     int mY = 0;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
     Orientation mOrientation;
 };
 
@@ -259,7 +259,7 @@ public:
     int getMaxX();
     int getMaxY();
 
-    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
@@ -268,7 +268,7 @@ private:
     unsigned mHeight;
     int mX = 0;
     int mY = 0;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 
 struct PolygonInfoByte {
@@ -291,14 +291,14 @@ public:
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
     const std::vector<KPoint<int>>& getInitialPoints() { return mPoints; };
-    const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
     int mX = 0;
     int mY = 0;
     std::vector<KPoint<int>> mPoints;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 
 struct PathInfoByte {
@@ -335,7 +335,19 @@ private:
     unsigned mHalfWidth;
     int mStartExt = 0;
     int mEndExt = 0;
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+};
+
+/*
+ * To handle different type of repetition and replace std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+ */
+class BaseRepetition {
+private:
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition = NoRepetition();
+public:
+    unsigned nx();
+    unsigned ny();
+    KPoint<int> getPosition(unsigned x, unsigned y);
 };
 
 }

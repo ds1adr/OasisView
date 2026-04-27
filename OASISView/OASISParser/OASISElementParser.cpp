@@ -13,7 +13,7 @@ namespace OASISParser {
 
 const int validBitSize = 7;
 const int validBitSizeForSigned = 6;
-variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
+variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
 
 int parseInt(byte_t* mem, unsigned int& offset) {
     unsigned int result = 0;
@@ -870,7 +870,7 @@ byte_t getRepetitionType(std::ifstream& fileStream) {
     return type;
 }
 
-const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(byte_t *mem, unsigned int &offset) {
+const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(byte_t *mem, unsigned int &offset) {
     byte_t type = getRepetitionType(mem, offset);
 
     switch (type) {
@@ -894,11 +894,13 @@ const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplaceme
         return parseRepetitionType8(mem, offset);
     case 9:
         return parseRepetitionType9(mem, offset);
+    default:
+        return NoRepetition();
     }
     return Repetition();
 }
 
-const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(ifstream& fileStream) {
+const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(ifstream& fileStream) {
     byte_t type = getRepetitionType(fileStream);
 
     switch (type) {
@@ -922,6 +924,8 @@ const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplaceme
         return parseRepetitionType8(fileStream);
     case 9:
         return parseRepetitionType9(fileStream);
+    default:
+        break;
     }
     return Repetition();
 }

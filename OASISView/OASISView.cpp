@@ -82,7 +82,7 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
     int h = rectangle->getHeight();
 
     // TODO: Another type of Repetition
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = rectangle->getRepetition();
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = rectangle->getRepetition();
     if (holds_alternative<Repetition>(repetition)) {
         Repetition r = get<Repetition>(repetition);
         if (r.nx == 0 && r.ny == 0) {
@@ -121,7 +121,7 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
 
 void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid, KPoint<int> offset) {
     const std::vector<KPoint<int>> points = trapezoid->getInitialPoints();
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = trapezoid->getRepetition();
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = trapezoid->getRepetition();
 
     // TODO: Another type of Repetition
     if (holds_alternative<Repetition>(repetition)) {
@@ -158,7 +158,7 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
 
 void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid, OASISParser::KPoint<int> offset) {
     const std::vector<KPoint<int>> points = cTrapezoid->getInitialPoints();
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = cTrapezoid->getRepetition();
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = cTrapezoid->getRepetition();
 
     // TODO: Repetition
     if (holds_alternative<Repetition>(repetition)) {
@@ -194,7 +194,7 @@ void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid, OASISP
 
 void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon, OASISParser::KPoint<int> offset) {
     const vector<KPoint<int>> points = _polygon->getInitialPoints();
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = _polygon->getRepetition();
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = _polygon->getRepetition();
 
     if (holds_alternative<Repetition>(repetition)) {
         Repetition r = get<Repetition>(repetition);
@@ -239,7 +239,7 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
     int drawingWidth = subCell->getBoundingWidth() * mRatio;
     int drawingHeight = subCell->getBoundingHeight() * mRatio;
 
-    std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
     if (holds_alternative<Repetition>(repetition)) {
         Repetition r = get<Repetition>(repetition);
 

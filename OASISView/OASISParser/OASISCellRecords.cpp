@@ -927,4 +927,17 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
     }
 }
 
+unsigned BaseRepetition::nx() {
+
+}
+
+unsigned BaseRepetition::ny() {
+
+}
+
+
+KPoint<int> BaseRepetition::getPosition(unsigned x, unsigned y) {
+
+}
+
 }

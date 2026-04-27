@@ -43,6 +43,11 @@ struct Delta3 {
     }
 };
 
+// Single element
+struct NoRepetition {
+
+};
+
 struct Repetition {
     unsigned int nx, ny;
     unsigned int dx, dy;

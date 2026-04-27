@@ -77,7 +77,7 @@ Delta3 parse3Delta(std::ifstream& fileStream);
 Delta3 parseGDelta(byte_t* mem, unsigned int& offset);
 Delta3 parseGDelta(std::ifstream& fileStream);
 
-extern std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
+extern std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> lastRepetition;
 // positive whole number (uint -> real)
 double parseRealType0(byte_t* mem, unsigned int& offset);
 double parseRealType0(std::ifstream& fileStream);
@@ -121,7 +121,7 @@ Delta3 parseGDeltaForm2(std::ifstream& fileStream);
 
 // Repetition
 byte_t getRepetitionType(byte_t *mem, unsigned int &offset);
-const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(byte_t *mem, unsigned int &offset);
+const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(byte_t *mem, unsigned int &offset);
 Repetition parseRepetitionType1(byte_t *mem, unsigned int &offset);
 Repetition parseRepetitionType2(byte_t *mem, unsigned int &offset);
 Repetition parseRepetitionType3(byte_t *mem, unsigned int &offset);
@@ -135,7 +135,7 @@ NDisplacementRepetition parseRepetitionType10(byte_t *mem, unsigned int &offset)
 NDisplacementRepetition parseRepetitionType11(byte_t *mem, unsigned int &offset);
 
 byte_t getRepetitionType(std::ifstream& fileStream);
-const std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(std::ifstream& fileStream);
+const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> parseRepetition(std::ifstream& fileStream);
 Repetition parseRepetitionType1(std::ifstream& fileStream);
 Repetition parseRepetitionType2(std::ifstream& fileStream);
 Repetition parseRepetitionType3(std::ifstream& fileStream);

@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <iostream>
 
 using namespace std;
 
@@ -20,6 +19,82 @@ int _previousY = 0;
 unsigned _previousPathHalfWidth = 0;
 vector<KDelta> _previousPolygonDeltas;
 vector<KDelta> _previousPathDeltas;
+
+unsigned BaseRepetition::nx() {
+    if (holds_alternative<NoRepetition>(mRepetition)) {
+        NoRepetition r = get<NoRepetition>(mRepetition);
+        return 1;
+    }
+    return 1;
+}
+
+unsigned BaseRepetition::ny() {
+    if (holds_alternative<NoRepetition>(mRepetition)) {
+        NoRepetition r = get<NoRepetition>(mRepetition);
+        return 1;
+    }
+    return 1;
+}
+
+KPoint<int> BaseRepetition::getPosition(unsigned x, unsigned y) {
+    if (holds_alternative<NoRepetition>(mRepetition)) {
+        NoRepetition r = get<NoRepetition>(mRepetition);
+        return KPoint<int>(0,0);
+    } else if (holds_alternative<Repetition>(mRepetition)) {
+        Repetition r = get<Repetition>(mRepetition);
+
+        int mx = r.dx * x;
+        int my = r.dy * y;
+        return KPoint<int>(mx, my);
+    }
+    return KPoint<int>(0,0);
+}
+
+unsigned BaseRepetition::repeatWidth() {
+    if (holds_alternative<NoRepetition>(mRepetition)) {
+        return 0;
+    } else if (holds_alternative<Repetition>(mRepetition)) {
+        Repetition r = get<Repetition>(mRepetition);
+
+        return r.dx * (r.nx - 1);
+    }
+    return 0;
+}
+
+unsigned BaseRepetition::repeatHeight() {
+    if (holds_alternative<NoRepetition>(mRepetition)) {
+        return 0;
+    } else if (holds_alternative<Repetition>(mRepetition)) {
+        Repetition r = get<Repetition>(mRepetition);
+
+        return r.dy * (r.ny - 1);
+    }
+    return 0;
+}
+
+void BaseRepetition::setRepetition(std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> r) {
+    mRepetition = r;
+}
+
+void BaseRepetition::setRepetition(const NoRepetition& r) {
+    mRepetition = r;
+}
+
+void BaseRepetition::setRepetition(const Repetition& r) {
+    mRepetition = r;
+}
+
+void BaseRepetition::setRepetition(const NSpaceRepetition& r) {
+    mRepetition = r;
+}
+
+void BaseRepetition::setRepetition(const DiagonalRepetition& r) {
+    mRepetition = r;
+}
+
+void BaseRepetition::setRepetition(const NDisplacementRepetition& r) {
+    mRepetition = r;
+}
 
 Text::~Text() {
 
@@ -186,7 +261,7 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
             mY = _previousY;
         }
         if (infoByte.isRepetition) {
-            mRepetition = parseRepetition(fileStream);
+            mRepetition.setRepetition(parseRepetition(fileStream));
         }
     } else {
         MPlacementInfoByte infoByte;
@@ -220,7 +295,7 @@ void Placement::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
             mY = _previousY;
         }
         if (infoByte.isRepetition) {
-            mRepetition = parseRepetition(fileStream);
+            mRepetition.setRepetition(parseRepetition(fileStream));
         }
     }
 }
@@ -257,16 +332,12 @@ BoundingBox Placement::calculateBoundingBox(OASISData& oasisData) {
         bBox.minY = min(bBox.minY, subBBox.minY + mY);
 
         // Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition
-        if (holds_alternative<Repetition>(mRepetition)) {
-            Repetition r = get<Repetition>(mRepetition);
+        int mx = mX + subBBox.maxX + mRepetition.repeatWidth();
+        int my = mY + subBBox.maxY + mRepetition.repeatHeight();
+        bBox.maxX = max(bBox.maxX, mx);
+        bBox.maxY = max(bBox.maxY, my);
+        return bBox;
 
-            int mx = mX + subBBox.maxX + r.dx * (r.nx - 1);
-            int my = mY + subBBox.maxY + r.dy * (r.ny - 1);
-            bBox.maxX = max(bBox.maxX, mx);
-            bBox.maxY = max(bBox.maxY, my);
-            return bBox;
-        }
-        // TODO: Other Repetition Type
     }
     return BoundingBox();
 }
@@ -925,19 +996,6 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
     if (infoByte.isRepetition) {
         mRepetition = parseRepetition(fileStream);
     }
-}
-
-unsigned BaseRepetition::nx() {
-
-}
-
-unsigned BaseRepetition::ny() {
-
-}
-
-
-KPoint<int> BaseRepetition::getPosition(unsigned x, unsigned y) {
-
 }
 
 }

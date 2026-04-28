@@ -239,55 +239,55 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
     int drawingWidth = subCell->getBoundingWidth() * mRatio;
     int drawingHeight = subCell->getBoundingHeight() * mRatio;
 
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = placement->getRepetition();
-    if (holds_alternative<Repetition>(repetition)) {
-        Repetition r = get<Repetition>(repetition);
+    BaseRepetition repetition = placement->getRepetition();
 
-        int placeX = placement->getX();
-        int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
+    int placeX = placement->getX();
+    int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
-        if (r.nx == 0 && r.ny == 0) {
+    if (repetition.nx() == 0 && repetition.ny() == 0) {
+        if (mMaxDrawDelpth >= currentDepth) {
+            drawCell(painter, subCell, currentDepth + 1, KPoint<int>(placement->getX() + offset.x(), placement->getY() + offset.y()));
+        } else {
+            int x = placeX + subCellBBox.minX;
+            int y = placeY + subCellBBox.minY;
+            QPoint p = calculatePoint(x, y);
+            QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+
+            painter.drawRect(rect);
+        }
+    }
+
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
             if (mMaxDrawDelpth >= currentDepth) {
-                drawCell(painter, subCell, currentDepth + 1, KPoint<int>(placement->getX() + offset.x(), placement->getY() + offset.y()));
+                KPoint<int> pos = repetition.getPosition(i, j);
+                int x = placement->getX() + offset.x() + subCellBBox.minX + pos.x();
+                int y = placement->getY() + offset.y() + subCellBBox.minY + pos.y();
+
+                drawCell(painter, subCell, currentDepth + 1, KPoint<int>(x, y));
             } else {
-                int x = placeX + subCellBBox.minX;
-                int y = placeY + subCellBBox.minY;
+                KPoint<int> pos = repetition.getPosition(i, j);
+                int x = placeX + subCellBBox.minX + pos.x();
+                int y = placeY + subCellBBox.minY + pos.y();
                 QPoint p = calculatePoint(x, y);
                 QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
 
                 painter.drawRect(rect);
             }
         }
-
-        for (int i = 0; i < r.nx; i++) {
-            for (int j = 0; j < r.ny; j++) {
-                if (mMaxDrawDelpth >= currentDepth) {
-                    int x = placement->getX() + offset.x() + subCellBBox.minX + r.dx * i;
-                    int y = placement->getY() + offset.y() + subCellBBox.minY + r.dy * j;
-
-                    drawCell(painter, subCell, currentDepth + 1, KPoint<int>(x, y));
-                } else {
-                    int x = placeX + subCellBBox.minX + r.dx * i;
-                    int y = placeY + subCellBBox.minY + r.dy * j;
-                    QPoint p = calculatePoint(x, y);
-                    QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
-
-                    painter.drawRect(rect);
-                }
-            }
-        }
     }
-    else {
-        int placeX = placement->getX();
-        int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
+    // }
+    // else {
+    //     int placeX = placement->getX();
+    //     int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
-        int x = placeX + subCellBBox.minX;
-        int y = placeY + subCellBBox.minY;
-        QPoint p = calculatePoint(x, y);
-        QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+    //     int x = placeX + subCellBBox.minX;
+    //     int y = placeY + subCellBBox.minY;
+    //     QPoint p = calculatePoint(x, y);
+    //     QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
 
-        painter.drawRect(rect);
-    }
+    //     painter.drawRect(rect);
+    // }
 }
 
 QPoint OASISView::calculatePoint(int x, int y) {

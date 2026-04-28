@@ -12,6 +12,48 @@ namespace OASISParser {
 struct BoundingBox;
 class OASISData;
 
+template <typename T>
+class KPoint {
+    T _x, _y;
+
+public:
+    KPoint(T x, T y): _x(x), _y(y) {};
+    T x() { return _x; }
+    T y() { return _y; }
+    void setX(T x) { _x = x; }
+    void setY(T y) { _y = y; }
+
+    bool operator==(const KPoint& point) {
+        return (_x == point.x()) && (_y == point.y());
+    }
+
+    KPoint<T> operator-(KPoint& p) {
+        return KPoint<T>(_x - p.x(), _y - p.y());
+    }
+};
+
+/*
+ * To handle different type of repetition and replace std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+ */
+class BaseRepetition {
+private:
+    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition = NoRepetition();
+public:
+    unsigned nx();
+    unsigned ny();
+    KPoint<int> getPosition(unsigned x, unsigned y);
+    unsigned repeatWidth();
+    unsigned repeatHeight();
+
+    void setRepetition(std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> r);
+    void setRepetition(const NoRepetition& r);
+    void setRepetition(const Repetition& r);
+    void setRepetition(const NSpaceRepetition& r);
+    void setRepetition(const DiagonalRepetition& r);
+    void setRepetition(const NDisplacementRepetition& r);
+
+};
+
 class CellElement {
 public:
     CellElement() = default;
@@ -116,7 +158,7 @@ public:
     BoundingBox calculateBoundingBox(OASISData& oasisData);
     BoundingBox getRotatedBoundingBox(BoundingBox bBox);
 
-    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const BaseRepetition& getRepetition() { return mRepetition; }
     int getX() { return mX; }
     int getY() { return mY; }
 private:
@@ -124,7 +166,8 @@ private:
     bool mIsFlip = false; // x-axis
     double mRotation = 0;
     double mMag = 1.0;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+
+    BaseRepetition mRepetition = BaseRepetition();
     int mX = 0;
     int mY = 0;
     unsigned mReference = 0;
@@ -180,26 +223,6 @@ struct TrapInfoByte {
 
 enum class Orientation {
     Vertical, Horizontal
-};
-
-template <typename T>
-class KPoint {
-    T _x, _y;
-
-public:
-    KPoint(T x, T y): _x(x), _y(y) {};
-    T x() { return _x; }
-    T y() { return _y; }
-    void setX(T x) { _x = x; }
-    void setY(T y) { _y = y; }
-
-    bool operator==(const KPoint& point) {
-        return (_x == point.x()) && (_y == point.y());
-    }
-
-    KPoint<T> operator-(KPoint& p) {
-        return KPoint<T>(_x - p.x(), _y - p.y());
-    }
 };
 
 class Trapezoid : public CellElement {
@@ -338,17 +361,6 @@ private:
     std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
 };
 
-/*
- * To handle different type of repetition and replace std::variant<Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
- */
-class BaseRepetition {
-private:
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition = NoRepetition();
-public:
-    unsigned nx();
-    unsigned ny();
-    KPoint<int> getPosition(unsigned x, unsigned y);
-};
 
 }
 

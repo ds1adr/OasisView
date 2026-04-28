@@ -82,40 +82,22 @@ void OASISView::drawRectangle(QPainter& painter, OASISParser::Rectangle* rectang
     int h = rectangle->getHeight();
 
     // TODO: Another type of Repetition
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = rectangle->getRepetition();
-    if (holds_alternative<Repetition>(repetition)) {
-        Repetition r = get<Repetition>(repetition);
-        if (r.nx == 0 && r.ny == 0) {
+    BaseRepetition repetition = rectangle->getRepetition();
+
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
+            KPoint<int> pos = repetition.getPosition(i, j);
+
             QPolygon polygon;
-            QPoint p = calculatePoint(initX, initY);
+            int iX = initX + pos.x();
+            int iY = initY + pos.y();
+            QPoint p = calculatePoint(iX, iY);
             polygon << p;
-            polygon << QPoint(calculatePoint(initX + w, initY));
-            polygon << QPoint(calculatePoint(initX + w, initY + h));
-            polygon << QPoint(calculatePoint(initX, initY + h));
+            polygon << QPoint(calculatePoint(iX + w, iY));
+            polygon << QPoint(calculatePoint(iX + w, iY + h));
+            polygon << QPoint(calculatePoint(iX, iY + h));
             painter.drawPolygon(polygon);
-        } else {
-            for (int i = 0; i < r.nx; i++) {
-                for (int j = 0; j < r.ny; j++) {
-                    QPolygon polygon;
-                    int iX = initX + r.dx * i;
-                    int iY = initY + r.dy * j;
-                    QPoint p = calculatePoint(iX, initY + iY);
-                    polygon << p;
-                    polygon << QPoint(calculatePoint(iX + w, iY));
-                    polygon << QPoint(calculatePoint(iX + w, iY + h));
-                    polygon << QPoint(calculatePoint(iX, iY + h));
-                    painter.drawPolygon(polygon);
-                }
-            }
         }
-    } else {
-        QPolygon polygon;
-        QPoint p = calculatePoint(initX, initY);
-        polygon << p;
-        polygon << QPoint(calculatePoint(initX + w, initY));
-        polygon << QPoint(calculatePoint(initX + w, initY + h));
-        polygon << QPoint(calculatePoint(initX, initY + h));
-        painter.drawPolygon(polygon);
     }
 }
 
@@ -244,7 +226,7 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
     int placeX = placement->getX();
     int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
-    if (repetition.nx() == 0 && repetition.ny() == 0) {
+    if (repetition.nx() == 1 && repetition.ny() == 1) {
         if (mMaxDrawDelpth >= currentDepth) {
             drawCell(painter, subCell, currentDepth + 1, KPoint<int>(placement->getX() + offset.x(), placement->getY() + offset.y()));
         } else {
@@ -256,7 +238,6 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
             painter.drawRect(rect);
         }
     } else {
-
         for (int i = 0; i < repetition.nx(); i++) {
             for (int j = 0; j < repetition.ny(); j++) {
                 if (mMaxDrawDelpth >= currentDepth) {

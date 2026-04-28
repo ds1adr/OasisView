@@ -391,7 +391,7 @@ void Rectangle::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         mY = _previousY;
     }
     if (infoByte.isRepetation) {
-        mRepetition = OASISParser::parseRepetition(fileStream);
+        mRepetition.setRepetition(parseRepetition(fileStream));
     }
 }
 

@@ -199,11 +199,11 @@ public:
     int getMaxY() { return mY + mHeight; }
     unsigned getWidth() { return mWidth; }
     unsigned getHeight() { return mHeight; }
-    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const BaseRepetition& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    BaseRepetition mRepetition = BaseRepetition();
     int mY = 0;
     int mX = 0;
     unsigned mHeight;

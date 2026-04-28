@@ -24,6 +24,9 @@ unsigned BaseRepetition::nx() {
     if (holds_alternative<NoRepetition>(mRepetition)) {
         NoRepetition r = get<NoRepetition>(mRepetition);
         return 1;
+    } else if (holds_alternative<Repetition>(mRepetition)) {
+        Repetition r = get<Repetition>(mRepetition);
+        return r.nx;
     }
     return 1;
 }
@@ -32,6 +35,9 @@ unsigned BaseRepetition::ny() {
     if (holds_alternative<NoRepetition>(mRepetition)) {
         NoRepetition r = get<NoRepetition>(mRepetition);
         return 1;
+    } else if (holds_alternative<Repetition>(mRepetition)) {
+        Repetition r = get<Repetition>(mRepetition);
+        return r.ny;
     }
     return 1;
 }

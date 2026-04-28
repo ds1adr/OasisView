@@ -448,7 +448,7 @@ void Trapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         mY = _previousY;
     }
     if (infoByte.isRepetition) {
-        mRepetition = parseRepetition(fileStream);
+        mRepetition.setRepetition(parseRepetition(fileStream));
     }
     mOrientation = infoByte.isVertical ? Orientation::Vertical : Orientation::Horizontal;
 }

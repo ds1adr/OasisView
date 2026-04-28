@@ -239,7 +239,7 @@ public:
     int getMaxY() { return mX + mHeight; }
 
     const std::vector<KPoint<int>> getInitialPoints();
-    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const BaseRepetition& getRepetition() { return mRepetition; }
 private:
     unsigned int mCode;  // 23: delta-a, delta-b, 24: delta-a, 25: delta-b
 
@@ -251,7 +251,7 @@ private:
     int mDeltaB = 0;
     int mX = 0;
     int mY = 0;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    BaseRepetition mRepetition;
     Orientation mOrientation;
 };
 

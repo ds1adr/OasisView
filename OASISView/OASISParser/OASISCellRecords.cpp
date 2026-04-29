@@ -130,7 +130,7 @@ void Text::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
         mY = OASISParser::parseInt(fileStream);
     }
     if (infoByte.isRepetition) {
-        mRepetition = OASISParser::parseRepetition(fileStream);
+        mRepetition.setRepetition(OASISParser::parseRepetition(fileStream));
     }
 }
 
@@ -569,7 +569,7 @@ void CTrapezoid::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) 
         mY = _previousY;
     }
     if (infoByte.isRepetition) {
-        mRepetition = parseRepetition(fileStream);
+        mRepetition.setRepetition(parseRepetition(fileStream));
     }
 }
 
@@ -932,7 +932,7 @@ void Polygon::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& lay
         mPoints.push_back(KPoint<int>(mPoints[0].x(), mPoints[0].y()));
     }
     if (infoByte.isRepetition) {
-        mRepetition = parseRepetition(fileStream);
+        mRepetition.setRepetition(parseRepetition(fileStream));
     }
 }
 
@@ -1000,7 +1000,7 @@ void Path::parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerS
         mY = _previousY;
     }
     if (infoByte.isRepetition) {
-        mRepetition = parseRepetition(fileStream);
+        mRepetition.setRepetition(parseRepetition(fileStream));
     }
 }
 

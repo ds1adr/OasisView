@@ -77,10 +77,10 @@ struct TextInfoByte {
 class Text: public CellElement {
 public:
     Text() = default;
-    ~Text();
+    ~Text() override;
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
-    std::string elementName() { return "Text"; }
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
+    std::string elementName() override { return "Text"; }
 private:
     unsigned mReference = 0;
     std::string mText;
@@ -88,7 +88,7 @@ private:
     unsigned mTextType;
     int mX = 0;
     int mY = 0;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    BaseRepetition mRepetition = BaseRepetition();
 };
 
 struct PropertyInfoByte {
@@ -102,17 +102,17 @@ struct PropertyInfoByte {
 class Property: public CellElement {
 public:
     Property() = default;
-    ~Property();
+    ~Property() override;
 
-    std::string elementName() { return "Property"; }
+    std::string elementName() override { return "Property"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
     void setValues(Property* origin);
 
-    unsigned getReference() { return mReference; }
-    bool getStandard() { return mStandard; }
+    unsigned getReference() const { return mReference; }
+    bool getStandard() const { return mStandard; }
     std::string getPropName() { return mPropNameString; }
-    unsigned getPropValueCount() { return mPropValueCount; }
+    unsigned getPropValueCount() const { return mPropValueCount; }
     std::vector<std::variant<float, double, unsigned int, int, std::string>> getProperty() { return mProperty; }
 private:
     unsigned mReference;
@@ -147,12 +147,12 @@ struct MPlacementInfoByte {
 class Placement: public CellElement {
 public:
     Placement(unsigned code): mCode(code) {};
-    ~Placement();
+    ~Placement() override;
 
-    std::string elementName() { return "Placement"; }
+    std::string elementName() override { return "Placement"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
-    const unsigned getReference() { return mReference; }
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
+    const unsigned getReference() const { return mReference; }
     const std::string& getCellName() { return mCellName; }
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
@@ -188,11 +188,11 @@ struct RectangleInfoByte {
 class Rectangle: public CellElement {
 public:
     Rectangle() = default;
-    ~Rectangle();
+    ~Rectangle() override;
 
-    std::string elementName() { return "Rectangle"; }
+    std::string elementName() override { return "Rectangle"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
     int getMinX() { return mX; }
     int getMinY() { return mY; }
     int getMaxX() { return mX + mWidth; }
@@ -228,11 +228,11 @@ enum class Orientation {
 class Trapezoid : public CellElement {
 public:
     Trapezoid(unsigned int code);
-    ~Trapezoid();
+    ~Trapezoid() override;
 
-    std::string elementName() { return "Trapezoid"; }
+    std::string elementName() override { return "Trapezoid"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
     int getMinX() { return mX; }
     int getMinY() { return mY; }
     int getMaxX() { return mX + mWidth; }
@@ -269,11 +269,11 @@ struct CTrapInfoByte {
 class CTrapezoid : public CellElement {
 public:
     CTrapezoid() = default;
-    ~CTrapezoid();
+    ~CTrapezoid() override;
 
-    std::string elementName() { return "CTrapezoid"; }
+    std::string elementName() override { return "CTrapezoid"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
     unsigned getType() { return mType; }
     const std::vector<KPoint<int>> getInitialPoints();
 
@@ -282,7 +282,7 @@ public:
     int getMaxX();
     int getMaxY();
 
-    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const BaseRepetition& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
@@ -291,7 +291,7 @@ private:
     unsigned mHeight;
     int mX = 0;
     int mY = 0;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    BaseRepetition mRepetition;
 };
 
 struct PolygonInfoByte {
@@ -306,22 +306,22 @@ struct PolygonInfoByte {
 class Polygon : public CellElement {
 public:
     Polygon() = default;
-    ~Polygon();
+    ~Polygon() override;
 
-    std::string elementName() { return "Polygon"; }
+    std::string elementName() override { return "Polygon"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
 
     BoundingBox calculateBoundingBox(OASISData& oasisData);
     const std::vector<KPoint<int>>& getInitialPoints() { return mPoints; };
-    const std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition>& getRepetition() { return mRepetition; }
+    const BaseRepetition& getRepetition() { return mRepetition; }
 private:
     unsigned mLayerNumber;
     unsigned mDataType;
     int mX = 0;
     int mY = 0;
     std::vector<KPoint<int>> mPoints;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    BaseRepetition mRepetition;
 };
 
 struct PathInfoByte {
@@ -344,11 +344,11 @@ struct ExtensionByte {
 class Path : public CellElement {
 public:
     Path() = default;
-    ~Path();
+    ~Path() override;
 
-    std::string elementName() { return "Path"; }
+    std::string elementName() override { return "Path"; }
 
-    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet) override;
 
 private:
     unsigned mLayerNumber;
@@ -358,7 +358,7 @@ private:
     unsigned mHalfWidth;
     int mStartExt = 0;
     int mEndExt = 0;
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> mRepetition;
+    BaseRepetition mRepetition;
 };
 
 

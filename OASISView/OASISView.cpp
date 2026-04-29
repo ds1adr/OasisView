@@ -2,7 +2,6 @@
 #include "OASISView.h"
 #include "OASISParser/OASISData.h"
 
-#include <iostream>
 #include <variant>
 #include <QMouseEvent>
 #include <QPainter>
@@ -121,72 +120,36 @@ void OASISView::drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezo
 
 void OASISView::drawCTrapezoid(QPainter& painter, CTrapezoid* cTrapezoid, OASISParser::KPoint<int> offset) {
     const std::vector<KPoint<int>> points = cTrapezoid->getInitialPoints();
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = cTrapezoid->getRepetition();
+    BaseRepetition repetition = cTrapezoid->getRepetition();
 
-    // TODO: Repetition
-    if (holds_alternative<Repetition>(repetition)) {
-        Repetition r = get<Repetition>(repetition);
-        if (r.nx == 0 && r.ny == 0) {
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
+            KPoint<int> pos = repetition.getPosition(i, j);
+
             QPolygon polygon;
             for (KPoint<int> p : points) {
-                QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
+                QPoint qP = calculatePoint(p.x() + offset.x() + pos.x(), p.y() + offset.y() + pos.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
-        } else {
-            for (int i = 0; i < r.nx; i++) {
-                for (int j = 0; j < r.ny; j++) {
-                    QPolygon polygon;
-                    for (KPoint<int> p : points) {
-                        QPoint qP = calculatePoint(p.x() + offset.x() + r.dx * i, p.y() + offset.y() + r.dy * j);
-                        polygon << qP;
-                    }
-                    painter.drawPolygon(polygon);
-                }
-            }
         }
-    } else {
-        QPolygon polygon;
-        for (KPoint<int> p : points) {
-            QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
-            polygon << qP;
-        }
-        painter.drawPolygon(polygon);
     }
 }
 
 void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon, OASISParser::KPoint<int> offset) {
     const vector<KPoint<int>> points = _polygon->getInitialPoints();
-    std::variant<NoRepetition, Repetition, NSpaceRepetition, DiagonalRepetition, NDisplacementRepetition> repetition = _polygon->getRepetition();
+    BaseRepetition repetition = _polygon->getRepetition();
 
-    if (holds_alternative<Repetition>(repetition)) {
-        Repetition r = get<Repetition>(repetition);
-        if (r.nx == 0 && r.ny == 0) {
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
+            KPoint<int> pos = repetition.getPosition(i, j);
             QPolygon polygon;
             for (KPoint<int> p : points) {
-                QPoint qP = calculatePoint(p.x() + offset.x(), p.y() + offset.y());
+                QPoint qP = calculatePoint(p.x() + offset.x() + pos.x(), p.y() + offset.y() + pos.y());
                 polygon << qP;
             }
             painter.drawPolygon(polygon);
-        } else {
-            for (int i = 0; i < r.nx; i++) {
-                for (int j = 0; j < r.ny; j++) {
-                    QPolygon polygon;
-                    for (KPoint<int> p : points) {
-                        QPoint qP = calculatePoint(p.x() + offset.x() + r.dx * i, p.y() + offset.y() + r.dy * j);
-                        polygon << qP;
-                    }
-                    painter.drawPolygon(polygon);
-                }
-            }
         }
-    } else {
-        QPolygon polygon;
-        for (KPoint<int> p : points) {
-            QPoint qP = calculatePoint(p.x(), p.y());
-            polygon << qP;
-        }
-        painter.drawPolygon(polygon);
     }
 }
 
@@ -207,35 +170,22 @@ void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placeme
     int placeX = placement->getX();
     int placeY = placement->getY() + subCell->getBoundingHeight(); // QRect origin is top left
 
-    if (repetition.nx() == 1 && repetition.ny() == 1) {
-        if (mMaxDrawDelpth >= currentDepth) {
-            drawCell(painter, subCell, currentDepth + 1, KPoint<int>(placement->getX() + offset.x(), placement->getY() + offset.y()));
-        } else {
-            int x = placeX + subCellBBox.minX;
-            int y = placeY + subCellBBox.minY;
-            QPoint p = calculatePoint(x, y);
-            QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
+            if (mMaxDrawDelpth >= currentDepth) {
+                KPoint<int> pos = repetition.getPosition(i, j);
+                int x = placement->getX() + offset.x() + subCellBBox.minX + pos.x();
+                int y = placement->getY() + offset.y() + subCellBBox.minY + pos.y();
 
-            painter.drawRect(rect);
-        }
-    } else {
-        for (int i = 0; i < repetition.nx(); i++) {
-            for (int j = 0; j < repetition.ny(); j++) {
-                if (mMaxDrawDelpth >= currentDepth) {
-                    KPoint<int> pos = repetition.getPosition(i, j);
-                    int x = placement->getX() + offset.x() + subCellBBox.minX + pos.x();
-                    int y = placement->getY() + offset.y() + subCellBBox.minY + pos.y();
+                drawCell(painter, subCell, currentDepth + 1, KPoint<int>(x, y));
+            } else {
+                KPoint<int> pos = repetition.getPosition(i, j);
+                int x = placeX + subCellBBox.minX + pos.x();
+                int y = placeY + subCellBBox.minY + pos.y();
+                QPoint p = calculatePoint(x, y);
+                QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
 
-                    drawCell(painter, subCell, currentDepth + 1, KPoint<int>(x, y));
-                } else {
-                    KPoint<int> pos = repetition.getPosition(i, j);
-                    int x = placeX + subCellBBox.minX + pos.x();
-                    int y = placeY + subCellBBox.minY + pos.y();
-                    QPoint p = calculatePoint(x, y);
-                    QRect rect = QRect(p.x(), p.y(), drawingWidth, drawingHeight);
-
-                    painter.drawRect(rect);
-                }
+                painter.drawRect(rect);
             }
         }
     }

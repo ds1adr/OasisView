@@ -1,8 +1,6 @@
-#include "OASISParser/OASISElement.h"
 #include "OASISView.h"
 #include "OASISParser/OASISData.h"
 
-#include <variant>
 #include <QMouseEvent>
 #include <QPainter>
 

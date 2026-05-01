@@ -8,13 +8,26 @@ struct Config {
     double NA = 1.35;
     double sigma = 0.7; // Partial coherence
     int N = 512;        // Simulation grid size (NxN)
+    double dx = 0.1, dy = 0.1;
 };
+
+void shift_fft(fftw_complex* shifted, fftw_complex* origin, const Config& c, int shiftX, int shiftY) {
+    for (int i = 0; i < c.N; i++) {
+        int ii = (i + c.N + shiftX) % c.N;
+        for (int j = 0; j < c.N; j++) {
+            int jj = (i + c.N + shiftY) % c.N;
+            shifted[ii * c.N + jj][0] = origin[i * c.N + j][0];
+            shifted[ii * c.N + jj][1] = origin[i * c.N + j][1];
+        }
+    }
+}
 
 void simulate_2d_abbe(const Config& c) {
     int size = c.N * c.N;
     fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+    fftw_complex *shifted = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     std::vector<double> total_intensity(size, 0.0);
 
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
@@ -34,8 +47,10 @@ void simulate_2d_abbe(const Config& c) {
 
             source_points++;
             // Apply Shift + Pupil + IFFT Logic:
-            // In a full implementation, you would:
             // a) Shift 'spectrum' by (sx, sy)
+            int shiftX = std::lround(sx * (c.NA / c.wavelength) * c.N * c.dx);
+            int shiftY = std::lround(sy * (c.NA / c.wavelength) * c.N * c.dy);
+            shift_fft(shifted, spectrum, c, shiftX, shiftY);
             // b) Multiply by Pupil(fx, fy) where f^2 + g^2 <= (NA/lambda)^2
             // c) fftw_execute(p_backward);
 
@@ -49,5 +64,5 @@ void simulate_2d_abbe(const Config& c) {
     // Cleanup
     fftw_destroy_plan(p_forward);
     fftw_destroy_plan(p_backward);
-    fftw_free(mask_data); fftw_free(spectrum); fftw_free(field);
+    fftw_free(mask_data); fftw_free(spectrum); fftw_free(field); fftw_free(shifted);
 }

@@ -27,7 +27,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     mCellNameComboBox = new QComboBox(this);
     mToolBar->addWidget(mCellNameComboBox);
-    connect(mCellNameComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(cellNameComboBoxChanged(QString)));
+    connect(mCellNameComboBox, SIGNAL(currentTextChanged(QString&)), this, SLOT(cellNameComboBoxChanged(QString&)));
+
+    mCellDepthLabel = new QLabel(this);
+    mCellDepthLabel->setText("Cell Depth:");
+    mToolBar->addWidget(mCellDepthLabel);
+
+    mCellDepthComboBox = new QComboBox(this);
+    mToolBar->addWidget(mCellDepthComboBox);
+    connect(mCellDepthComboBox, SIGNAL(currentTextChanged(QString&)), this, SLOT(cellDepthComboBoxChanged(QString&)));
 
     mDock = new QDockWidget("", this);
     mDock->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -84,10 +92,14 @@ void MainWindow::openFileClicked() {
     }
 }
 
-void MainWindow::cellNameComboBoxChanged(QString cellName) {
+void MainWindow::cellNameComboBoxChanged(QString& cellName) {
     if (!cellName.isEmpty()) {
         drawCell(cellName.toStdString());
     }
+}
+
+void MainWindow::cellDepthComboBoxChanged(QString& depth) {
+
 }
 
 void MainWindow::drawCell(string cellName) {

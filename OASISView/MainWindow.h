@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QComboBox>
+#include <QLabel>
 #include <QListWidget>
 #include <QMainWindow>
 
@@ -14,6 +15,8 @@ class MainWindow : public QMainWindow
 private:
     QToolBar* mToolBar;
     QComboBox* mCellNameComboBox;
+    QLabel* mCellDepthLabel;
+    QComboBox* mCellDepthComboBox;
     QDockWidget* mDock;
     QListWidget* mLayerListWidget;
     OASISParser::OASISData mOASISData;
@@ -28,7 +31,8 @@ public:
 
 private slots:
     void openFileClicked();
-    void cellNameComboBoxChanged(QString cellName);
+    void cellNameComboBoxChanged(QString& cellName);
+    void cellDepthComboBoxChanged(QString& depth);
     void statusChanged(QString& message);
 };
 #endif // MAINWINDOW_H

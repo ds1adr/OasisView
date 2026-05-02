@@ -20,6 +20,8 @@ private:
     unsigned int mOffsetFlag; // 0 : Table offset is in the Start, 1: Table offset is in the End
     TableOffsets mTableOffsets;
 
+    unsigned mMaxDepth;
+
     int parseMagicBytes(std::ifstream& fileStream);
     int parseStart(std::ifstream& fileStream);
 public:

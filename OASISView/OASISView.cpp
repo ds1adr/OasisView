@@ -25,6 +25,11 @@ void OASISView::paintEvent(QPaintEvent* event) {
     painter.end();
 }
 
+void OASISView::setMaxDrawDepth(int depth) {
+    mMaxDrawDelpth = depth;
+    update();
+}
+
 // TODO: need to improve this draw logic
 void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
     mOASISData = oasisData;

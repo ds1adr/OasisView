@@ -99,7 +99,8 @@ void MainWindow::cellNameComboBoxChanged(QString& cellName) {
 }
 
 void MainWindow::cellDepthComboBoxChanged(QString& depth) {
-
+    int d = depth.toInt();
+    mOASISView->setMaxDrawDepth(d);
 }
 
 void MainWindow::drawCell(string cellName) {

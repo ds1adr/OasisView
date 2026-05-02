@@ -1,5 +1,6 @@
 #include "OASISCells.h"
 #include "OASISCellRecords.h"
+#include "OASISData.h"
 
 #include <fstream>
 #include <iostream>
@@ -116,6 +117,17 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
     }
 
     }
+}
+
+unsigned OASISCell::calculateDepth(unsigned current) {
+    unsigned maxDepth = current;
+    for (CellElement* element: mCellElements) {
+        Placement* placement = dynamic_cast<Placement*>(element);
+        if (placement != nullptr) {
+            OASISCell* subCell = placement->getCellName().empty() ? mOASISData.getCell(placement->getReference()) : mOASISData.getCell(placement->getCellName());
+        }
+    }
+    return maxDepth;
 }
 
 const BoundingBox& OASISCell::calculateBoundingBox() {

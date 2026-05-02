@@ -60,6 +60,7 @@ private:
     std::string mName;
     std::vector<CellElement*> mCellElements;
     BoundingBox mBoundingBox;
+    unsigned mMaxDepth = 0;
 public:
     OASISCell(OASISData& oasisData, unsigned reference);
     OASISCell(OASISData& oasisData, std::string& name);
@@ -68,6 +69,7 @@ public:
     bool isValid() { return (mReference > 0 || !mName.empty()); }
 
     void parse(std::ifstream& fileStream, std::unordered_set<unsigned>& layerSet);
+    unsigned calculateDepth(unsigned current);
     const BoundingBox& calculateBoundingBox();
     const BoundingBox& getBoundingBox() { return mBoundingBox; }
     const std::vector<CellElement*> getCellElements() { return mCellElements; }

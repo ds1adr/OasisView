@@ -37,6 +37,8 @@ public:
     OASISView();
     ~OASISView();
 
+    void setMaxDrawDepth(int depth);
+
     void updateStatus(QString& message) {
         emit statusChanged(message);
     }

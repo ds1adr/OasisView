@@ -113,6 +113,16 @@ OASISCell* OASISData::getCell(std::string cellName) {
     return mCellMap.at(cellName);
 }
 
+int OASISData::getDepth() {
+    int maxDepth = 0;
+    for (auto& [name, cell] : mCellMap) {
+        int d = cell->calculateDepth(0);
+        maxDepth = max(maxDepth, d);
+    }
+    mMaxDepth = maxDepth;
+    return maxDepth;
+}
+
 vector<unsigned> OASISData::getLayers() {
     vector<unsigned> sortedVector(mLayerSet.begin(), mLayerSet.end());
 

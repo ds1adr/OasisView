@@ -60,7 +60,7 @@ private:
     std::string mName;
     std::vector<CellElement*> mCellElements;
     BoundingBox mBoundingBox;
-    unsigned mMaxDepth = 0;
+    int mMaxDepth = -1;
 public:
     OASISCell(OASISData& oasisData, unsigned reference);
     OASISCell(OASISData& oasisData, std::string& name);

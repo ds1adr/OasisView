@@ -60,6 +60,8 @@ MainWindow::~MainWindow()
     delete mOpenAction;
     delete mFileMenu;
     delete mCellNameComboBox;
+    delete mCellDepthLabel;
+    delete mCellDepthComboBox;
     delete mDock;
     delete mLayerListWidget;
     delete mOASISView;
@@ -79,6 +81,8 @@ void MainWindow::openFileClicked() {
 
     qDebug() << "Finished";
     vector<unsigned> layers = mOASISData.getLayers();
+    int depth = mOASISData.getDepth();
+    setDepthCombo(depth);
     mLayerListWidget->clear();
     for (int i : layers) {
         QListWidgetItem* item = new QListWidgetItem(tr("Layer ") + QString::number(i), mLayerListWidget);
@@ -92,6 +96,13 @@ void MainWindow::openFileClicked() {
     }
 }
 
+void MainWindow::setDepthCombo(int depth) {
+    mCellDepthComboBox->clear();
+    for (int i = 0; i <= depth; i++) {
+        mCellDepthComboBox->addItem(QString::number(i));
+    }
+}
+
 void MainWindow::cellNameComboBoxChanged(QString& cellName) {
     if (!cellName.isEmpty()) {
         drawCell(cellName.toStdString());
@@ -101,6 +112,7 @@ void MainWindow::cellNameComboBoxChanged(QString& cellName) {
 void MainWindow::cellDepthComboBoxChanged(QString& depth) {
     int d = depth.toInt();
     mOASISView->setMaxDrawDepth(d);
+    mOASISView->update();
 }
 
 void MainWindow::drawCell(string cellName) {

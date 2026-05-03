@@ -25,6 +25,7 @@ private:
     QAction* mOpenAction;
 
     void drawCell(std::string cellName);
+    void setDepthCombo(int depth);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

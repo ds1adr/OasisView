@@ -20,7 +20,7 @@ private:
     unsigned int mOffsetFlag; // 0 : Table offset is in the Start, 1: Table offset is in the End
     TableOffsets mTableOffsets;
 
-    unsigned mMaxDepth;
+    unsigned mMaxDepth = -1;
 
     int parseMagicBytes(std::ifstream& fileStream);
     int parseStart(std::ifstream& fileStream);
@@ -36,6 +36,8 @@ public:
 
     std::vector<unsigned> getLayers();
     std::vector<std::string> getAllCellNames();
+
+    int getDepth();
 };
 
 }

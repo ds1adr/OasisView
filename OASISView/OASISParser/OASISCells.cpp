@@ -120,13 +120,19 @@ void OASISCell::parse(ifstream& fileStream, unordered_set<unsigned>& layerSet) {
 }
 
 unsigned OASISCell::calculateDepth(unsigned current) {
+    if (mMaxDepth != -1) {
+        return mMaxDepth;
+    }
     unsigned maxDepth = current;
     for (CellElement* element: mCellElements) {
         Placement* placement = dynamic_cast<Placement*>(element);
         if (placement != nullptr) {
             OASISCell* subCell = placement->getCellName().empty() ? mOASISData.getCell(placement->getReference()) : mOASISData.getCell(placement->getCellName());
+            unsigned d = subCell->calculateDepth(current + 1);
+            maxDepth = max(maxDepth, d);
         }
     }
+    mMaxDepth = maxDepth;
     return maxDepth;
 }
 

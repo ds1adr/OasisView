@@ -22,19 +22,20 @@ void shift_fft(fftw_complex* shifted, fftw_complex* origin, const Config& c, int
     }
 }
 
-void simulate_2d_abbe(const Config& c) {
+/*
+ * std::vector<double> total_intensity(size, 0.0);
+ */
+void simulate_2d_abbe(const Config& c, fftw_complex *mask_data, std::vector<double>& total_intensity) {
     int size = c.N * c.N;
-    fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+    // fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
-    std::vector<double> total_intensity(size, 0.0);
+
 
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
     // (User would fill mask_data here)
     fftw_plan p_forward = fftw_plan_dft_2d(c.N, c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(p_forward);
-
-    // 2. Setup Inverse Plan
 
 
     // 3. Loop over 2D Source Grid (Abbe sum)
@@ -92,5 +93,5 @@ void simulate_2d_abbe(const Config& c) {
     // Cleanup
     fftw_destroy_plan(p_forward);
 
-    fftw_free(mask_data); fftw_free(spectrum); fftw_free(field);
+    fftw_free(spectrum); fftw_free(field);
 }

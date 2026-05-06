@@ -23,6 +23,8 @@ private:
     OASISView* mOASISView;
     QMenu* mFileMenu;
     QAction* mOpenAction;
+    QMenu* mSimulationMenu;
+    QAction* mSimulationAction;
 
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
@@ -32,6 +34,7 @@ public:
 
 private slots:
     void openFileClicked();
+    void simulationClicked();
     void cellNameComboBoxChanged(QString& cellName);
     void cellDepthComboBoxChanged(QString& depth);
     void statusChanged(QString& message);

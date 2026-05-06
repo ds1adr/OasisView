@@ -22,8 +22,17 @@ MainWindow::MainWindow(QWidget *parent)
     mFileMenu = menuBar()->addMenu(tr("&File"));
     mFileMenu->addAction(mOpenAction);
 
+    mSimulationAction = new QAction(QIcon(""), tr("Simulation"), this);
+    mSimulationAction->setStatusTip("Run Simulation");
+    connect(mSimulationAction, SIGNAL(triggered()), this, SLOT(simulationClicked()));
+    mSimulationMenu = menuBar()->addMenu("Simulation");
+    mSimulationMenu->addAction(mSimulationAction);
+
     mToolBar = addToolBar("File");
     mToolBar->addAction(mOpenAction);
+
+    mToolBar = addToolBar("Simulation");
+    mToolBar->addAction(mSimulationAction);
 
     mCellNameComboBox = new QComboBox(this);
     mToolBar->addWidget(mCellNameComboBox);
@@ -59,6 +68,8 @@ MainWindow::~MainWindow()
 {
     delete mOpenAction;
     delete mFileMenu;
+    delete mSimulationAction;
+    delete mSimulationMenu;
     delete mCellNameComboBox;
     delete mCellDepthLabel;
     delete mCellDepthComboBox;
@@ -94,6 +105,10 @@ void MainWindow::openFileClicked() {
     for (string& cellName : cellNames) {
         mCellNameComboBox->addItem(QString::fromStdString(cellName));
     }
+}
+
+void MainWindow::simulationClicked() {
+
 }
 
 void MainWindow::setDepthCombo(int depth) {

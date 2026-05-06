@@ -31,7 +31,6 @@ void simulate_2d_abbe(const Config& c, fftw_complex *mask_data, std::vector<doub
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
 
-
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
     // (User would fill mask_data here)
     fftw_plan p_forward = fftw_plan_dft_2d(c.N, c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);

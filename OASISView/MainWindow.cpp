@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "simulationdialog.h"
 
 #include <thread>
 
@@ -108,7 +109,17 @@ void MainWindow::openFileClicked() {
 }
 
 void MainWindow::simulationClicked() {
+    // Need to check if data is loaded
+    SimulationDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        // make mask data from QOASISData (1D array with 2D size)
 
+        // set simulation config (NA, Sigma and etc)
+
+        // run fft
+
+        // Display Dialog or Widget
+    }
 }
 
 void MainWindow::setDepthCombo(int depth) {

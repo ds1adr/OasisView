@@ -2,7 +2,10 @@
 #define SIMULATIONDIALOG_H
 
 #include <QDialog>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QVBoxLayout>
 
 class SimulationDialog : public QDialog
 {
@@ -12,8 +15,16 @@ public:
     ~SimulationDialog();
 
 private:
+    QVBoxLayout* mMainLayout;
+    QHBoxLayout* mLowLeftLayout;
+    QHBoxLayout* mUpperRightLayout;
+
     QLabel* mLowLeftLabel;
+    QLineEdit* mLowLeftX;
+    QLineEdit* mLowLeftY;
     QLabel* mUpperRightLabel;
+    QLineEdit* mUpperRightX;
+    QLineEdit* mUpperRightY;
 
 signals:
 };

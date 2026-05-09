@@ -21,10 +21,16 @@ private:
 
     QLabel* mLowLeftLabel;
     QLineEdit* mLowLeftX;
+    QLabel* mLowLeftXUnitLabel;
     QLineEdit* mLowLeftY;
+    QLabel* mLowLeftYUnitLabel;
     QLabel* mUpperRightLabel;
     QLineEdit* mUpperRightX;
+    QLabel* mUpperRightXUnitLabel;
     QLineEdit* mUpperRightY;
+    QLabel* mUpperRightYUnitLabel;
+
+    QFrame* mLine;
 
 signals:
 };

@@ -32,6 +32,21 @@ private:
 
     QFrame* mLine;
 
+    QGridLayout* mExposureLayout;
+
+    QLabel* mWaveLengthLabel;
+    QLineEdit* mWaveLength;
+    QLabel* mNALabel;
+    QLineEdit* mNA;
+    QLabel* mSigmaLabel;
+    QLineEdit* mSigma;
+    QLabel* mInnerSigmaLabel;
+    QLineEdit* mInnerSigma;
+
+    QHBoxLayout* mButtonsLayout;
+    QPushButton* mCancelButton;
+    QPushButton* mRunButton;
+
 signals:
 };
 

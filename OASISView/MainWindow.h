@@ -35,8 +35,8 @@ public:
 private slots:
     void openFileClicked();
     void simulationClicked();
-    void cellNameComboBoxChanged(QString& cellName);
-    void cellDepthComboBoxChanged(QString& depth);
+    void cellNameComboBoxChanged(QString cellName);
+    void cellDepthComboBoxChanged(QString depth);
     void statusChanged(QString& message);
 };
 #endif // MAINWINDOW_H

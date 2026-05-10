@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mCellNameComboBox = new QComboBox(this);
     mToolBar->addWidget(mCellNameComboBox);
-    connect(mCellNameComboBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(cellNameComboBoxChanged(QString&)));
+    connect(mCellNameComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(cellNameComboBoxChanged(QString)));
 
     mCellDepthLabel = new QLabel(this);
     mCellDepthLabel->setText("Cell Depth:");
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mCellDepthComboBox = new QComboBox(this);
     mToolBar->addWidget(mCellDepthComboBox);
-    connect(mCellDepthComboBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(cellDepthComboBoxChanged(QString&)));
+    connect(mCellDepthComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(cellDepthComboBoxChanged(QString)));
 
     mDock = new QDockWidget("", this);
     mDock->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -129,13 +129,13 @@ void MainWindow::setDepthCombo(int depth) {
     }
 }
 
-void MainWindow::cellNameComboBoxChanged(QString& cellName) {
+void MainWindow::cellNameComboBoxChanged(QString cellName) {
     if (!cellName.isEmpty()) {
         drawCell(cellName.toStdString());
     }
 }
 
-void MainWindow::cellDepthComboBoxChanged(QString& depth) {
+void MainWindow::cellDepthComboBoxChanged(QString depth) {
     int d = depth.toInt();
     mOASISView->setMaxDrawDepth(d);
     mOASISView->update();

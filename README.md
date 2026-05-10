@@ -19,4 +19,16 @@ Reference:
 
 WIP:
 
-<img width="851" height="678" alt="Screenshot 2026-04-13 at 6 39 38 PM" src="https://github.com/user-attachments/assets/3589e14b-135d-4442-bb11-6e9687a360c3" />
+<img width="889" height="696" alt="Screenshot 2026-05-09 at 10 50 18 PM" src="https://github.com/user-attachments/assets/588dc3d4-70f1-49a5-832b-a68cda14cd8d" />
+
+Zoom In
+
+<img width="889" height="696" alt="Screenshot 2026-05-09 at 10 50 42 PM" src="https://github.com/user-attachments/assets/8fdc84f9-f522-4ad1-a73d-7a51fd69b701" />
+
+Zoom Out
+
+<img width="889" height="696" alt="Screenshot 2026-05-09 at 10 51 21 PM" src="https://github.com/user-attachments/assets/f59386e3-1806-4c61-90a2-fe791221f702" />
+
+Pan
+
+<img width="889" height="696" alt="Screenshot 2026-05-09 at 10 51 47 PM" src="https://github.com/user-attachments/assets/06f85ae0-6aa1-4608-bbec-2a7946ca3bdc" />

@@ -10,12 +10,15 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mLowLeftLayout = new QHBoxLayout();
     mMainLayout->addLayout(mLowLeftLayout);
 
+    QIntValidator *intValidator = new QIntValidator();
+    QDoubleValidator* doubleValidator = new QDoubleValidator();
+
     mLowLeftLabel = new QLabel();
     mLowLeftLabel->setText("Lower Left Point, X:");
     mLowLeftLayout->addWidget(mLowLeftLabel);
 
     mLowLeftX = new QLineEdit();
-    mLowLeftX->setValidator(new QDoubleValidator());
+    mLowLeftX->setValidator(intValidator);
     mLowLeftLayout->addWidget(mLowLeftX);
 
     mLowLeftXUnitLabel = new QLabel();
@@ -23,7 +26,7 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mLowLeftLayout->addWidget(mLowLeftXUnitLabel);
 
     mLowLeftY = new QLineEdit();
-    mLowLeftY->setValidator(new QDoubleValidator());
+    mLowLeftY->setValidator(intValidator);
     mLowLeftLayout->addWidget(mLowLeftY);
 
     mLowLeftYUnitLabel = new QLabel();
@@ -38,7 +41,7 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mUpperRightLayout->addWidget(mUpperRightLabel);
 
     mUpperRightX = new QLineEdit();
-    mUpperRightX->setValidator(new QDoubleValidator());
+    mUpperRightX->setValidator(intValidator);
     mUpperRightLayout->addWidget(mUpperRightX);
 
     mUpperRightXUnitLabel = new QLabel();
@@ -46,7 +49,7 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mUpperRightLayout->addWidget(mUpperRightXUnitLabel);
 
     mUpperRightY = new QLineEdit();
-    mUpperRightY->setValidator(new QDoubleValidator());
+    mUpperRightY->setValidator(intValidator);
     mUpperRightLayout->addWidget(mUpperRightY);
 
     mUpperRightYUnitLabel = new QLabel();
@@ -65,12 +68,14 @@ SimulationDialog::SimulationDialog(QWidget *parent)
 
     mWaveLength = new QLineEdit();
     mWaveLength->setText("193");
+    mWaveLength->setValidator(doubleValidator);
 
     mExposureLayout->addWidget(mWaveLengthLabel, 0, 0);
     mExposureLayout->addWidget(mWaveLength, 0, 1);
 
     mNALabel = new QLabel();
     mNALabel->setText("NA:");
+    mNALabel->setVisible(doubleValidator);
 
     mNA = new QLineEdit();
     mNA->setText("1.4");
@@ -83,6 +88,7 @@ SimulationDialog::SimulationDialog(QWidget *parent)
 
     mSigma = new QLineEdit();
     mSigma->setText("0.5");
+    mSigma->setValidator(doubleValidator);
 
     mExposureLayout->addWidget(mSigmaLabel, 2, 0);
     mExposureLayout->addWidget(mSigma, 2, 1);
@@ -94,8 +100,10 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mButtonsLayout = new QHBoxLayout();
 
     mCancelButton = new QPushButton("Cancel");
+    connect(mCancelButton, SIGNAL(clicked(bool)), this, SLOT(cancelButtonClicked(bool)));
 
     mRunButton = new QPushButton("Run");
+    connect(mRunButton, SIGNAL(clicked(bool)), this, SLOT(runButtonClicked(bool)));
     mButtonsLayout->addWidget(mCancelButton);
     mButtonsLayout->addWidget(mRunButton);
 
@@ -121,9 +129,20 @@ SimulationDialog::~SimulationDialog() {
     delete mNA;
     delete mSigmaLabel;
     delete mSigma;
-    delete mInnerSigmaLabel;
-    delete mInnerSigma;
+    //delete mInnerSigmaLabel;
+    //delete mInnerSigma;
     delete mExposureLayout;
 
     delete mMainLayout;
+}
+
+void SimulationDialog::cancelButtonClicked(bool p) {
+   emit cancelSelected();
+   this->reject();
+}
+
+void SimulationDialog::runButtonClicked(bool p) {
+    // get values
+    emit simulationSelected(0, 0, 1, 1, 193, 1.4, 0.5);
+    this->accept();
 }

@@ -111,15 +111,8 @@ void MainWindow::openFileClicked() {
 void MainWindow::simulationClicked() {
     // Need to check if data is loaded
     SimulationDialog dialog(this);
-    if (dialog.exec() == QDialog::Accepted) {
-        // make mask data from QOASISData (1D array with 2D size)
-
-        // set simulation config (NA, Sigma and etc)
-
-        // run fft
-
-        // Display Dialog or Widget
-    }
+    connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
+    dialog.exec();
 }
 
 void MainWindow::setDepthCombo(int depth) {
@@ -144,4 +137,14 @@ void MainWindow::cellDepthComboBoxChanged(QString depth) {
 void MainWindow::drawCell(string cellName) {
     OASISParser::OASISCell* cell = mOASISData.getCell(cellName);
     mOASISView->updateCell(&mOASISData, cell);
+}
+
+void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma) {
+    // make mask data from QOASISData (1D array with 2D size)
+
+    // set simulation config (NA, Sigma and etc)
+
+    // run fft
+
+    // Display Dialog or Widget
 }

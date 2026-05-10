@@ -2,16 +2,9 @@
 #include <complex>
 #include <fftw3.h>
 #include <cmath>
+#include "Simulator.h"
 
-struct Config {
-    double wavelength = 193.0;
-    double NA = 1.35;
-    double sigma = 0.7; // Partial coherence
-    int N = 512;        // Simulation grid size (NxN)
-    double dx = 0.1, dy = 0.1;
-};
-
-void shift_fft(fftw_complex* shifted, fftw_complex* origin, const Config& c, int shiftX, int shiftY) {
+void shift_fft(fftw_complex* shifted, fftw_complex* origin, const SimulationConfig& c, int shiftX, int shiftY) {
     for (int i = 0; i < c.N; i++) {
         int ii = (i + c.N + shiftX) % c.N;
         for (int j = 0; j < c.N; j++) {
@@ -25,7 +18,7 @@ void shift_fft(fftw_complex* shifted, fftw_complex* origin, const Config& c, int
 /*
  * std::vector<double> total_intensity(size, 0.0);
  */
-void simulate_2d_abbe(const Config& c, fftw_complex *mask_data, std::vector<double>& total_intensity) {
+void simulate_2d_abbe(const SimulationConfig& c, fftw_complex *mask_data, std::vector<double>& total_intensity) {
     int size = c.N * c.N;
     // fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);

@@ -38,5 +38,7 @@ private slots:
     void cellNameComboBoxChanged(QString cellName);
     void cellDepthComboBoxChanged(QString depth);
     void statusChanged(QString& message);
+
+    void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma);
 };
 #endif // MAINWINDOW_H

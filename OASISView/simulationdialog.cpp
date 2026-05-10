@@ -143,6 +143,14 @@ void SimulationDialog::cancelButtonClicked(bool p) {
 
 void SimulationDialog::runButtonClicked(bool p) {
     // get values
-    emit simulationSelected(0, 0, 1, 1, 193, 1.4, 0.5);
+    int llx = mLowLeftX->text().toInt();
+    int lly = mLowLeftY->text().toInt();
+    int urx = mUpperRightX->text().toInt();
+    int ury = mUpperRightY->text().toInt();
+    float waveLength = mWaveLength->text().toFloat();
+    float na = mNA->text().toFloat();
+    float sigma = mSigma->text().toFloat();
+
+    emit simulationSelected(llx, lly, urx, ury, waveLength, na, sigma);
     this->accept();
 }

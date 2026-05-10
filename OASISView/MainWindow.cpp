@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "simulationdialog.h"
+#include "Simulator/Simulator.h"
 
 #include <thread>
 
@@ -140,11 +141,30 @@ void MainWindow::drawCell(string cellName) {
 }
 
 void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma) {
-    // make mask data from QOASISData (1D array with 2D size)
+    int windowX = upperRightX - lowLeftX;
+    int windowY = upperRightY - lowLeftY;
 
     // set simulation config (NA, Sigma and etc)
+    SimulationConfig config = SimulationConfig();
+    config.wavelength = waveLength;
+    config.NA = na;
+    config.sigma = sigma;
+    config.N = max(windowX * 5, windowY * 5); // 0.2 nm
+    config.dx = (windowX / (float)config.N);
+    config.dy = (windowY / (float)config.N);
+
+    // make mask data from QOASISData (1D array with 2D size)
+    int size = config.N * config.N;
+    fftw_complex *mask = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+
+    // TODO: fill mask value from data
+
+    vector<double> intensity(size, 0);
 
     // run fft
+    simulate_2d_abbe(config, mask, intensity);
+
+    fftw_free(mask);
 
     // Display Dialog or Widget
 }

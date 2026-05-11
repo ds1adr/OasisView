@@ -158,6 +158,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     fftw_complex *mask = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
 
     // TODO: fill mask value from data
+    makeDummyData(mask, config);
 
     vector<double> intensity(size, 0);
 
@@ -167,4 +168,12 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     fftw_free(mask);
 
     // Display Dialog or Widget
+}
+
+void MainWindow::makeDummyData(fftw_complex *mask, SimulationConfig& config) {
+    for (int x = 0; x < config.N; x++) {
+        for (int y = 0; y < config.N; y++) {
+            mask[x * config.N + y][0] = (x/50)%2 == 1 ? 1.0 : 0.0;
+        }
+    }
 }

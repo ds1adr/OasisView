@@ -8,6 +8,7 @@
 
 #include "OASISParser/OASISData.h"
 #include "OASISView.h"
+#include "Simulator/Simulator.h"
 
 class MainWindow : public QMainWindow
 {
@@ -28,6 +29,8 @@ private:
 
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
+
+    void makeDummyData(fftw_complex *mask, SimulationConfig& config);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

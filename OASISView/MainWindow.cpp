@@ -2,6 +2,7 @@
 #include "simulationdialog.h"
 #include "Simulator/Simulator.h"
 
+#include <fstream>
 #include <thread>
 
 #include <QAction>
@@ -169,6 +170,27 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
     // Display Dialog or Widget
 }
+void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& intensity) {
+    float x;
+    float y;
+    QString fileName = QFileDialog::getSaveFileName();
+
+    ofstream os = ofstream(fileName.toStdString());
+
+    if (!os.is_open()) {
+        // throw error
+        return;
+    }
+
+    for (int i = 0, x = 0; i < config.N; i++, x += config.dx) {
+        for (int j = 0, y = 0; i < config.N; j++, y += config.dy) {
+            os << x << " " << y << " " << intensity[i * config.N + j] << endl;
+        }
+    }
+
+    os.close();
+}
+
 
 void MainWindow::makeDummyData(fftw_complex *mask, SimulationConfig& config) {
     for (int x = 0; x < config.N; x++) {

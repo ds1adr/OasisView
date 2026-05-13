@@ -13,5 +13,6 @@ struct SimulationConfig {
 };
 
 void simulate_2d_abbe(const SimulationConfig& c, fftw_complex *mask_data, std::vector<double>& total_intensity);
+void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::vector<double>& total_intensity);
 
 #endif // SIMULATOR_H

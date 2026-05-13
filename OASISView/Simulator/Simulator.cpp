@@ -107,9 +107,9 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
     const double pupilRy = (c.NA / c.wavelength) * (c.N * c.dy);
 
     double ds = 0.1; // Source sampling step
-    for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {
-        for (double sy = -c.sigma; sy <= c.sigma; sy += ds) {
-            if (sx*sx + sy*sy > c.sigma*c.sigma) continue; // Circular source check
+    // for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {
+    //     for (double sy = -c.sigma; sy <= c.sigma; sy += ds) {
+            double sx = 0, sy = 0;
 
             source_points++;
             // Apply Shift + Pupil + IFFT Logic:
@@ -149,8 +149,8 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
                 double mag = std::sqrt(field[i][0]*field[i][0] + field[i][1]*field[i][1]);
                 total_intensity[i] += mag * mag;
             }
-        }
-    }
+    //     }
+    // }
 
     // Cleanup
     fftw_destroy_plan(p_forward);

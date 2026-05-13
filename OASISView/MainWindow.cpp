@@ -150,9 +150,9 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     config.wavelength = waveLength;
     config.NA = na;
     config.sigma = sigma;
-    config.N = max(windowX * 5, windowY * 5); // 0.2 nm
-    config.dx = (windowX / (float)config.N);
-    config.dy = (windowY / (float)config.N);
+    config.N = max(windowX, windowY); // 0.2 nm
+    config.dx = ((double)windowX / (double)config.N);
+    config.dy = ((double)windowY / (double)config.N);
 
     // make mask data from QOASISData (1D array with 2D size)
     int size = config.N * config.N;
@@ -161,18 +161,22 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     // TODO: fill mask value from data
     makeDummyData(mask, config);
 
+    writeFFTW(config, mask);
+
     vector<double> intensity(size, 0);
 
     // run fft
-    simulate_2d_abbe(config, mask, intensity);
+    simulate_2d_test(config, mask, intensity);
 
     fftw_free(mask);
 
     // Display Dialog or Widget
+    writeIntensity(config, intensity);
 }
-void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& intensity) {
-    float x;
-    float y;
+
+void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {
+    double x = 0;
+    double y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
     ofstream os = ofstream(fileName.toStdString());
@@ -182,10 +186,42 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
         return;
     }
 
-    for (int i = 0, x = 0; i < config.N; i++, x += config.dx) {
-        for (int j = 0, y = 0; i < config.N; j++, y += config.dy) {
-            os << x << " " << y << " " << intensity[i * config.N + j] << endl;
+    os << "# X Y Z" << endl;
+
+    for (int i = 0; i < config.N; i++) {
+        y = 0;
+        for (int j = 0; j < config.N; j++) {
+            os << fft[i * config.N + j][0] << " ";
+            y += config.dy;
         }
+        os << endl;
+        x += config.dx;
+    }
+
+    os.close();
+}
+
+void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& intensity) {
+    double x = 0;
+    double y = 0;
+    QString fileName = QFileDialog::getSaveFileName();
+
+    ofstream os = ofstream(fileName.toStdString());
+
+    if (!os.is_open()) {
+        // throw error
+        return;
+    }
+
+    os << "# X Y Z" << endl;
+
+    for (int i = 0; i < config.N; i++) {
+        y = 0;
+        for (int j = 0; j < config.N; j++) {
+            os << x << " " << y << " " << intensity[i * config.N + j] << endl;
+            y += config.dy;
+        }
+        x += config.dx;
     }
 
     os.close();
@@ -195,7 +231,7 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
 void MainWindow::makeDummyData(fftw_complex *mask, SimulationConfig& config) {
     for (int x = 0; x < config.N; x++) {
         for (int y = 0; y < config.N; y++) {
-            mask[x * config.N + y][0] = (x/50)%2 == 1 ? 1.0 : 0.0;
+            mask[x * config.N + y][0] = (x/100)%2 == 1 ? 0.0 : 1.0;
         }
     }
 }

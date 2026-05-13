@@ -31,6 +31,7 @@ private:
     void setDepthCombo(int depth);
 
     void makeDummyData(fftw_complex *mask, SimulationConfig& config);
+    void writeFFTW(SimulationConfig& config, fftw_complex* fft);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
 public:
     MainWindow(QWidget *parent = nullptr);

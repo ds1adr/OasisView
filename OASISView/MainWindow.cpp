@@ -191,7 +191,7 @@ void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {
     for (int i = 0; i < config.N; i++) {
         y = 0;
         for (int j = 0; j < config.N; j++) {
-            os << fft[i * config.N + j][0] << " ";
+            os << x << " " << y << " " << fft[i * config.N + j][0] << endl;
             y += config.dy;
         }
         os << endl;

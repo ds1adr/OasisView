@@ -127,13 +127,16 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
 
                     double r2 = (double)(xc * xc) / (pupilRx * pupilRx) + (double)(yc * yc) / (pupilRy * pupilRy);
 
-                    if (r2 > 1.0) continue;
-
                     int shiftedX = (x + c.N - shiftX) % c.N;
                     int shiftedY = (y + c.N - shiftY) % c.N;
 
-                    eSpectrum[x * c.N + y][0] = spectrum[shiftedX * c.N + shiftedY][0];
-                    eSpectrum[x * c.N + y][1] = spectrum[shiftedX + c.N + shiftedY][1];
+                    if (r2 > 1.0) {
+                        eSpectrum[x * c.N + y][0] = 0;
+                        eSpectrum[x * c.N + y][1] = 0;
+                    } else {
+                        eSpectrum[x * c.N + y][0] = spectrum[shiftedX * c.N + shiftedY][0];
+                        eSpectrum[x * c.N + y][1] = spectrum[shiftedX + c.N + shiftedY][1];
+                    }
 
                 }
             }

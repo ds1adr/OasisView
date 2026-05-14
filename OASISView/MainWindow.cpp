@@ -179,8 +179,8 @@ void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {
     double y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
-    QString gnuPlotFileName = fileName + ".gp";
-    QString outputFileName = fileName + "txt";
+    QString gnuPlotFileName = fileName + ".plt";
+    QString outputFileName = fileName + ".txt";
 
     ofstream gnuos = ofstream(gnuPlotFileName.toStdString());
 
@@ -219,8 +219,8 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
     double y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
-    QString gnuPlotFileName = fileName + ".gp";
-    QString outputFileName = fileName + "txt";
+    QString gnuPlotFileName = fileName + ".plt";
+    QString outputFileName = fileName + ".txt";
 
     ofstream gnuos = ofstream(gnuPlotFileName.toStdString());
 

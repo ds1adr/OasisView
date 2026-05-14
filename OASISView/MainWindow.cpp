@@ -179,7 +179,20 @@ void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {
     double y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
-    ofstream os = ofstream(fileName.toStdString());
+    QString gnuPlotFileName = fileName + ".gp";
+    QString outputFileName = fileName + "txt";
+
+    ofstream gnuos = ofstream(gnuPlotFileName.toStdString());
+
+    gnuos << "set pm3d map" << endl;
+    gnuos << "set palette rgbformulae 33,13,10" << endl;
+    gnuos << "set contour base" << endl;
+    gnuos << "set cntrparam levels 10" << endl;
+    gnuos << "set cntrparam cubicspline" << endl;
+
+    gnuos << "splot " << "\"" << outputFileName.toStdString() << "\"" << " with pm3d" << endl;
+
+    ofstream os = ofstream(outputFileName.toStdString());
 
     if (!os.is_open()) {
         // throw error
@@ -206,7 +219,20 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
     double y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
-    ofstream os = ofstream(fileName.toStdString());
+    QString gnuPlotFileName = fileName + ".gp";
+    QString outputFileName = fileName + "txt";
+
+    ofstream gnuos = ofstream(gnuPlotFileName.toStdString());
+
+    gnuos << "set pm3d map" << endl;
+    gnuos << "set palette rgbformulae 33,13,10" << endl;
+    gnuos << "set contour base" << endl;
+    gnuos << "set cntrparam levels 10" << endl;
+    gnuos << "set cntrparam cubicspline" << endl;
+
+    gnuos << "splot " << "\"" << outputFileName.toStdString() << "\"" << " with pm3d" << endl;
+
+    ofstream os = ofstream(outputFileName.toStdString());
 
     if (!os.is_open()) {
         // throw error

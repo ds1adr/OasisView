@@ -2,6 +2,7 @@
 #include <complex>
 #include <fftw3.h>
 #include <cmath>
+#include <iostream>
 #include "Simulator.h"
 
 void shift_fft(fftw_complex* shifted, fftw_complex* origin, const SimulationConfig& c, int shiftX, int shiftY) {
@@ -99,6 +100,15 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
     fftw_plan p_forward = fftw_plan_dft_2d(c.N, c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(p_forward);
 
+    std::cout << "Center -1, -1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 - 1) * c.N + (c.N / 2 - 1)][0] << std::endl;
+    std::cout << "Center -1, 0: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 - 1) * c.N + (c.N / 2)][0] << std::endl;
+    std::cout << "Center -1, 1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 - 1) * c.N + (c.N / 2 + 1)][0] << std::endl;
+    std::cout << "Center 0, -1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2) * c.N + (c.N / 2 - 1)][0] << std::endl;
+    std::cout << "Center 0, 0: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << std::endl;
+    std::cout << "Center 0, +1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2) * c.N + (c.N / 2 + 1)][0] << std::endl;
+    std::cout << "Center 1, -1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 + 1) * c.N + (c.N / 2 - 1)][0] << std::endl;
+    std::cout << "Center 1, 0: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 + 1) * c.N + (c.N / 2)][0] << std::endl;
+    std::cout << "Center 1, 1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 + 1) * c.N + (c.N / 2 + 1)][0] << std::endl;
 
     // 3. Loop over 2D Source Grid (Abbe sum)
     int source_points = 0;
@@ -124,6 +134,8 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
                 for (int y = 0; y < c.N; y++) {
                     int xc = x - c.N/2;
                     int yc = y - c.N/2;
+
+
 
                     double r2 = (double)(xc * xc) / (pupilRx * pupilRx) + (double)(yc * yc) / (pupilRy * pupilRy);
 

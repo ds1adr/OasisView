@@ -21,7 +21,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED Charts)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -73,7 +73,7 @@ else()
     message(FATAL_ERROR "FFTW3 not found")
 endif()
 
-target_link_libraries(OASISView PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(OASISView PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts)
 
 set_target_properties(OASISView PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

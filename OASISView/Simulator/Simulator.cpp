@@ -101,7 +101,39 @@ void makeDummyData(fftw_complex *mask, const SimulationConfig& config) {
     }
 }
 
+void make1DData(fftw_complex* mask, const SimulationConfig1D& config) {
+    double x = 0;
+    for (int n = 0; n < config.N; n++) {
+        int count = (x / config.pitch);
+        double px = x - (count * config.pitch);
+        if (px < config.spaceWidth) {
+            mask[n][0] = 1.0 / config.N;
+        } else {
+            mask[n][0] = 0.0;
+        }
+        mask[n][1] = 0.0;
+        x += config.dx;
+    }
+}
+
 void simulate_1d(const SimulationConfig1D& c) {
+    fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
+    fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
+    fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
+
+    // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
+    // (User would fill mask_data here)
+    fftw_plan p_forward = fftw_plan_dft_1d(c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_plan p_backward = fftw_plan_dft_1d(c.N, spectrum, field, FFTW_BACKWARD, FFTW_ESTIMATE);
+    make1DData(mask_data, c);
+    fftw_execute(p_forward);
+
+    fftw_destroy_plan(p_forward);
+    fftw_destroy_plan(p_backward);
+
+    fftw_free(mask_data);
+    fftw_free(spectrum);
+    fftw_free(field);
 
 }
 

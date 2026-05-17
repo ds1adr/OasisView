@@ -95,10 +95,14 @@ void simulate_2d_abbe(const SimulationConfig& c, fftw_complex *mask_data, std::v
 void makeDummyData(fftw_complex *mask, const SimulationConfig& config) {
     for (int x = 0; x < config.N; x++) {
         for (int y = 0; y < config.N; y++) {
-            mask[x * config.N + y][0] = ((x/200)%2 == 1) ? 0.0 : 1.0;
+            mask[x * config.N + y][0] = ((x/100)%2 == 1) ? 0.0 : 1.0 / (config.N * config.N);
             mask[x * config.N + y][1] = 0.0;
         }
     }
+}
+
+void simulate_1d(const SimulationConfig1D& c) {
+
 }
 
 void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::vector<double>& total_intensity) {
@@ -112,26 +116,6 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
     fftw_plan p_forward = fftw_plan_dft_2d(c.N, c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
     makeDummyData(mask_data, c);
     fftw_execute(p_forward);
-
-    std::cout << "0, 0: Re:" << spectrum[0][0] << " Im:" << spectrum[0][1] << std::endl;
-    std::cout << "0, 1: Re:" << spectrum[1][0] << " Im:" << spectrum[1][1] << std::endl;
-    std::cout << "0, 2: Re:" << spectrum[2][0] << " Im:" << spectrum[2][1] << std::endl;
-    std::cout << "1, 0: Re:" << spectrum[c.N][0] << " Im:" << spectrum[c.N][1] << std::endl;
-    std::cout << "1, 1: Re:" << spectrum[c.N + 1][0] << " Im:" << spectrum[c.N + 1][1] << std::endl;
-    std::cout << "1, 2: Re:" << spectrum[c.N + 2][0] << " Im:" << spectrum[c.N + 2][1] << std::endl;
-    std::cout << "2, 0: Re:" << spectrum[c.N * 2][0] << " Im:" << spectrum[2 * c.N][1] << std::endl;
-    std::cout << "2, 1: Re:" << spectrum[c.N * 2 + 1][0] << " Im:" << spectrum[2 * c.N + 1][0] << std::endl;
-    std::cout << "2, 2: Re:" << spectrum[c.N * 2 + 2][0] << " Im:" << spectrum[2 * c.N + 2][0] << std::endl;
-
-    std::cout << "Center -1, -1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 - 1) * c.N + (c.N / 2 - 1)][1] << std::endl;
-    std::cout << "Center -1, 0: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 - 1) * c.N + (c.N / 2)][1] << std::endl;
-    std::cout << "Center -1, 1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 - 1) * c.N + (c.N / 2 + 1)][1] << std::endl;
-    std::cout << "Center 0, -1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2) * c.N + (c.N / 2 - 1)][1] << std::endl;
-    std::cout << "Center 0, 0: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[c.N / 2 * c.N + c.N / 2][1] << std::endl;
-    std::cout << "Center 0, +1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2) * c.N + (c.N / 2 + 1)][1] << std::endl;
-    std::cout << "Center 1, -1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 + 1) * c.N + (c.N / 2 - 1)][1] << std::endl;
-    std::cout << "Center 1, 0: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 + 1) * c.N + (c.N / 2)][0] << std::endl;
-    std::cout << "Center 1, 1: Re:" << spectrum[c.N / 2 * c.N + c.N / 2][0] << " Im:" << spectrum[(c.N / 2 + 1) * c.N + (c.N / 2 + 1)][1] << std::endl;
 
     // 3. Loop over 2D Source Grid (Abbe sum)
     int source_points = 0;
@@ -148,7 +132,7 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
             // Apply Shift + Pupil + IFFT Logic:
             // a) Shift 'spectrum' by (sx, sy)
             int shiftX = 0; //std::lround(sx * (c.NA / c.wavelength) * c.N * c.dx);
-            int shiftY = 0;std::lround(sy * (c.NA / c.wavelength) * c.N * c.dy);
+            int shiftY = 0; //std::lround(sy * (c.NA / c.wavelength) * c.N * c.dy);
 
             fftw_complex *eSpectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
             fftw_plan p_backward = fftw_plan_dft_2d(c.N, c.N, eSpectrum, field, FFTW_BACKWARD, FFTW_ESTIMATE);
@@ -159,8 +143,6 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
                     int xc = x - c.N/2;
                     int yc = y - c.N/2;
 
-
-
                     double r2 = (double)(xc * xc) / (pupilRx * pupilRx) + (double)(yc * yc) / (pupilRy * pupilRy);
 
                     int shiftedX = (x + c.N - shiftX) % c.N;
@@ -170,8 +152,8 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
                     //     eSpectrum[x * c.N + y][0] = 0;
                     //     eSpectrum[x * c.N + y][1] = 0;
                     // } else {
-                        eSpectrum[x * c.N + y][0] = spectrum[shiftedX * c.N + shiftedY][0];
-                        eSpectrum[x * c.N + y][1] = spectrum[shiftedX + c.N + shiftedY][1];
+                        eSpectrum[x * c.N + y][0] = spectrum[x * c.N + y][0];
+                        eSpectrum[x * c.N + y][1] = spectrum[x + c.N + y][1];
                     // }
 
                 }
@@ -186,7 +168,7 @@ void simulate_2d_test(const SimulationConfig& c, fftw_complex *mask_data, std::v
 
             for (int i = 0; i < size; ++i) {
                 double mag = std::sqrt(field[i][0]*field[i][0] + field[i][1]*field[i][1]);
-                total_intensity[i] += mag * mag / (c.N * c.N);
+                total_intensity[i] += mag * mag;
             }
     //     }
     // }

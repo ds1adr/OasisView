@@ -247,6 +247,7 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
             os << x << " " << y << " " << intensity[i * config.N + j] << endl;
             y += config.dy;
         }
+        os << endl;
         x += config.dx;
     }
 

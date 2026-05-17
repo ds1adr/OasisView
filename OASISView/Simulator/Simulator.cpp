@@ -116,7 +116,7 @@ void make1DData(fftw_complex* mask, const SimulationConfig1D& config) {
     }
 }
 
-void simulate_1d(const SimulationConfig1D& c) {
+void simulate_1d(const SimulationConfig1D& c, std::vector<double>& total_intensity) {
     fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
     fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
@@ -127,6 +127,12 @@ void simulate_1d(const SimulationConfig1D& c) {
     fftw_plan p_backward = fftw_plan_dft_1d(c.N, spectrum, field, FFTW_BACKWARD, FFTW_ESTIMATE);
     make1DData(mask_data, c);
     fftw_execute(p_forward);
+
+    fftw_execute(p_backward);
+
+    for (int x = 0; x < c.N; x++) {
+        total_intensity[x] = std::sqrt(field[x][0]*field[x][0] + field[x][1]*field[x][1]);
+    }
 
     fftw_destroy_plan(p_forward);
     fftw_destroy_plan(p_backward);

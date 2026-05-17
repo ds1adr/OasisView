@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "simulationdialog.h"
+#include "Simulation1DDialog.h"
 #include "Simulator/Simulator.h"
 
 #include <fstream>
@@ -189,7 +190,9 @@ void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLengt
 
     simulate_1d(config);
 
-
+    Simulation1DDialog dialog(this);
+    // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
+    dialog.exec();
 }
 
 void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {

@@ -112,9 +112,10 @@ void MainWindow::openFileClicked() {
 
 void MainWindow::simulationClicked() {
     // Need to check if data is loaded
-    SimulationDialog dialog(this);
-    connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
-    dialog.exec();
+    // SimulationDialog dialog(this);
+    // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
+    // dialog.exec();
+
 }
 
 void MainWindow::setDepthCombo(int depth) {
@@ -150,7 +151,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     config.wavelength = waveLength;
     config.NA = na;
     config.sigma = sigma;
-    config.N = max(windowX, windowY); // 0.2 nm
+    config.N = max(windowX, windowY); // 1 nm
     config.dx = ((double)windowX / (double)config.N);
     config.dy = ((double)windowY / (double)config.N);
 
@@ -172,6 +173,23 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);
+}
+
+void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLength, float na, float sigma) {
+    SimulationConfig1D config = SimulationConfig1D();
+    config.wavelength = waveLength;
+    config.NA = na;
+    config.sigma = sigma;
+    config.N = pitch; // TODO: Temporal value
+    config.dx = 1.0;  // TODO: temporal value
+    config.pitch = pitch;
+    config.spaceWidth = spaceWidth;
+
+    vector<double> intensity(config.N, 0);
+
+    simulate_1d(config);
+
+
 }
 
 void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {

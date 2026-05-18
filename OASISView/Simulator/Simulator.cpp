@@ -130,9 +130,30 @@ void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::ve
         mask[x] = mask_data[x][0];
     }
     fftw_execute(p_forward);
+
+    // TODO: Cut spectrum by Pupil
+    const double pupilRx = (c.NA / c.wavelength) * (c.N * c.dx);
+    std::cout << "Pubil Radius:" << pupilRx << std::endl;
+    int shiftX = std::lround(0.3 * (c.NA / c.wavelength) * c.N * c.dx);
+    std::cout << "Shift of 0.3 sigma:" << shiftX << std::endl;
+    shiftX = std::lround(0.5 * (c.NA / c.wavelength) * c.N * c.dx);
+    std::cout << "Shift of 0.5 sigma:" << shiftX << std::endl;
+
     for (int x = 0; x < c.N; x++) {
+        double dx = (double)std::min(x, c.N - x);
+        double r = (dx * dx) / (pupilRx * pupilRx);
+
+
+
+        if (r > 1.0) {
+            spectrum[x][0] = 0;
+            spectrum[x][1] = 0;
+        }
+
         oSpectrum[x] = std::sqrt(spectrum[x][0] * spectrum[x][0] + spectrum[x][1] * spectrum[x][1]);
     }
+
+    // TOTO: Sigma
 
     fftw_execute(p_backward);
 

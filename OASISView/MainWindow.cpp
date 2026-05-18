@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "simulationdialog.h"
 #include "Simulation1DDialog.h"
+#include "Simulation1DResultdialog.h"
 #include "Simulator/Simulator.h"
 
 #include <fstream>
@@ -116,7 +117,7 @@ void MainWindow::simulationClicked() {
     // SimulationDialog dialog(this);
     // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
     // dialog.exec();
-
+    simulation1DSelected(200, 100, 193, 1.4, 0.3);
 }
 
 void MainWindow::setDepthCombo(int depth) {
@@ -186,13 +187,27 @@ void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLengt
     config.pitch = pitch;
     config.spaceWidth = spaceWidth;
 
+    vector<double> mask(config.N, 0);
     vector<double> intensity(config.N, 0);
+    vector<double> spectrum(config.N, 0);
 
-    simulate_1d(config);
+    simulate_1d(config, mask, spectrum, intensity);
 
-    Simulation1DDialog dialog(this);
+    Simulation1DResultDialog maskDialog(this);
+    maskDialog.setValues(config, mask);
+    maskDialog.exec();
+
+    Simulation1DResultDialog spectrumDialog(this);
+    spectrumDialog.setValues(config, spectrum);
+    spectrumDialog.exec();
+
+    Simulation1DResultDialog intensityDialog(this);
+    intensityDialog.setValues(config, intensity);
+    intensityDialog.exec();
+
+    // Simulation1DDialog dialog(this);
     // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
-    dialog.exec();
+    // dialog.exec();
 }
 
 void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {

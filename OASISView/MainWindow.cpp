@@ -78,8 +78,8 @@ MainWindow::~MainWindow()
     delete mCellNameComboBox;
     delete mCellDepthLabel;
     delete mCellDepthComboBox;
-    delete mDock;
     delete mLayerListWidget;
+    delete mDock;
     delete mOASISView;
 }
 
@@ -117,7 +117,7 @@ void MainWindow::simulationClicked() {
     // SimulationDialog dialog(this);
     // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
     // dialog.exec();
-    simulation1DSelected(200, 100, 193, 1.4, 0.3);
+    simulation1DSelected(190, 95, 193, 1.35, 0.3);
 }
 
 void MainWindow::setDepthCombo(int depth) {

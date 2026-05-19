@@ -16,6 +16,40 @@ void shift_fft(fftw_complex* shifted, fftw_complex* origin, const SimulationConf
     }
 }
 
+void shift_fft_1d(fftw_complex* origin, const SimulationConfig1D& c, bool isPlus) {
+    if (isPlus) {
+        fftw_complex t;
+        t[0] = origin[0][0];
+        t[1] = origin[0][1];
+
+        for (int i = 0; i < c.N; i++) {
+            if (i == c.N -1) {
+                origin[i][0] = t[0];
+                origin[i][1] = t[1];
+            } else {
+                int j = i + 1;
+                origin[i][0] = origin[j][0];
+                origin[i][1] = origin[j][1];
+            }
+        }
+    } else {
+        fftw_complex t;
+        t[0] = origin[c.N-1][0];
+        t[1] = origin[c.N-1][1];
+
+        for (int i = c.N-1; i >= 0; i--) {
+            if (i == 0) {
+                origin[i][0] = t[0];
+                origin[i][1] = t[1];
+            } else {
+                int j = i - 1;
+                origin[i][0] = origin[j][0];
+                origin[i][1] = origin[j][1];
+            }
+        }
+    }
+}
+
 /*
  * std::vector<double> total_intensity(size, 0.0);
  */
@@ -119,12 +153,13 @@ void make1DData(fftw_complex* mask, const SimulationConfig1D& config) {
 void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::vector<double>& oSpectrum, std::vector<double>& total_intensity) {
     fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
+    fftw_complex *filtered = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
     fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * c.N);
 
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
     // (User would fill mask_data here)
     fftw_plan p_forward = fftw_plan_dft_1d(c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
-    fftw_plan p_backward = fftw_plan_dft_1d(c.N, spectrum, field, FFTW_BACKWARD, FFTW_ESTIMATE);
+    fftw_plan p_backward = fftw_plan_dft_1d(c.N, filtered, field, FFTW_BACKWARD, FFTW_ESTIMATE);
     make1DData(mask_data, c);
     for (int x = 0; x < c.N; x++) {
         mask[x] = mask_data[x][0];
@@ -134,31 +169,32 @@ void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::ve
     // TODO: Cut spectrum by Pupil
     const double pupilRx = (c.NA / c.wavelength) * (c.N * c.dx);
     std::cout << "Pubil Radius:" << pupilRx << std::endl;
-    int shiftX = std::lround(0.3 * (c.NA / c.wavelength) * c.N * c.dx);
-    std::cout << "Shift of 0.3 sigma:" << shiftX << std::endl;
-    shiftX = std::lround(0.5 * (c.NA / c.wavelength) * c.N * c.dx);
-    std::cout << "Shift of 0.5 sigma:" << shiftX << std::endl;
 
-    for (int x = 0; x < c.N; x++) {
-        double dx = (double)std::min(x, c.N - x);
-        double r = (dx * dx) / (pupilRx * pupilRx);
-
-
-
-        if (r > 1.0) {
-            spectrum[x][0] = 0;
-            spectrum[x][1] = 0;
-        }
-
-        oSpectrum[x] = std::sqrt(spectrum[x][0] * spectrum[x][0] + spectrum[x][1] * spectrum[x][1]);
-    }
+    shift_fft_1d(spectrum, c, false);
 
     // TOTO: Sigma
+    for (double sx = -c.sigma; sx <= c.sigma; sx += 0.1) {
+        int shiftXL = std::lround(sx * (c.NA / c.wavelength) * c.N * c.dx);
+        int shiftXU = shiftXL + c.N;
 
-    fftw_execute(p_backward);
+        for (int x = 0; x < c.N; x++) {
+            double dx = (double)std::min(std::abs(x - shiftXL), std::abs(x - shiftXU));
+            double r = (dx * dx) / (pupilRx * pupilRx);
 
-    for (int x = 0; x < c.N; x++) {
-        total_intensity[x] = std::sqrt(field[x][0]*field[x][0] + field[x][1]*field[x][1]);
+            if (r > 1.0) {
+                filtered[x][0] = 0;
+                filtered[x][1] = 0;
+            } else {
+                filtered[x][0] = spectrum[x][0];
+                filtered[x][1] = spectrum[x][1];
+            }
+
+            oSpectrum[x] = std::sqrt(filtered[x][0] * filtered[x][0] + filtered[x][1] * filtered[x][1]);
+        }
+        fftw_execute(p_backward);
+        for (int x = 0; x < c.N; x++) {
+            total_intensity[x] += std::sqrt(field[x][0]*field[x][0] + field[x][1]*field[x][1]);
+        }
     }
 
     fftw_destroy_plan(p_forward);

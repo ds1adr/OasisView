@@ -170,12 +170,14 @@ void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::ve
     const double pupilRx = (c.NA / c.wavelength) * (c.N * c.dx);
     std::cout << "Pubil Radius:" << pupilRx << std::endl;
 
-    shift_fft_1d(spectrum, c, false);
+    int sigmaCount = 0;
 
     // TOTO: Sigma
     for (double sx = -c.sigma; sx <= c.sigma; sx += 0.1) {
         int shiftXL = std::lround(sx * (c.NA / c.wavelength) * c.N * c.dx);
         int shiftXU = shiftXL + c.N;
+        std::cout << "ShiftXL: " << shiftXL << std::endl;
+        sigmaCount++;
 
         for (int x = 0; x < c.N; x++) {
             double dx = (double)std::min(std::abs(x - shiftXL), std::abs(x - shiftXU));
@@ -189,12 +191,16 @@ void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::ve
                 filtered[x][1] = spectrum[x][1];
             }
 
-            oSpectrum[x] = std::sqrt(filtered[x][0] * filtered[x][0] + filtered[x][1] * filtered[x][1]);
+            oSpectrum[x] += std::sqrt(filtered[x][0] * filtered[x][0] + filtered[x][1] * filtered[x][1]);
         }
         fftw_execute(p_backward);
         for (int x = 0; x < c.N; x++) {
             total_intensity[x] += std::sqrt(field[x][0]*field[x][0] + field[x][1]*field[x][1]);
         }
+    }
+
+    for (int x = 0; x < c.N; x++) {
+        total_intensity[x] /= (double)sigmaCount;
     }
 
     fftw_destroy_plan(p_forward);

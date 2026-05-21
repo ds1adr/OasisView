@@ -20,6 +20,14 @@ private:
     QPushButton* mCancelButton;
 
 signals:
+    void simulation1DButtonClicked();
+    void simulation2DButtonClicked();
+    void simulationCancelClicked();
+
+private slots:
+    void simulation1DButtonPressed();
+    void simulation2DButtonPressed();
+    void simulationCancelPressed();
 };
 
 #endif // SIMULATIONSELECTIONDIALOG_H

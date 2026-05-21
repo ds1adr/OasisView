@@ -3,6 +3,7 @@
 #include "Simulation1DDialog.h"
 #include "Simulation1DResultdialog.h"
 #include "Simulator/Simulator.h"
+#include "SimulationSelectionDialog.h"
 
 #include <fstream>
 #include <thread>
@@ -113,6 +114,8 @@ void MainWindow::openFileClicked() {
 }
 
 void MainWindow::simulationClicked() {
+    SimulationSelectionDialog dialog(this);
+    dialog.exec();
     // Need to check if data is loaded
     // SimulationDialog dialog(this);
     // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));

@@ -44,6 +44,10 @@ private slots:
     void cellDepthComboBoxChanged(QString depth);
     void statusChanged(QString& message);
 
+    void simulation1DButtonClicked();
+    void simulation2DButtonClicked();
+    void simulationCancelClicked();
+
     void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma);
     void simulation1DSelected(int pitch, int spaceWidth, float waveLength, float na, float sigma);
 };

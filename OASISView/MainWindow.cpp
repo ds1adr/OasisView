@@ -115,12 +115,16 @@ void MainWindow::openFileClicked() {
 
 void MainWindow::simulationClicked() {
     SimulationSelectionDialog dialog(this);
+    connect(&dialog, SIGNAL(simulation1DButtonClicked()), this, SLOT(simulation1DButtonClicked()));
+    connect(&dialog, SIGNAL(simulation2DButtonClicked()), this, SLOT(simulation2DButtonClicked()));
+    connect(&dialog, SIGNAL(simulationCancelClicked()), this, SLOT(simulationCancelClicked()));
+
     dialog.exec();
     // Need to check if data is loaded
     // SimulationDialog dialog(this);
     // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
     // dialog.exec();
-    simulation1DSelected(200, 100, 193, 1.3, 0.7);
+    // simulation1DSelected(200, 100, 193, 1.3, 0.7);
 }
 
 void MainWindow::setDepthCombo(int depth) {
@@ -145,6 +149,10 @@ void MainWindow::cellDepthComboBoxChanged(QString depth) {
 void MainWindow::drawCell(string cellName) {
     OASISParser::OASISCell* cell = mOASISData.getCell(cellName);
     mOASISView->updateCell(&mOASISData, cell);
+}
+
+void MainWindow::simulation2DButtonClicked() {
+
 }
 
 void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma) {
@@ -178,6 +186,15 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);
+}
+
+void MainWindow::simulation1DButtonClicked() {
+    Simulation1DDialog dialog(this);
+    dialog.exec();
+}
+
+void MainWindow::simulationCancelClicked() {
+
 }
 
 void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLength, float na, float sigma) {

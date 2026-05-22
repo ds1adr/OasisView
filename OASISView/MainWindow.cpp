@@ -120,11 +120,6 @@ void MainWindow::simulationClicked() {
     connect(&dialog, SIGNAL(simulationCancelClicked()), this, SLOT(simulationCancelClicked()));
 
     dialog.exec();
-    // Need to check if data is loaded
-    // SimulationDialog dialog(this);
-    // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
-    // dialog.exec();
-    // simulation1DSelected(200, 100, 193, 1.3, 0.7);
 }
 
 void MainWindow::setDepthCombo(int depth) {
@@ -152,7 +147,10 @@ void MainWindow::drawCell(string cellName) {
 }
 
 void MainWindow::simulation2DButtonClicked() {
-
+    // Need to check if data is loaded
+    SimulationDialog dialog(this);
+    connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
+    dialog.exec();
 }
 
 void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma) {
@@ -190,6 +188,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
 void MainWindow::simulation1DButtonClicked() {
     Simulation1DDialog dialog(this);
+    connect(&dialog, SIGNAL(simulation1DSelected(int,int,float,float,float)), this, SLOT(simulation1DSelected(int,int,float,float,float)));
     dialog.exec();
 }
 
@@ -224,10 +223,6 @@ void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLengt
     Simulation1DResultDialog intensityDialog(this);
     intensityDialog.setValues(config, intensity);
     intensityDialog.exec();
-
-    // Simulation1DDialog dialog(this);
-    // connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
-    // dialog.exec();
 }
 
 void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {

@@ -18,7 +18,7 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mLowLeftLayout->addWidget(mLowLeftLabel);
 
     mLowLeftX = new QLineEdit();
-   mLowLeftX->setValidator(intValidator);
+    mLowLeftX->setValidator(intValidator);
     mLowLeftLayout->addWidget(mLowLeftX);
 
     mLowLeftXUnitLabel = new QLabel();

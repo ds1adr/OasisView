@@ -304,7 +304,7 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
 void MainWindow::makeDummyData(const SimulationConfig& config, fftw_complex *mask) {
     for (int x = 0; x < config.N; x++) {
         for (int y = 0; y < config.N; y++) {
-            mask[x * config.N + y][0] = ((x/100)%2 == 1) ? 0.0 : 1.0;
+            mask[x * config.N + y][0] = ((x/100)%2 == 1) ? 0.0 : 1.0 / (config.N * config.N);
             mask[x * config.N + y][1] = 0.0;
         }
     }

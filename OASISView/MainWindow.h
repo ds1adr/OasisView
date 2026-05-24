@@ -30,7 +30,7 @@ private:
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
 
-    void makeDummyData(fftw_complex *mask, SimulationConfig& config);
+    static void makeDummyData(const SimulationConfig& config, fftw_complex *mask);
     void writeFFTW(SimulationConfig& config, fftw_complex* fft);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
 public:

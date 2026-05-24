@@ -170,15 +170,10 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     int size = config.N * config.N;
     fftw_complex *mask = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
 
-    // TODO: fill mask value from data
-    makeDummyData(mask, config);
-
-    writeFFTW(config, mask);
-
     vector<double> intensity(size, 0);
 
     // run fft
-    simulate_2d_test(config, mask, intensity);
+    simulate_2d_test(config, mask, intensity, &MainWindow::makeDummyData);
 
     fftw_free(mask);
 
@@ -306,7 +301,7 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
 }
 
 
-void MainWindow::makeDummyData(fftw_complex *mask, SimulationConfig& config) {
+void MainWindow::makeDummyData(const SimulationConfig& config, fftw_complex *mask) {
     for (int x = 0; x < config.N; x++) {
         for (int y = 0; y < config.N; y++) {
             mask[x * config.N + y][0] = ((x/100)%2 == 1) ? 0.0 : 1.0;

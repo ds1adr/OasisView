@@ -1,5 +1,6 @@
 #include <vector>
 #include <complex>
+#include <cstring>
 #include <fftw3.h>
 #include <cmath>
 #include <iostream>

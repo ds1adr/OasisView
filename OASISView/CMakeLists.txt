@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 
+if(APPLE)
 project(OASISView VERSION 0.1 LANGUAGES CXX)
+endif()
+
+# Making this on NVIDIA Jetson machine, and using cuFFT, so add CUDA
+if(UNIX AND NOT APPLE)
+set(CUDAToolkit_ROOT "/usr/local/cuda-12.6")
+project(OASISView VERSION 0.1 LANGUAGES CXX CUDA)
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -18,6 +26,7 @@ endif()
 if(UNIX AND NOT APPLE)
     find_library(FFTW3_LIB NAMES fftw3 PATHS /usr/lib/aarch64-linux-gnu)
     find_path(FFTW3_INCLUDE_DIR NAMES fftw3.h PATHS /usr/include)
+    find_package(CUDAToolkit REQUIRED)
 endif()
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
@@ -77,6 +86,11 @@ else()
 endif()
 
 target_link_libraries(OASISView PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts)
+
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(OASISView PRIVATE CUDA::cufft)
+endif()
 
 set_target_properties(OASISView PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

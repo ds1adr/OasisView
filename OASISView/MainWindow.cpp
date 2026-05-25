@@ -168,14 +168,16 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
     // make mask data from QOASISData (1D array with 2D size)
     int size = config.N * config.N;
-    fftw_complex *mask = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+    double* mask = new double[size];
+
+    makeDummyData(config, mask);
 
     vector<double> intensity(size, 0);
 
     // run fft
-    simulate_2d_test(config, mask, intensity, &MainWindow::makeDummyData);
+    simulate_2d_test(config, mask, intensity);
 
-    fftw_free(mask);
+    delete [] mask;
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);
@@ -301,11 +303,10 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
 }
 
 
-void MainWindow::makeDummyData(const SimulationConfig& config, fftw_complex *mask) {
+void MainWindow::makeDummyData(const SimulationConfig& config, double *mask) {
     for (int x = 0; x < config.N; x++) {
         for (int y = 0; y < config.N; y++) {
-            mask[x * config.N + y][0] = ((x/100)%2 == 1) ? 0.0 : 1.0 / (config.N * config.N);
-            mask[x * config.N + y][1] = 0.0;
+            mask[x * config.N + y] = ((x/100)%2 == 1) ? 0.0 : 1.0 / (config.N * config.N);
         }
     }
 }

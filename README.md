@@ -10,11 +10,12 @@ OASIS file viewer
   - Linux (Ubuntu)
     * sudo apt update
     * sudo apt install libfftw3-dev
+5. Linux system needs Qt6Charts library
     * sudo apt install libqt6charts6-dev
-5. GNUPlot
+6. GNUPlot
   - 2D result is stored in gnuplot file format, when you enter 'filename' then, it generates 'filename.plt', to see the file:
     * gnuplot -p filename.plt
-6. WIP now. Currently parse Rectangle, Trapezoid, CTrapezoid, Text, Placement, Property in the Cell. (6 element types so far) 
+7. WIP now. Currently parse Rectangle, Trapezoid, CTrapezoid, Text, Placement, Property in the Cell. (6 element types so far) 
 
 Reference:
 

@@ -28,6 +28,15 @@ Simulation1DDialog::Simulation1DDialog(QWidget *parent)
 
     mMainLayout->addLayout(mDesignLayout);
 
+    mWindowLayout = new QHBoxLayout();
+    mSimWindowLabel = new QLabel();
+    mSimWindowLabel->setText("Simulation Window (nm):");
+    mSimWindow = new QLineEdit();
+    mSimWindow->setValidator(intValidator);
+    mWindowLayout->addWidget(mSimWindowLabel);
+    mWindowLayout->addWidget(mSimWindow);
+    mMainLayout->addLayout(mWindowLayout);
+
     mExposureLayout = new QGridLayout();
 
     mWaveLengthLabel = new QLabel();
@@ -107,10 +116,11 @@ void Simulation1DDialog::runButtonClicked(bool p) {
     // get values
     int pitch = mPitch->text().toInt();
     int space = mSpace->text().toInt();
+    int simulationWindow = mSimWindow->text().toInt();
     float waveLength = mWaveLength->text().toFloat();
     float na = mNA->text().toFloat();
     float sigma = mSigma->text().toFloat();
 
-    emit simulation1DSelected(pitch, space, waveLength, na, sigma);
+    emit simulation1DSelected(pitch, space, simulationWindow, waveLength, na, sigma);
     this->accept();
 }

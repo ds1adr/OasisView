@@ -229,6 +229,7 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
     double ds = 0.1; // Source sampling step
     for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {
         for (double sy = -c.sigma; sy <= c.sigma; sy += ds) {
+            if (sx*sx + sy*sy > c.sigma*c.sigma) continue;
 
             source_points++;
             // Apply Shift + Pupil + IFFT Logic:
@@ -275,9 +276,6 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
                     yc = std::min(yc, y1);
 
                     double r2 = (double)(xc * xc) / (pupilRx * pupilRx) + (double)(yc * yc) / (pupilRy * pupilRy);
-
-                    int shiftedX = (x + c.N - shiftX) % c.N;
-                    int shiftedY = (y + c.N - shiftY) % c.N;
 
                     if (r2 > 1.0) {
                          eSpectrum[x * c.N + y][0] = 0;

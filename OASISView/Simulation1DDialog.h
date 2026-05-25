@@ -22,6 +22,10 @@ private:
     QLabel* mSpaceLabel;
     QLineEdit* mSpace;
 
+    QHBoxLayout* mWindowLayout;
+    QLabel* mSimWindowLabel;
+    QLineEdit* mSimWindow;
+
     QGridLayout* mExposureLayout;
 
     QLabel* mWaveLengthLabel;
@@ -42,7 +46,7 @@ private slots:
     void cancelButtonClicked(bool);
 signals:
     void cancelSelected();
-    void simulation1DSelected(int pitch, int space, float waveLength, float na, float sigma);
+    void simulation1DSelected(int pitch, int space, int simulationWindow, float waveLength, float na, float sigma);
 };
 
 #endif // SIMULATION1DDIALOG_H

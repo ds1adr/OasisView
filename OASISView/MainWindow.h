@@ -31,7 +31,7 @@ private:
     void setDepthCombo(int depth);
 
     static void makeDummyData(const SimulationConfig& config, double *mask);
-    void writeFFTW(SimulationConfig& config, fftw_complex* fft);
+    void writeMask(SimulationConfig& config, double* mask);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -49,6 +49,6 @@ private slots:
     void simulationCancelClicked();
 
     void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma);
-    void simulation1DSelected(int pitch, int spaceWidth, float waveLength, float na, float sigma);
+    void simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma);
 };
 #endif // MAINWINDOW_H

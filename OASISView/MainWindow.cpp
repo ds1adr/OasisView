@@ -171,6 +171,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     double* mask = new double[size];
 
     makeDummyData(config, mask);
+    writeMask(config, mask);
 
     vector<double> intensity(size, 0);
 
@@ -185,7 +186,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
 void MainWindow::simulation1DButtonClicked() {
     Simulation1DDialog dialog(this);
-    connect(&dialog, SIGNAL(simulation1DSelected(int,int,float,float,float)), this, SLOT(simulation1DSelected(int,int,float,float,float)));
+    connect(&dialog, SIGNAL(simulation1DSelected(int,int,int, float,float,float)), this, SLOT(simulation1DSelected(int,int,int, float,float,float)));
     dialog.exec();
 }
 
@@ -193,12 +194,12 @@ void MainWindow::simulationCancelClicked() {
 
 }
 
-void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLength, float na, float sigma) {
+void MainWindow::simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma) {
     SimulationConfig1D config = SimulationConfig1D();
     config.wavelength = waveLength;
     config.NA = na;
     config.sigma = sigma;
-    config.N = pitch; // TODO: Temporal value
+    config.N = simulationWindow; // TODO: Temporal value
     config.dx = 1.0;  // TODO: temporal value
     config.pitch = pitch;
     config.spaceWidth = spaceWidth;
@@ -222,7 +223,7 @@ void MainWindow::simulation1DSelected(int pitch, int spaceWidth, float waveLengt
     intensityDialog.exec();
 }
 
-void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {
+void MainWindow::writeMask(SimulationConfig& config, double* mask) {
     double x = 0;
     double y = 0;
     QString fileName = QFileDialog::getSaveFileName();
@@ -252,7 +253,7 @@ void MainWindow::writeFFTW(SimulationConfig& config, fftw_complex* fft) {
     for (int i = 0; i < config.N; i++) {
         y = 0;
         for (int j = 0; j < config.N; j++) {
-            os << x << " " << y << " " << fft[i * config.N + j][0] << endl;
+            os << x << " " << y << " " << mask[i * config.N + j] << endl;
             y += config.dy;
         }
         os << endl;

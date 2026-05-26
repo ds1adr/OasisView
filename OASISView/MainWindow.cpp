@@ -174,11 +174,14 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     writeMask(config, mask);
 
     vector<double> intensity(size, 0);
+    vector<double> spectrum(size, 0);
 
     // run fft
-    simulate_2d_test(config, mask, intensity);
+    simulate_2d_test(config, mask, spectrum, intensity);
 
     delete [] mask;
+
+    writeIntensity(config, spectrum);
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);

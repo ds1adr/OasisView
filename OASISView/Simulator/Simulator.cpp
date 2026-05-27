@@ -209,6 +209,7 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
     int size = c.N * c.N;
     fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+    fftw_complex *tempSpectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size); // Window for lowpass filter should be changed by sigma value, so store fft result in the temp
     fftw_complex *field = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
 
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
@@ -222,6 +223,8 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
 
     for (int i = 0; i < size; i++) {
         calSpectrum[i] = std::sqrt(spectrum[i][0] * spectrum[i][0] + spectrum[i][1] * spectrum[i][1]);
+        tempSpectrum[i][0] = spectrum[i][0];
+        tempSpectrum[i][1] = spectrum[i][1];
     }
 
     // 3. Loop over 2D Source Grid (Abbe sum)
@@ -232,10 +235,14 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
     std::cout << "PupilRx:" << pupilRx << std::endl;
 
     double ds = 0.1; // Source sampling step
-    // for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {
-        // for (double sy = -c.sigma; sy <= c.sigma; sy += ds) {
-    double sx = 0.0, sy = 0.0;
-            // if (sx*sx + sy*sy > c.sigma*c.sigma) continue;
+    for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {
+        for (double sy = -c.sigma; sy <= c.sigma; sy += ds) {
+            if (sx*sx + sy*sy > c.sigma*c.sigma) continue;
+
+            for (int i = 0; i < size; i++) {
+                spectrum[i][0] = tempSpectrum[i][0];
+                spectrum[i][1] = tempSpectrum[i][1];
+            }
 
             source_points++;
             // Apply Shift + Pupil + IFFT Logic:
@@ -289,12 +296,7 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
                     if (r2 > 1.0) {
                          spectrum[x * c.N + y][0] = 0;
                          spectrum[x * c.N + y][1] = 0;
-                    } else {
-                        std::cout << "X:" << x << ",Y:" << y << " (" << spectrum[x * c.N + y][0] << "," << spectrum[x * c.N + y][1] << ")" << std::endl;
-                        eSpectrum[x * c.N + y][0] = spectrum[x * c.N + y][0];
-                        eSpectrum[x * c.N + y][1] = spectrum[x + c.N + y][1];
                     }
-
                 }
             }
 
@@ -310,9 +312,8 @@ void simulate_2d_test(const SimulationConfig& c, double *mask, std::vector<doubl
 
             fftw_free(eSpectrum);
             fftw_destroy_plan(p_backward);
-
-        // }
-    // }
+        }
+    }
 
     for (int i = 0; i < size; ++i) {
         total_intensity[i] /= (double)source_points;

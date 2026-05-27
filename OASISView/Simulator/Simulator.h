@@ -24,8 +24,7 @@ struct SimulationConfig1D {
     int spaceWidth = 100;  // Unit: nm
 };
 
-void simulate_2d_abbe(const SimulationConfig& c, fftw_complex *mask_data, std::vector<double>& total_intensity);
-void simulate_2d_test(const SimulationConfig& c, double* mask, std::vector<double>&calSpectrum, std::vector<double>& total_intensity);
+void simulate_2d_abbe(const SimulationConfig& c, double* mask, std::vector<double>& total_intensity);
 void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::vector<double>& oSpectrum, std::vector<double>& total_intensity);
 void make1DData(fftw_complex* mask, const SimulationConfig1D* config);
 

@@ -37,3 +37,14 @@ Zoom Out
 Pan
 
 <img width="889" height="696" alt="Screenshot 2026-05-09 at 10 51 47 PM" src="https://github.com/user-attachments/assets/06f85ae0-6aa1-4608-bbec-2a7946ca3bdc" />
+
+Simulation Example (currently hardcoded mask data :))
+- Wave Length: 193nm
+- NA: 1.35
+- Sigma: 0.5 conventional
+- 200nm pitch 1:1 Line/Space
+  
+| Mask | Intensity |
+|:-:|:-:|
+|<img width="754" height="697" alt="Screenshot 2026-05-26 at 10 59 18 PM" src="https://github.com/user-attachments/assets/55b54b99-76d6-442c-a28a-69d8309eb3a6" />|<img width="754" height="697" alt="Screenshot 2026-05-26 at 10 59 26 PM" src="https://github.com/user-attachments/assets/3e5d6567-935f-4c1b-b04c-b2eb76d8e56d" />|
+

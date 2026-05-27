@@ -48,7 +48,7 @@ private slots:
     void simulation2DButtonClicked();
     void simulationCancelClicked();
 
-    void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma);
+    void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);
     void simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma);
 };
 #endif // MAINWINDOW_H

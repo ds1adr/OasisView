@@ -52,7 +52,7 @@ private slots:
     void cancelButtonClicked(bool);
 signals:
     void cancelSelected();
-    void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma);
+    void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);
 };
 
 #endif // SIMULATIONDIALOG_H

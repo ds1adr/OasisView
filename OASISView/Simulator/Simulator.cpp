@@ -148,7 +148,8 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
     double ds = 0.1; // Source sampling step
     for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {
         for (double sy = -c.sigma; sy <= c.sigma; sy += ds) {
-            if (sx*sx + sy*sy > c.sigma*c.sigma) continue;
+            double d = sx*sx + sy*sy;
+            if (d > c.sigma*c.sigma || d < c.innerSigma*c.innerSigma) continue;
 
             for (int i = 0; i < size; i++) {
                 spectrum[i][0] = tempSpectrum[i][0];

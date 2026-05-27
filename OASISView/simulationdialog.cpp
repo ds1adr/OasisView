@@ -78,7 +78,7 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mNALabel->setVisible(doubleValidator);
 
     mNA = new QLineEdit();
-    mNA->setText("1.4");
+    mNA->setText("1.35");
 
     mExposureLayout->addWidget(mNALabel, 1, 0);
     mExposureLayout->addWidget(mNA, 1, 1);
@@ -93,9 +93,17 @@ SimulationDialog::SimulationDialog(QWidget *parent)
     mExposureLayout->addWidget(mSigmaLabel, 2, 0);
     mExposureLayout->addWidget(mSigma, 2, 1);
 
+    mInnerSigmaLabel = new QLabel();
+    mInnerSigmaLabel->setText("Inner Sigma:");
+
+    mInnerSigma = new QLineEdit();
+    mInnerSigma->setText("0.0");
+    mInnerSigma->setValidator(doubleValidator);
+
+    mExposureLayout->addWidget(mInnerSigmaLabel, 3, 0);
+    mExposureLayout->addWidget(mInnerSigma, 3, 1);
+
     mMainLayout->addLayout(mExposureLayout);
-    // QLabel* mInnerSigmaLabel;
-    // QLineEdit* mInnerSigma;
 
     mButtonsLayout = new QHBoxLayout();
 
@@ -129,8 +137,8 @@ SimulationDialog::~SimulationDialog() {
     delete mNA;
     delete mSigmaLabel;
     delete mSigma;
-    //delete mInnerSigmaLabel;
-    //delete mInnerSigma;
+    delete mInnerSigmaLabel;
+    delete mInnerSigma;
     delete mExposureLayout;
 
     delete mMainLayout;
@@ -150,7 +158,8 @@ void SimulationDialog::runButtonClicked(bool p) {
     float waveLength = mWaveLength->text().toFloat();
     float na = mNA->text().toFloat();
     float sigma = mSigma->text().toFloat();
+    float innerSigma = mInnerSigma->text().toFloat();
 
-    emit simulationSelected(llx, lly, urx, ury, waveLength, na, sigma);
+    emit simulationSelected(llx, lly, urx, ury, waveLength, na, sigma, innerSigma);
     this->accept();
 }

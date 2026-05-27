@@ -149,11 +149,11 @@ void MainWindow::drawCell(string cellName) {
 void MainWindow::simulation2DButtonClicked() {
     // Need to check if data is loaded
     SimulationDialog dialog(this);
-    connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float)));
+    connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float, float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float,float)));
     dialog.exec();
 }
 
-void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma) {
+void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma) {
     int windowX = upperRightX - lowLeftX;
     int windowY = upperRightY - lowLeftY;
 
@@ -162,7 +162,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     config.wavelength = waveLength;
     config.NA = na;
     config.sigma = sigma;
-    // config.N = max(windowX, windowY); // 1 nm , will be removed
+    config.innerSigma = innerSigma;
     config.Nx = windowX;
     config.Ny = windowY;
     config.dx = ((double)windowX / (double)config.Nx);

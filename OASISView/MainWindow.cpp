@@ -162,14 +162,17 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     config.wavelength = waveLength;
     config.NA = na;
     config.sigma = sigma;
-    config.N = max(windowX, windowY); // 1 nm
-    config.dx = ((double)windowX / (double)config.N);
-    config.dy = ((double)windowY / (double)config.N);
+    // config.N = max(windowX, windowY); // 1 nm , will be removed
+    config.Nx = windowX;
+    config.Ny = windowY;
+    config.dx = ((double)windowX / (double)config.Nx);
+    config.dy = ((double)windowY / (double)config.Ny);
 
     // make mask data from QOASISData (1D array with 2D size)
-    int size = config.N * config.N;
+    int size = config.Nx * config.Ny;
     double* mask = new double[size];
 
+    //
     makeDummyData(config, mask);
     writeMask(config, mask);
 
@@ -225,8 +228,8 @@ void MainWindow::simulation1DSelected(int pitch, int spaceWidth, int simulationW
 }
 
 void MainWindow::writeMask(SimulationConfig& config, double* mask) {
-    double x = 0;
-    double y = 0;
+    double pos_x = 0;
+    double pos_y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
     QString gnuPlotFileName = fileName + ".plt";
@@ -251,22 +254,22 @@ void MainWindow::writeMask(SimulationConfig& config, double* mask) {
 
     os << "# X Y Z" << endl;
 
-    for (int i = 0; i < config.N; i++) {
-        y = 0;
-        for (int j = 0; j < config.N; j++) {
-            os << x << " " << y << " " << mask[i * config.N + j] << endl;
-            y += config.dy;
+    for (int jy = 0; jy < config.Ny; jy++) {
+        pos_x = 0;
+        for (int ix = 0; ix < config.Nx; ix++) {
+            os << pos_x << " " << pos_y << " " << mask[jy * config.Nx + ix] << endl;
+            pos_x += config.dx;
         }
         os << endl;
-        x += config.dx;
+        pos_y += config.dy;
     }
 
     os.close();
 }
 
 void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& intensity) {
-    double x = 0;
-    double y = 0;
+    double pos_x = 0;
+    double pos_y = 0;
     QString fileName = QFileDialog::getSaveFileName();
 
     QString gnuPlotFileName = fileName + ".plt";
@@ -291,24 +294,23 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
 
     os << "# X Y Z" << endl;
 
-    for (int i = 0; i < config.N; i++) {
-        y = 0;
-        for (int j = 0; j < config.N; j++) {
-            os << x << " " << y << " " << intensity[i * config.N + j] << endl;
-            y += config.dy;
+    for (int jy = 0; jy < config.Ny; jy++) {
+        pos_x = 0;
+        for (int ix = 0; ix < config.Nx; ix++) {
+            os << pos_x << " " << pos_y << " " << intensity[jy * config.Nx + ix] << endl;
+            pos_x += config.dx;
         }
         os << endl;
-        x += config.dx;
+        pos_y += config.dy;
     }
 
     os.close();
 }
 
-
 void MainWindow::makeDummyData(const SimulationConfig& config, double *mask) {
-    for (int x = 0; x < config.N; x++) {
-        for (int y = 0; y < config.N; y++) {
-            mask[x * config.N + y] = ((x/100)%2 == 1) ? 0.0 : 1.0 / (config.N * config.N);
+    for (int jy = 0; jy < config.Ny; jy++) {
+        for (int ix = 0; ix < config.Nx; ix++) {
+            mask[jy * config.Nx + ix] = ((ix/100)%2 == 1) ? 0.0 : 1.0 / (config.Nx * config.Ny);
         }
     }
 }

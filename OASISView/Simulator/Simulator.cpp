@@ -6,18 +6,6 @@
 #include <iostream>
 #include "Simulator.h"
 
-void shift_fft_center(fftw_complex* shifted, fftw_complex* origin, const SimulationConfig& c) {
-    int shift = c.N / 2;
-    for (int i = 0; i < c.N; i++) {
-        int ii = (i + shift) % c.N;
-        for (int j = 0; j < c.N; j++) {
-            int jj = (j + shift) % c.N;
-            shifted[i * c.N + j][0] = origin[ii * c.N + jj][0];
-            shifted[i * c.N + j][1] = origin[ii * c.N + jj][1];
-        }
-    }
-}
-
 void shift_fft_1d(fftw_complex* origin, const SimulationConfig1D& c, bool isPlus) {
     if (isPlus) {
         fftw_complex t;
@@ -130,7 +118,7 @@ void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::ve
 }
 
 void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<double>& total_intensity) {
-    int size = c.N * c.N;
+    int size = c.Nx * c.Ny;
     fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *tempSpectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size); // Window for lowpass filter should be changed by sigma value, so store fft result in the temp
@@ -138,7 +126,7 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
 
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
     // (User would fill mask_data here)
-    fftw_plan p_forward = fftw_plan_dft_2d(c.N, c.N, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_plan p_forward = fftw_plan_dft_2d(c.Nx, c.Ny, mask_data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE);
     for (int i = 0; i < size; i++) {
         mask_data[i][0] = mask[i];
         mask_data[i][1] = 0.0;
@@ -153,8 +141,8 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
     // 3. Loop over 2D Source Grid (Abbe sum)
     int source_points = 0;
 
-    const double pupilRx = (c.NA / c.wavelength) * (c.N * c.dx);
-    const double pupilRy = (c.NA / c.wavelength) * (c.N * c.dy);
+    const double pupilRx = (c.NA / c.wavelength) * (c.Nx * c.dx);
+    const double pupilRy = (c.NA / c.wavelength) * (c.Ny * c.dy);
     std::cout << "PupilRx:" << pupilRx << std::endl;
 
     double ds = 0.1; // Source sampling step
@@ -170,8 +158,8 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
             source_points++;
             // Apply Shift + Pupil + IFFT Logic:
             // a) Shift 'spectrum' by (sx, sy)
-            int shiftX = std::lround(sx * (c.NA / c.wavelength) * c.N * c.dx);
-            int shiftY = std::lround(sy * (c.NA / c.wavelength) * c.N * c.dy);
+            int shiftX = std::lround(sx * (c.NA / c.wavelength) * c.Nx * c.dx);
+            int shiftY = std::lround(sy * (c.NA / c.wavelength) * c.Ny * c.dy);
 
             std::cout << "ShiftX:" << shiftX << " ShiftY:" << shiftY << std::endl;
 
@@ -179,10 +167,10 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
             memset((void*)eSpectrum, 0, sizeof(fftw_complex)*size);
 
             // b) Multiply by Pupil(fx, fy) where f^2 + g^2 <= (NA/lambda)^2
-            for (int x = 0; x < c.N; x ++) {
-                for (int y = 0; y < c.N; y++) {
-                    int xc = c.N;
-                    int yc = c.N;
+            for (int y = 0; y < c.Ny; y++) {
+                for (int x = 0; x < c.Nx; x++) {
+                    int xc = c.Nx;
+                    int yc = c.Ny;
 
                     // first origin
                     int x0 = 0 + shiftX, y0 = 0 + shiftY;
@@ -192,21 +180,21 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
                     yc = std::min(yc, y1);
 
                     // 2nd origin
-                    x0 = 0 + shiftX, y0 = c.N + shiftY;
+                    x0 = 0 + shiftX, y0 = c.Ny + shiftY;
                     x1 = std::abs(x - x0);
                     y1 = std::abs(y - y0);
                     xc = std::min(xc, x1);
                     yc = std::min(yc, y1);
 
                     // 3rd origin
-                    x0 = c.N + shiftX, y0 = 0 + shiftY;
+                    x0 = c.Nx + shiftX, y0 = 0 + shiftY;
                     x1 = std::abs(x - x0);
                     y1 = std::abs(y - y0);
                     xc = std::min(xc, x1);
                     yc = std::min(yc, y1);
 
                     // 4th origin
-                    x0 = c.N + shiftX, y0 = c.N + shiftY;
+                    x0 = c.Nx + shiftX, y0 = c.Ny + shiftY;
                     x1 = std::abs(x - x0);
                     y1 = std::abs(y - y0);
                     xc = std::min(xc, x1);
@@ -215,14 +203,14 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
                     double r2 = std::sqrt((double)(xc * xc) / (pupilRx * pupilRx) + (double)(yc * yc) / (pupilRy * pupilRy));
 
                     if (r2 > 1.0) {
-                         spectrum[x * c.N + y][0] = 0;
-                         spectrum[x * c.N + y][1] = 0;
+                         spectrum[y * c.Nx + x][0] = 0;
+                         spectrum[y * c.Nx + x][1] = 0;
                     }
                 }
             }
 
             // c) fftw_execute(p_backward);
-            fftw_plan p_backward = fftw_plan_dft_2d(c.N, c.N, spectrum, field, FFTW_BACKWARD, FFTW_ESTIMATE);
+            fftw_plan p_backward = fftw_plan_dft_2d(c.Nx, c.Ny, spectrum, field, FFTW_BACKWARD, FFTW_ESTIMATE);
 
             fftw_execute(p_backward);
 

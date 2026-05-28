@@ -37,6 +37,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void makeMaskData(SimulationConfig& c, double* mask);
+
 private slots:
     void openFileClicked();
     void simulationClicked();

@@ -38,8 +38,44 @@ void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
     update();
 }
 
-void OASISView::makeMaskData(SimulationConfig& c, double* mask) {
+void OASISView::makeMaskData(SimulationConfig& c, double* mask, OASISCell* cell) {
+    makeCellData(c, mask, cell, KPoint<int>(0, 0));
+}
 
+void OASISView::makeCellData(SimulationConfig& c, double* mask, OASISParser::OASISCell* cell, OASISParser::KPoint<int> cellOrigin) {
+    if (cell == nullptr) {
+        return;
+    }
+
+    const std::vector<CellElement*> elements = cell->getCellElements();
+
+    for (CellElement* element: elements) {
+
+        Rectangle* rectangle = dynamic_cast<Rectangle*>(element);
+        if (rectangle != nullptr) {
+            makeRectangleData(c, mask, rectangle, cellOrigin);
+            continue;
+        }
+        Trapezoid* trapezoid = dynamic_cast<Trapezoid*>(element);
+        if (trapezoid != nullptr) {
+            // drawTrapezoid(painter, trapezoid, cellOrigin);
+            continue;
+        }
+        CTrapezoid* cTrapezoid = dynamic_cast<CTrapezoid*>(element);
+        if (cTrapezoid != nullptr) {
+            // drawCTrapezoid(painter, cTrapezoid, cellOrigin);
+            continue;
+        }
+        Placement* placement = dynamic_cast<Placement*>(element);
+        if (placement != nullptr) {
+            // drawPlacement(painter, placement, cellOrigin, currentDepth);
+            continue;
+        }
+        Polygon* polygon = dynamic_cast<Polygon*>(element);
+        if (polygon != nullptr) {
+            // drawPolygon(painter, polygon, cellOrigin);
+        }
+    }
 }
 
 // TODO: need to improve this draw logic
@@ -77,6 +113,47 @@ void OASISView::drawCell(QPainter& painter, OASISCell* cell, int currentDepth, K
         Polygon* polygon = dynamic_cast<Polygon*>(element);
         if (polygon != nullptr) {
             drawPolygon(painter, polygon, cellOrigin);
+        }
+    }
+}
+
+void OASISView::makeRectangleData(SimulationConfig& c, double* mask, Rectangle* r, KPoint<int> offset) {
+    int mask_lx = c.originX;
+    int mask_ly = c.originY;
+    int mask_ux = c.originX + c.Nx * c.dx;
+    int mask_uy = c.originY + c.Ny * c.dy;
+
+    int initX = r->getMinX() + offset.x();
+    int initY = r->getMinY() + offset.y();
+    int w = r->getWidth();
+    int h = r->getHeight();
+
+    BaseRepetition repetition = r->getRepetition();
+
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
+            KPoint<int> pos = repetition.getPosition(i, j);
+
+            int rect_lx = initX + pos.x();
+            int rect_ly = initY + pos.y();
+            int rect_ux = rect_lx + w;
+            int rect_uy = rect_ly + h;
+
+            if (rect_ux < mask_lx || rect_lx > mask_ux || rect_uy < mask_ly || rect_ly > mask_uy) {
+                continue;
+            }
+
+            // TODO: need to improve logic
+            for (int y = 0; y < c.Ny; y++) {
+                for (int x = 0; x < c.Nx; x++) {
+                    double cx = mask_lx + x * c.dx + c.dx / 2.0;
+                    double cy = mask_ly + y * c.dy + c.dy / 2.0;
+
+                    if (cx > rect_lx && cx < rect_ux && cy > rect_ly && cy < rect_uy) {
+                        mask[y * c.Nx + x] = 1.0 / (c.Nx * c.Ny);
+                    }
+                }
+            }
         }
     }
 }

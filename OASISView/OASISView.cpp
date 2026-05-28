@@ -237,6 +237,29 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon, O
     }
 }
 
+void OASISView::makePlacementData(SimulationConfig& c, double* mask, Placement* placement, KPoint<int> offset) {
+    OASISCell* subCell;
+    if (placement->getCellName().empty()) {
+        subCell = mOASISData->getCell(placement->getReference());
+    } else {
+        subCell = mOASISData->getCell(placement->getCellName());
+    }
+    BoundingBox subCellBBox = subCell->getBoundingBox();
+    subCellBBox = placement->getRotatedBoundingBox(subCellBBox);
+
+    BaseRepetition repetition = placement->getRepetition();
+
+    for (int i = 0; i < repetition.nx(); i++) {
+        for (int j = 0; j < repetition.ny(); j++) {
+            KPoint<int> pos = repetition.getPosition(i, j);
+            int x = placement->getX() + offset.x() + subCellBBox.minX + pos.x();
+            int y = placement->getY() + offset.y() + subCellBBox.minY + pos.y();
+
+            makeCellData(c, mask, subCell, KPoint<int>(x,y));
+        }
+    }
+}
+
 void OASISView::drawPlacement(QPainter& painter, OASISParser::Placement* placement, OASISParser::KPoint<int> offset, int currentDepth) {
     OASISCell* subCell;
     if (placement->getCellName().empty()) {

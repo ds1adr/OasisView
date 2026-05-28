@@ -28,6 +28,7 @@ private:
     void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid, OASISParser::KPoint<int> offset);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid, OASISParser::KPoint<int> offset);
     void drawPolygon(QPainter& painter, OASISParser::Polygon* polygon, OASISParser::KPoint<int> offset);
+    void makePlacementData(SimulationConfig& c, double* mask, OASISParser::Placement* placement, OASISParser::KPoint<int> offset);
     void drawPlacement(QPainter& painter, OASISParser::Placement* placement, OASISParser::KPoint<int> offset, int currentDepth);
 
     // Mouse

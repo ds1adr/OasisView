@@ -38,6 +38,10 @@ void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
     update();
 }
 
+void OASISView::makeMaskData(SimulationConfig& c, double* mask) {
+
+}
+
 // TODO: need to improve this draw logic
 void OASISView::drawCell(QPainter& painter, OASISCell* cell, int currentDepth, KPoint<int> cellOrigin) {
     if (cell == nullptr) {

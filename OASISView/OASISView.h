@@ -2,6 +2,7 @@
 #define OASISVIEW_H
 
 #include "OASISParser/OASISCells.h"
+#include "Simulator/Simulator.h"
 
 #include <QWidget>
 
@@ -20,6 +21,7 @@ private:
 
     QPoint calculatePoint(int x, int y);  // From Design to UI
     OASISParser::KPoint<int> calculateLayoutPoint(QPoint& p);  // From UI to Design
+
     void drawCell(QPainter& painter, OASISParser::OASISCell* cell, int currentDepth, OASISParser::KPoint<int> cellOrigin);
     void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle, OASISParser::KPoint<int> offset);
     void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid, OASISParser::KPoint<int> offset);
@@ -44,7 +46,10 @@ public:
     }
 
     void paintEvent(QPaintEvent* event) override;
-    void updateCell(OASISParser::OASISData* oasisData, OASISParser::OASISCell* cell); 
+    void updateCell(OASISParser::OASISData* oasisData, OASISParser::OASISCell* cell);
+
+    // Make Mask array for simulator
+    void makeMaskData(SimulationConfig& c, double* mask);
 };
 
 #endif // OASISVIEW_H

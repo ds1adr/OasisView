@@ -4,6 +4,8 @@
 #include <fftw3.h>
 #include <vector>
 
+#include "OASISParser/OASISCellRecords.h"
+
 enum class PupilType {
     conventional,
     angular,
@@ -18,9 +20,10 @@ struct SimulationConfig {
     double NA = 1.35;
     double sigma = 0.5; // Partial coherence
     double innerSigma = 0;
-    // int N = 512;        // Simulation grid size (NxN)
     int Nx = 512;
     int Ny = 512;
+    int originX = 0;
+    int originY = 0;
     double dx = 1.0, dy = 1.0;
 };
 

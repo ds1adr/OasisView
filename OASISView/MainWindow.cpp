@@ -183,7 +183,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
     //
     makeMaskData(config, mask);
-    // makeDummyData(config, mask);
+
     writeMask(config, mask);
 
     // results
@@ -315,12 +315,4 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
     }
 
     os.close();
-}
-
-void MainWindow::makeDummyData(const SimulationConfig& config, double *mask) {
-    for (int jy = 0; jy < config.Ny; jy++) {
-        for (int ix = 0; ix < config.Nx; ix++) {
-            mask[jy * config.Nx + ix] = ((ix/100)%2 == 1) ? 0.0 : 1.0 / (config.Nx * config.Ny);
-        }
-    }
 }

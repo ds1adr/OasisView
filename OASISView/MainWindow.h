@@ -30,7 +30,6 @@ private:
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
 
-    static void makeDummyData(const SimulationConfig& config, double *mask);
     void writeMask(SimulationConfig& config, double* mask);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
 public:

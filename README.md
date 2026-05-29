@@ -39,13 +39,18 @@ Pan
 <img width="889" height="696" alt="Screenshot 2026-05-09 at 10 51 47 PM" src="https://github.com/user-attachments/assets/06f85ae0-6aa1-4608-bbec-2a7946ca3bdc" />
 
 
-# Simulation Example (currently hardcoded mask data :))
+# Simulation Example (currently it supports only rectangle pattern :))
 - Wave Length: 193nm
 - NA: 1.35
 - Sigma: 0.5 conventional
-- 200nm pitch 1:1 Line/Space
-  
+- 100nm space
+
+Mask Design
+<img width="750" height="573" alt="Screenshot 2026-05-28 at 9 54 53 PM" src="https://github.com/user-attachments/assets/37e7e2d3-ce8a-4731-b817-269baed42373" />
+
 | Mask | Intensity |
 |:-:|:-:|
-|<img width="754" height="697" alt="Screenshot 2026-05-26 at 10 59 18 PM" src="https://github.com/user-attachments/assets/55b54b99-76d6-442c-a28a-69d8309eb3a6" />|<img width="754" height="697" alt="Screenshot 2026-05-26 at 10 59 26 PM" src="https://github.com/user-attachments/assets/3e5d6567-935f-4c1b-b04c-b2eb76d8e56d" />|
+|<img width="754" height="697" alt="Screenshot 2026-05-28 at 9 55 00 PM" src="https://github.com/user-attachments/assets/f37a7485-da2e-4837-9042-ff7a477d308d" />|<img width="754" height="697" alt="Screenshot 2026-05-28 at 9 55 04 PM" src="https://github.com/user-attachments/assets/96d581f0-92e5-4dbd-8c73-8e867580f2cc" />|
+
+
 

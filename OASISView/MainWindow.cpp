@@ -142,7 +142,9 @@ void MainWindow::cellDepthComboBoxChanged(QString depth) {
 }
 
 void MainWindow::makeMaskData(SimulationConfig& c, double* mask) {
-
+    string cellName = mCellNameComboBox->currentText().toStdString();
+    OASISParser::OASISCell* cell = mOASISData.getCell(cellName);
+    mOASISView->makeMaskData(c, mask, cell);
 }
 
 void MainWindow::drawCell(string cellName) {
@@ -177,6 +179,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     // make mask data from QOASISData (1D array with 2D size)
     int size = config.Nx * config.Ny;
     double* mask = new double[size];
+    std::memset(mask, 0, sizeof(double) * size);
 
     //
     makeMaskData(config, mask);

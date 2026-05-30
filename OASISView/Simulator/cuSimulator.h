@@ -1,15 +1,11 @@
 #ifndef CUSIMULATOR_H
 #define CUSIMULATOR_H
 
-#if defined(__CUDA_ARCH__)
-
 #include <cufft.h>
 #include <cuda_runtime.h>
 
 #include "Simulator.h"
 
 void cu_simulate_2d_abbe(const SimulationConfig& c, double* mask, std::vector<double>& total_intensity);
-
-#endif
 
 #endif // CUSIMULATOR_H

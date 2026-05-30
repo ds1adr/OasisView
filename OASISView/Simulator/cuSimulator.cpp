@@ -1,38 +1,33 @@
 #include <cstring>
 #include <iostream>
 
-#if defined(__CUDA_ARCH__)
-
 #include "cuSimulator.h"
 
 void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<double>& total_intensity) {
     int size = c.Nx * c.Ny;
     cufftHandle p_forward;
     cufftHandle p_backward;
-    cufftComplex* mask_data;
-    cufftComplex* spectrum;
-    cufftComplex* tempSpectrum;
-    cufftComplex* field;
+    cufftDoubleComplex* mask_data;
+    cufftDoubleComplex* spectrum;
+    cufftDoubleComplex* tempSpectrum;
+    cufftDoubleComplex* field;
 
-    cudaMalloc((void**)& mask_data, sizeof(cufftComplex) * size);
-    cudaMalloc((void**)& spectrum, sizeof(cufftComplex) * size);
-    cudaMalloc((void**)& tempSpectrum, sizeof(cufftComplex) * size);
-    cudaMalloc((void**)& field, sizeof(cufftComplex) * size);
+    cudaMallocManaged((void**)& mask_data, sizeof(cufftDoubleComplex) * size);
+    cudaMallocManaged((void**)& spectrum, sizeof(cufftDoubleComplex) * size);
+    cudaMallocManaged((void**)& tempSpectrum, sizeof(cufftDoubleComplex) * size);
+    cudaMallocManaged((void**)& field, sizeof(cufftDoubleComplex) * size);
 
     // 1. Initialize Mask and compute Mask Spectrum (Forward FFT)
     // (User would fill mask_data here)
-    cufftPlan2d(&p_forward, c.Nx, c.Ny, CUFFT_C2C);
+    cufftPlan2d(&p_forward, c.Nx, c.Ny, CUFFT_Z2Z);
 
     for (int i = 0; i < size; i++) {
         mask_data[i].x = mask[i];
         mask_data[i].y = 0.0;
     }
-    cufftExecC2C(p_forward, mask_data, spectrum, CUFFT_FORWARD);
+    cufftExecZ2Z(p_forward, mask_data, spectrum, CUFFT_FORWARD);
 
-    for (int i = 0; i < size; i++) {
-        tempSpectrum[i].x = spectrum[i].x;
-        tempSpectrum[i].y = spectrum[i].y;
-    }
+    cudaMemcpy(tempSpectrum, spectrum, sizeof(cufftDoubleComplex) * size, cudaMemcpyDeviceToDevice);
 
     // 3. Loop over 2D Source Grid (Abbe sum)
     int source_points = 0;
@@ -47,10 +42,7 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<do
             double d = sx*sx + sy*sy;
             if (d > c.sigma*c.sigma || d < c.innerSigma*c.innerSigma) continue;
 
-            for (int i = 0; i < size; i++) {
-                spectrum[i].x = tempSpectrum[i].x;
-                spectrum[i].y = tempSpectrum[i].y;
-            }
+            cudaMemcpy(spectrum, tempSpectrum, sizeof(cufftDoubleComplex) * size, cudaMemcpyDeviceToDevice);
 
             source_points++;
             // Apply Shift + Pupil + IFFT Logic:
@@ -59,9 +51,6 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<do
             int shiftY = std::lround(sy * (c.NA / c.wavelength) * c.Ny * c.dy);
 
             std::cout << "ShiftX:" << shiftX << " ShiftY:" << shiftY << std::endl;
-
-            fftw_complex *eSpectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
-            std::memset((void*)eSpectrum, 0, sizeof(fftw_complex)*size);
 
             // b) Multiply by Pupil(fx, fy) where f^2 + g^2 <= (NA/lambda)^2
             for (int y = 0; y < c.Ny; y++) {
@@ -107,16 +96,17 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<do
             }
 
             // c) fftw_execute(p_backward);
-            cufftPlan2d(&p_backward, c.Nx, c.Ny, CUFFT_C2C);
+            cufftPlan2d(&p_backward, c.Nx, c.Ny, CUFFT_Z2Z);
 
-            cufftExecC2C(p_backward, spectrum, field, CUFFT_INVERSE);
+            cufftExecZ2Z(p_backward, spectrum, field, CUFFT_INVERSE);
+
+            cudaDeviceSynchronize();
 
             for (int i = 0; i < size; ++i) {
                 double mag = std::sqrt(field[i].x*field[i].x + field[i].y*field[i].y);
                 total_intensity[i] += mag;
             }
 
-            fftw_free(eSpectrum);
             cufftDestroy(p_backward);
         }
     }
@@ -133,5 +123,3 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<do
     cudaFree(tempSpectrum);
     cudaFree(field);
 }
-
-#endif

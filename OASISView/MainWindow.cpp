@@ -4,6 +4,7 @@
 #include "Simulation1DResultdialog.h"
 #include "Simulator/Simulator.h"
 #include "SimulationSelectionDialog.h"
+#include "Simulator/cuSimulator.h"
 
 #include <fstream>
 #include <thread>
@@ -190,7 +191,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     vector<double> intensity(size, 0);
 
     // run fft
-    simulate_2d_abbe(config, mask, intensity);
+    cu_simulate_2d_abbe(config, mask, intensity);
 
     delete [] mask;
 

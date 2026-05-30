@@ -59,6 +59,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Simulation1DDialog.h Simulation1DDialog.cpp
         Simulation1DResultdialog.h Simulation1DResultdialog.cpp
         SimulationSelectionDialog.h SimulationSelectionDialog.cpp
+        Simulator/cuSimulator.h Simulator/cuSimulator.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET OASISView APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

@@ -1,6 +1,8 @@
 #include <cstring>
 #include <iostream>
 
+#if defined(__CUDA_ARCH__)
+
 #include "cuSimulator.h"
 
 void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<double>& total_intensity) {
@@ -131,3 +133,5 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<do
     cudaFree(tempSpectrum);
     cudaFree(field);
 }
+
+#endif

@@ -6,6 +6,8 @@
 #include <iostream>
 #include "Simulator.h"
 
+#ifdef _CUDA_
+
 void shift_fft_1d(fftw_complex* origin, const SimulationConfig1D& c, bool isPlus) {
     if (isPlus) {
         fftw_complex t;
@@ -232,3 +234,4 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
     fftw_free(field);
 }
 
+#endif

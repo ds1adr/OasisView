@@ -90,6 +90,8 @@ target_link_libraries(OASISView PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VE
 
 
 if(UNIX AND NOT APPLE)
+    # If linux machine isn't CUDA device, remove this line
+    target_compile_definitions(OASISView PRIVATE _CUDA_)
     target_link_libraries(OASISView PRIVATE CUDA::cudart)
     target_link_libraries(OASISView PRIVATE CUDA::cufft)
 endif()

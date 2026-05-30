@@ -191,7 +191,11 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     vector<double> intensity(size, 0);
 
     // run fft
+#ifdef _CUDA_
+    cu_simulate_2d_abbe(config, mask, intensity);
+#else
     simulate_2d_abbe(config, mask, intensity);
+#endif
 
     delete [] mask;
 

@@ -50,8 +50,6 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<do
             int shiftX = std::lround(sx * (c.NA / c.wavelength) * c.Nx * c.dx);
             int shiftY = std::lround(sy * (c.NA / c.wavelength) * c.Ny * c.dy);
 
-            std::cout << "ShiftX:" << shiftX << " ShiftY:" << shiftY << std::endl;
-
             // b) Multiply by Pupil(fx, fy) where f^2 + g^2 <= (NA/lambda)^2
             for (int y = 0; y < c.Ny; y++) {
                 for (int x = 0; x < c.Nx; x++) {

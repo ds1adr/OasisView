@@ -162,11 +162,6 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
             int shiftX = std::lround(sx * (c.NA / c.wavelength) * c.Nx * c.dx);
             int shiftY = std::lround(sy * (c.NA / c.wavelength) * c.Ny * c.dy);
 
-            std::cout << "ShiftX:" << shiftX << " ShiftY:" << shiftY << std::endl;
-
-            fftw_complex *eSpectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
-            memset((void*)eSpectrum, 0, sizeof(fftw_complex)*size);
-
             // b) Multiply by Pupil(fx, fy) where f^2 + g^2 <= (NA/lambda)^2
             for (int y = 0; y < c.Ny; y++) {
                 for (int x = 0; x < c.Nx; x++) {
@@ -220,7 +215,6 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
                 total_intensity[i] += mag;
             }
 
-            fftw_free(eSpectrum);
             fftw_destroy_plan(p_backward);
         }
     }

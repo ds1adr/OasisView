@@ -191,7 +191,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     vector<double> intensity(size, 0);
 
     // run fft
-    cu_simulate_2d_abbe(config, mask, intensity);
+    simulate_2d_abbe(config, mask, intensity);
 
     delete [] mask;
 

@@ -234,6 +234,7 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
 
     fftw_free(mask_data);
     fftw_free(spectrum);
+    fftw_free(tempSpectrum);
     fftw_free(field);
 }
 

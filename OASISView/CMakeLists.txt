@@ -90,6 +90,7 @@ target_link_libraries(OASISView PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VE
 
 
 if(UNIX AND NOT APPLE)
+    target_link_libraries(OASISView PRIVATE CUDA::cudart)
     target_link_libraries(OASISView PRIVATE CUDA::cufft)
 endif()
 

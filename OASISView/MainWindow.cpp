@@ -7,12 +7,14 @@
 #include "Simulator/cuSimulator.h"
 
 #include <fstream>
+#include <iostream>>
 #include <thread>
 
 #include <QAction>
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QStatusBar>
 #include <QToolBar>
 
@@ -115,12 +117,13 @@ void MainWindow::openFileClicked() {
 }
 
 void MainWindow::simulationClicked() {
-    SimulationSelectionDialog dialog(this);
-    connect(&dialog, SIGNAL(simulation1DButtonClicked()), this, SLOT(simulation1DButtonClicked()));
-    connect(&dialog, SIGNAL(simulation2DButtonClicked()), this, SLOT(simulation2DButtonClicked()));
-    connect(&dialog, SIGNAL(simulationCancelClicked()), this, SLOT(simulationCancelClicked()));
+//    SimulationSelectionDialog dialog(this);
+//    connect(&dialog, SIGNAL(simulation1DButtonClicked()), this, SLOT(simulation1DButtonClicked()));
+//    connect(&dialog, SIGNAL(simulation2DButtonClicked()), this, SLOT(simulation2DButtonClicked()));
+//    connect(&dialog, SIGNAL(simulationCancelClicked()), this, SLOT(simulationCancelClicked()));
 
-    dialog.exec();
+//    dialog.exec();
+    simulation2DButtonClicked();
 }
 
 void MainWindow::setDepthCombo(int depth) {
@@ -155,6 +158,11 @@ void MainWindow::drawCell(string cellName) {
 
 void MainWindow::simulation2DButtonClicked() {
     // Need to check if data is loaded
+    string cellName = mCellNameComboBox->currentText().toStdString();
+    if (cellName.empty()) {
+        QMessageBox::information(this, "Information", "OASIS Data is not loaded.", QMessageBox::Ok);
+        return;
+    }
     SimulationDialog dialog(this);
     connect(&dialog, SIGNAL(simulationSelected(int,int,int,int,float,float,float, float)), this, SLOT(simulationSelected(int,int,int,int,float,float,float,float)));
     dialog.exec();
@@ -191,11 +199,17 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     vector<double> intensity(size, 0);
 
     // run fft
+    auto start = std::chrono::steady_clock::now();
 #ifdef _CUDA_
     cu_simulate_2d_abbe(config, mask, intensity);
 #else
     simulate_2d_abbe(config, mask, intensity);
 #endif
+    auto end = std::chrono::steady_clock::now();
+
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << "Duration: " << elapsed.count() << " microseconds.\n" << std::endl;
 
     delete [] mask;
 

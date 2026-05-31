@@ -7,7 +7,7 @@
 #include "Simulator/cuSimulator.h"
 
 #include <fstream>
-#include <iostream>>
+#include <iostream>
 #include <thread>
 
 #include <QAction>
@@ -36,6 +36,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mSimulationAction, SIGNAL(triggered()), this, SLOT(simulationClicked()));
     mSimulationMenu = menuBar()->addMenu("Simulation");
     mSimulationMenu->addAction(mSimulationAction);
+
+    mILTAction = new QAction(QIcon(""), tr("ILT"), this);
+    mILTAction->setStatusTip("Run ILT Simulation");
+    connect(mILTAction, SIGNAL(triggered()), this, SLOT(ILTClicked()));
+    mILTMenu = menuBar()->addMenu("ILT");
+    mILTMenu->addAction(mILTAction);
 
     mToolBar = addToolBar("File");
     mToolBar->addAction(mOpenAction);
@@ -79,6 +85,8 @@ MainWindow::~MainWindow()
     delete mFileMenu;
     delete mSimulationAction;
     delete mSimulationMenu;
+    delete mILTAction;
+    delete mILTMenu;
     delete mCellNameComboBox;
     delete mCellDepthLabel;
     delete mCellDepthComboBox;
@@ -334,4 +342,8 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
     }
 
     os.close();
+}
+
+void MainWindow::ILTClicked() {
+
 }

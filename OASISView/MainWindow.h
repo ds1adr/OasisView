@@ -26,6 +26,8 @@ private:
     QAction* mOpenAction;
     QMenu* mSimulationMenu;
     QAction* mSimulationAction;
+    QMenu* mILTMenu;
+    QAction* mILTAction;
 
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
@@ -48,6 +50,8 @@ private slots:
     void simulation1DButtonClicked();
     void simulation2DButtonClicked();
     void simulationCancelClicked();
+
+    void ILTClicked();
 
     void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);
     void simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma);

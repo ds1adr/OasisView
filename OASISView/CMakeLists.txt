@@ -56,6 +56,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Simulator/Simulator.cpp
         simulationdialog.h simulationdialog.cpp
         Simulator/Simulator.h
+        ILTDialog.h ILTDialog.cpp
         Simulation1DDialog.h Simulation1DDialog.cpp
         Simulation1DResultdialog.h Simulation1DResultdialog.cpp
         SimulationSelectionDialog.h SimulationSelectionDialog.cpp

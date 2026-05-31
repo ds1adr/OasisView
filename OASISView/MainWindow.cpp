@@ -345,5 +345,9 @@ void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& i
 }
 
 void MainWindow::ILTClicked() {
-
+    string cellName = mCellNameComboBox->currentText().toStdString();
+    if (cellName.empty()) {
+        QMessageBox::information(this, "Information", "OASIS Data is not loaded.", QMessageBox::Ok);
+        return;
+    }
 }

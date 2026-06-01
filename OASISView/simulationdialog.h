@@ -48,8 +48,8 @@ private:
     QPushButton* mRunButton;
 
 private slots:
-    void runButtonClicked(bool);
-    void cancelButtonClicked(bool);
+    virtual void runButtonClicked(bool);
+    virtual void cancelButtonClicked(bool);
 signals:
     void cancelSelected();
     void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);

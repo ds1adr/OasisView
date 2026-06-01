@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "ILTDialog.h"
 #include "simulationdialog.h"
 #include "Simulation1DDialog.h"
 #include "Simulation1DResultdialog.h"
@@ -350,4 +351,6 @@ void MainWindow::ILTClicked() {
         QMessageBox::information(this, "Information", "OASIS Data is not loaded.", QMessageBox::Ok);
         return;
     }
+    ILTDialog dialog = ILTDialog(this);
+    dialog.exec();
 }

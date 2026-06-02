@@ -1,10 +1,17 @@
 #include <iostream>
+#include <QIntValidator>
 
 #include "ILTDialog.h"
 
 ILTDialog::ILTDialog(QWidget *parent)
 {
+    mHLine = new QFrame();
+    mHLine->setFrameShape(QFrame::HLine);
+    mHLine->setFrameShadow(QFrame::Sunken);
 
+    mExposureLayout->addWidget(mHLine, 4, 0, 1, 2);
+
+    QIntValidator *intValidator = new QIntValidator();
 }
 
 ILTDialog::~ILTDialog() {

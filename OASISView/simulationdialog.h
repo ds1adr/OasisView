@@ -32,8 +32,6 @@ private:
 
     QFrame* mLine;
 
-    QGridLayout* mExposureLayout;
-
     QLabel* mWaveLengthLabel;
     QLineEdit* mWaveLength;
     QLabel* mNALabel;
@@ -46,6 +44,8 @@ private:
     QHBoxLayout* mButtonsLayout;
     QPushButton* mCancelButton;
     QPushButton* mRunButton;
+protected:
+    QGridLayout* mExposureLayout;
 
 private slots:
     virtual void runButtonClicked(bool);

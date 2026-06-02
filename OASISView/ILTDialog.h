@@ -8,6 +8,13 @@
 class ILTDialog: public SimulationDialog
 {
     Q_OBJECT
+private:
+    QFrame* mHLine;
+
+    QLabel* mFlipGridLabel;
+    QLineEdit* mFlipGrid;
+    QLabel* mMaxCountLabel;
+    QLineEdit* mMaxCount;
 public:
     ILTDialog(QWidget *parent = nullptr);
     virtual ~ILTDialog();

@@ -354,3 +354,58 @@ void MainWindow::ILTClicked() {
     ILTDialog dialog = ILTDialog(this);
     dialog.exec();
 }
+
+
+void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma) {
+    int windowX = upperRightX - lowLeftX;
+    int windowY = upperRightY - lowLeftY;
+
+    // set simulation config (NA, Sigma and etc)
+    SimulationConfig config = SimulationConfig();
+    config.wavelength = waveLength;
+    config.NA = na;
+    config.sigma = sigma;
+    config.innerSigma = innerSigma;
+    config.Nx = windowX;
+    config.Ny = windowY;
+    config.dx = ((double)windowX / (double)config.Nx);
+    config.dy = ((double)windowY / (double)config.Ny);
+    config.originX = lowLeftX;
+    config.originY = lowLeftY;
+
+    // make mask data from QOASISData (1D array with 2D size)
+    int size = config.Nx * config.Ny;
+    double* mask = new double[size];
+    std::memset(mask, 0, sizeof(double) * size);
+
+    //
+    makeMaskData(config, mask);
+
+    // results
+    vector<double> intensity(size, 0);
+
+    // first run for reference
+#ifdef _CUDA_
+    cu_simulate_2d_abbe(config, mask, intensity);
+#else
+    simulate_2d_abbe(config, mask, intensity);
+#endif
+    // calculate cost function
+
+    int count = 0;
+    do {
+        // flip mask randomly
+
+        // simulate_2d
+
+        // calculate cost function
+
+        // if cost function is larger than before, roll back
+    } while(count <1000); // temporal value (1000)
+
+
+    delete [] mask;
+
+    // Display Dialog or Widget
+    writeIntensity(config, intensity);
+}

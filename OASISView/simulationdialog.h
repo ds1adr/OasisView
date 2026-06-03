@@ -13,6 +13,16 @@ class SimulationDialog : public QDialog
 public:
     explicit SimulationDialog(QWidget *parent = nullptr);
     ~SimulationDialog();
+protected:
+    QLineEdit* mLowLeftX;
+    QLineEdit* mLowLeftY;
+    QLineEdit* mUpperRightX;
+    QLineEdit* mUpperRightY;
+
+    QLineEdit* mWaveLength;
+    QLineEdit* mNA;
+    QLineEdit* mSigma;
+    QLineEdit* mInnerSigma;
 
 private:
     QVBoxLayout* mMainLayout;
@@ -20,26 +30,20 @@ private:
     QHBoxLayout* mUpperRightLayout;
 
     QLabel* mLowLeftLabel;
-    QLineEdit* mLowLeftX;
     QLabel* mLowLeftXUnitLabel;
-    QLineEdit* mLowLeftY;
+
     QLabel* mLowLeftYUnitLabel;
     QLabel* mUpperRightLabel;
-    QLineEdit* mUpperRightX;
+
     QLabel* mUpperRightXUnitLabel;
-    QLineEdit* mUpperRightY;
     QLabel* mUpperRightYUnitLabel;
 
     QFrame* mLine;
 
     QLabel* mWaveLengthLabel;
-    QLineEdit* mWaveLength;
     QLabel* mNALabel;
-    QLineEdit* mNA;
     QLabel* mSigmaLabel;
-    QLineEdit* mSigma;
     QLabel* mInnerSigmaLabel;
-    QLineEdit* mInnerSigma;
 
     QHBoxLayout* mButtonsLayout;
     QPushButton* mCancelButton;

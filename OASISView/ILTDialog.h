@@ -23,7 +23,7 @@ private slots:
     void cancelButtonClicked(bool);
 signals:
     void cancelSelected();
-    void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);
+    void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, int flipGrid, int maxCount);
 };
 
 #endif // ILTDIALOG_H

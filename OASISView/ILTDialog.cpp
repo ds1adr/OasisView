@@ -17,6 +17,7 @@ ILTDialog::ILTDialog(QWidget *parent)
     mFlipGridLabel->setText("Flip Grid (nm):");
 
     mFlipGrid = new QLineEdit();
+    mFlipGrid->setText("5");
     mFlipGrid->setValidator(intValidator);
 
     mExposureLayout->addWidget(mFlipGridLabel, 5, 0);
@@ -26,6 +27,7 @@ ILTDialog::ILTDialog(QWidget *parent)
     mMaxCountLabel->setText("Max ILT Count:");
 
     mMaxCount = new QLineEdit();
+    mMaxCount->setText("3000");
     mMaxCount->setValidator(intValidator);
 
     mExposureLayout->addWidget(mMaxCountLabel, 6, 0);
@@ -46,6 +48,18 @@ ILTDialog::~ILTDialog() {
 
 void ILTDialog::runButtonClicked(bool) {
     std::cout << "ILT RunButton" << std::endl;
+    int llx = mLowLeftX->text().toInt();
+    int lly = mLowLeftY->text().toInt();
+    int urx = mUpperRightX->text().toInt();
+    int ury = mUpperRightY->text().toInt();
+    float waveLength = mWaveLength->text().toFloat();
+    float na = mNA->text().toFloat();
+    float sigma = mSigma->text().toFloat();
+    float innerSigma = mInnerSigma->text().toFloat();
+    int flipGrid = mFlipGrid->text().toInt();
+    int maxCount = mMaxCount->text().toInt();
+
+    emit ILTSelected(llx, lly, urx, ury, waveLength, na, sigma, innerSigma, flipGrid, maxCount);
 }
 
 void ILTDialog::cancelButtonClicked(bool) {

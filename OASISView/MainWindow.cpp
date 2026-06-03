@@ -352,11 +352,12 @@ void MainWindow::ILTClicked() {
         return;
     }
     ILTDialog dialog = ILTDialog(this);
+    connect(&dialog, SIGNAL(ILTSelected(int, int, int, int, float, float, float, float, int, int)), this, SLOT(ILTSelected(int, int, int, int, float, float, float, float, int, int)));
     dialog.exec();
 }
 
 
-void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma) {
+void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, int flipGrid, int maxCount) {
     int windowX = upperRightX - lowLeftX;
     int windowY = upperRightY - lowLeftY;
 

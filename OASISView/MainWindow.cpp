@@ -357,7 +357,7 @@ void MainWindow::ILTClicked() {
 }
 
 
-void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, int flipGrid, int maxCount) {
+void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, float threshould, int flipGrid, int maxCount) {
     int windowX = upperRightX - lowLeftX;
     int windowY = upperRightY - lowLeftY;
 

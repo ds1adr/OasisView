@@ -12,6 +12,16 @@ ILTDialog::ILTDialog(QWidget *parent)
     mExposureLayout->addWidget(mHLine, 4, 0, 1, 2);
 
     QIntValidator *intValidator = new QIntValidator();
+    QDoubleValidator* doubleValidator = new QDoubleValidator();
+
+    mTargetThreshouldLabel = new QLabel();
+    mTargetThreshouldLabel->setText("Threshould:");
+
+    mTargetThreshould = new QLineEdit();
+    mTargetThreshould->setValidator(doubleValidator);
+
+    mExposureLayout->addWidget(mTargetThreshouldLabel, 5, 0);
+    mExposureLayout->addWidget(mTargetThreshould, 5, 1);
 
     mFlipGridLabel = new QLabel();
     mFlipGridLabel->setText("Flip Grid (nm):");
@@ -20,8 +30,8 @@ ILTDialog::ILTDialog(QWidget *parent)
     mFlipGrid->setText("5");
     mFlipGrid->setValidator(intValidator);
 
-    mExposureLayout->addWidget(mFlipGridLabel, 5, 0);
-    mExposureLayout->addWidget(mFlipGrid, 5, 1);
+    mExposureLayout->addWidget(mFlipGridLabel, 6, 0);
+    mExposureLayout->addWidget(mFlipGrid, 6, 1);
 
     mMaxCountLabel = new QLabel();
     mMaxCountLabel->setText("Max ILT Count:");
@@ -30,14 +40,18 @@ ILTDialog::ILTDialog(QWidget *parent)
     mMaxCount->setText("3000");
     mMaxCount->setValidator(intValidator);
 
-    mExposureLayout->addWidget(mMaxCountLabel, 6, 0);
-    mExposureLayout->addWidget(mMaxCount, 6,1);
+    mExposureLayout->addWidget(mMaxCountLabel, 7, 0);
+    mExposureLayout->addWidget(mMaxCount, 7,1);
 
     delete intValidator;
+    delete doubleValidator;
 }
 
 ILTDialog::~ILTDialog() {
     delete mHLine;
+
+    delete mTargetThreshouldLabel;
+    delete mTargetThreshould;
 
     delete mFlipGridLabel;
     delete mFlipGrid;
@@ -56,10 +70,11 @@ void ILTDialog::runButtonClicked(bool) {
     float na = mNA->text().toFloat();
     float sigma = mSigma->text().toFloat();
     float innerSigma = mInnerSigma->text().toFloat();
+    float threshould = mTargetThreshould->text().toFloat();
     int flipGrid = mFlipGrid->text().toInt();
     int maxCount = mMaxCount->text().toInt();
 
-    emit ILTSelected(llx, lly, urx, ury, waveLength, na, sigma, innerSigma, flipGrid, maxCount);
+    emit ILTSelected(llx, lly, urx, ury, waveLength, na, sigma, innerSigma, threshould, flipGrid, maxCount);
 }
 
 void ILTDialog::cancelButtonClicked(bool) {

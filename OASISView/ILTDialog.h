@@ -11,6 +11,8 @@ class ILTDialog: public SimulationDialog
 private:
     QFrame* mHLine;
 
+    QLabel* mTargetThreshouldLabel;
+    QLineEdit* mTargetThreshould;
     QLabel* mFlipGridLabel;
     QLineEdit* mFlipGrid;
     QLabel* mMaxCountLabel;
@@ -23,7 +25,7 @@ private slots:
     void cancelButtonClicked(bool);
 signals:
     void cancelSelected();
-    void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, int flipGrid, int maxCount);
+    void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, float threshould, int flipGrid, int maxCount);
 };
 
 #endif // ILTDIALOG_H

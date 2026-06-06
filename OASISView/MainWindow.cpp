@@ -432,5 +432,12 @@ void MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
     int randX = distribX(gen);
     int randY = distribY(gen);
 
+    int x = randX * gridCountX;
+    int y = randY * gridCountY;
 
+    for (int jy = y; jy < y + gridCountY; jy++) {
+        for (int ix = x; ix < x + gridCountX; ix++) {
+            mask[jy * c.Nx + ix] = (mask[jy * c.Nx + ix]) > 0 ? 0.0 : 1.0 / (c.Nx * c.Ny);
+        }
+    }
 }

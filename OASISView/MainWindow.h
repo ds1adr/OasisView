@@ -56,5 +56,7 @@ private slots:
     void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);
     void simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma);
     void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, float threshould, int flipGrid, int maxCount);
+
+    void flipMask(SimulationConfig& c, int flipGrid, double* mask);
 };
 #endif // MAINWINDOW_H

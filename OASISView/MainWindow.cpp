@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <thread>
+#include <random>
 
 #include <QAction>
 #include <QDockWidget>
@@ -393,20 +394,43 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 #endif
     // calculate cost function
 
+    double *flipedMask = new double[size];
+    for (int i = 0; i < size; i++) {
+        flipedMask[i] = mask[i];
+    }
     int count = 0;
     do {
         // flip mask randomly
+
 
         // simulate_2d
 
         // calculate cost function
 
         // if cost function is larger than before, roll back
-    } while(count <1000); // temporal value (1000)
+    } while(count < maxCount);
 
 
     delete [] mask;
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);
+}
+
+void MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
+    int countX = (int)(c.Nx * c.dx)/flipGrid;
+    int countY = (int)(c.Ny * c.dy)/flipGrid;
+    int gridCountX = flipGrid / (int)(c.Nx * c.dx);
+    int gridCountY = flipGrid / (int)(c.Ny * c.dy);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<int> distribX(0, countX);
+    std::uniform_int_distribution<int> distribY(0, countY);
+
+    int randX = distribX(gen);
+    int randY = distribY(gen);
+
+
 }

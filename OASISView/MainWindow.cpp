@@ -417,7 +417,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     writeIntensity(config, intensity);
 }
 
-void MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
+std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
     int countX = (int)(c.Nx * c.dx)/flipGrid;
     int countY = (int)(c.Ny * c.dy)/flipGrid;
     int gridCountX = flipGrid / (int)(c.Nx * c.dx);
@@ -434,6 +434,22 @@ void MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
 
     int x = randX * gridCountX;
     int y = randY * gridCountY;
+
+    for (int jy = y; jy < y + gridCountY; jy++) {
+        for (int ix = x; ix < x + gridCountX; ix++) {
+            mask[jy * c.Nx + ix] = (mask[jy * c.Nx + ix]) > 0 ? 0.0 : 1.0 / (c.Nx * c.Ny);
+        }
+    }
+
+    return std::make_tuple(x, y);
+}
+
+void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, double* mask, std::tuple<int, int>& locTuple) {
+    int gridCountX = flipGrid / (int)(c.Nx * c.dx);
+    int gridCountY = flipGrid / (int)(c.Ny * c.dy);
+
+    int x = get<0>(locTuple);
+    int y = get<1>(locTuple);
 
     for (int jy = y; jy < y + gridCountY; jy++) {
         for (int ix = x; ix < x + gridCountX; ix++) {

@@ -34,7 +34,7 @@ private:
 
     void writeMask(SimulationConfig& config, double* mask);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
-    void makeTargetIntensity(SimulationConfig&c, std::vector<double>& target, double threshould);
+    void makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, double* mask, double threshould);
 
     std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, double* mask);
     void rollbackMask(SimulationConfig& c, int flipGrid, double* mask, std::tuple<int, int>& locTuple);

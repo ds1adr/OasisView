@@ -380,6 +380,8 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     double* mask = new double[size];
     std::memset(mask, 0, sizeof(double) * size);
 
+    vector<double> targetIntensity(size, 0);
+
     //
     makeMaskData(config, mask);
 
@@ -393,6 +395,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     simulate_2d_abbe(config, mask, intensity);
 #endif
     // calculate cost function
+    double minCost = std::numeric_limits<double>::max();
 
     double *flipedMask = new double[size];
     for (int i = 0; i < size; i++) {
@@ -401,9 +404,14 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     int count = 0;
     do {
         // flip mask randomly
-
+        flipMask(config, flipGrid, mask);
 
         // simulate_2d
+#ifdef _CUDA_
+        cu_simulate_2d_abbe(config, mask, intensity);
+#else
+        simulate_2d_abbe(config, mask, intensity);
+#endif
 
         // calculate cost function
 
@@ -456,4 +464,8 @@ void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, double* mask, s
             mask[jy * c.Nx + ix] = (mask[jy * c.Nx + ix]) > 0 ? 0.0 : 1.0 / (c.Nx * c.Ny);
         }
     }
+}
+
+void MainWindow::makeTargetIntensity(SimulationConfig&c, std::vector<double>& target, double threshould) {
+
 }

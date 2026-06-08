@@ -34,6 +34,10 @@ private:
 
     void writeMask(SimulationConfig& config, double* mask);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
+    void makeTargetIntensity(SimulationConfig&c, std::vector<double>& target, double threshould);
+
+    std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, double* mask);
+    void rollbackMask(SimulationConfig& c, int flipGrid, double* mask, std::tuple<int, int>& locTuple);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -57,7 +61,6 @@ private slots:
     void simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma);
     void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, float threshould, int flipGrid, int maxCount);
 
-    std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, double* mask);
-    void rollbackMask(SimulationConfig& c, int flipGrid, double* mask, std::tuple<int, int>& locTuple);
+
 };
 #endif // MAINWINDOW_H

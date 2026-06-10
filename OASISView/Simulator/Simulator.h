@@ -43,4 +43,6 @@ void simulate_2d_abbe(const SimulationConfig& c, double* mask, std::vector<doubl
 void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::vector<double>& oSpectrum, std::vector<double>& total_intensity);
 void make1DData(fftw_complex* mask, const SimulationConfig1D* config);
 
+double getCost(SimulationConfig& c, std::vector<double>& target, std::vector<double>& intensity);
+
 #endif // SIMULATOR_H

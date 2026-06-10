@@ -231,3 +231,18 @@ void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<doubl
     fftw_free(tempSpectrum);
     fftw_free(field);
 }
+
+double getCost(SimulationConfig& c, std::vector<double>& target, std::vector<double>& intensity) {
+    double cost = 0.0;
+    int size = c.Nx * c.Ny;
+
+    for (int i = 0; i < size; i++) {
+        if (target[i] == 0) {
+            cost += intensity[i];
+        } else if (intensity[i] < target[i]) {
+            cost += (target[i] - intensity[i]);
+        }
+    }
+
+    return cost;
+}

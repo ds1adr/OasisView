@@ -395,8 +395,8 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 #else
     simulate_2d_abbe(config, mask, intensity);
 #endif
-    // calculate cost function
-    double minCost = std::numeric_limits<double>::max();
+    // calculate initial cost function
+    double minCost = getCost(config, targetIntensity, intensity);
 
     double *flipedMask = new double[size];
     for (int i = 0; i < size; i++) {
@@ -405,7 +405,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     int count = 0;
     do {
         // flip mask randomly
-        flipMask(config, flipGrid, flipedMask);
+        auto location = flipMask(config, flipGrid, flipedMask);
 
         // simulate_2d
 #ifdef _CUDA_
@@ -415,8 +415,14 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 #endif
 
         // calculate cost function
+        double cost = getCost(config, targetIntensity, intensity);
 
         // if cost function is larger than before, roll back
+        if (cost < minCost) {
+            minCost = cost;
+        } else {
+            rollbackMask(config, flipGrid, mask, location);
+        }
     } while(count < maxCount);
 
 
@@ -473,7 +479,7 @@ void MainWindow::makeTargetIntensityFromMask(SimulationConfig&c, std::vector<dou
 
     for (int i = 0; i < size; i++) {
         if (mask[i] > 0) {
-            target[i] = threshould;
+            target[i] = threshould * 2.0;
         } else {
             target[i] = 0.0;
         }

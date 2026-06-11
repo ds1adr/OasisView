@@ -397,6 +397,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 #endif
     // calculate initial cost function
     double minCost = getCost(config, targetIntensity, intensity);
+    int smallDropCount = 0;
 
     double *flipedMask = new double[size];
     for (int i = 0; i < size; i++) {
@@ -419,12 +420,22 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 
         // if cost function is larger than before, roll back
         if (cost < minCost) {
+            double percent = (minCost - cost)/minCost;
+            if (percent < 0.03) {
+                smallDropCount++;
+                if (smallDropCount == 10) {
+                    break;
+                }
+            } else {
+                smallDropCount = 0;
+            }
             minCost = cost;
         } else {
             rollbackMask(config, flipGrid, mask, location);
         }
     } while(count < maxCount);
 
+    writeMask(config, flipedMask);
 
     delete [] mask;
     delete [] flipedMask;
@@ -433,6 +444,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     writeIntensity(config, intensity);
 }
 
+// return: flip location <x, y>
 std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
     int countX = (int)(c.Nx * c.dx)/flipGrid;
     int countY = (int)(c.Ny * c.dy)/flipGrid;

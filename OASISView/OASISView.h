@@ -23,12 +23,12 @@ private:
     OASISParser::KPoint<int> calculateLayoutPoint(QPoint& p);  // From UI to Design
 
     void drawCell(QPainter& painter, OASISParser::OASISCell* cell, int currentDepth, OASISParser::KPoint<int> cellOrigin);
-    void makeRectangleData(SimulationConfig& c, double* mask, OASISParser::Rectangle* r, OASISParser::KPoint<int> offset);
+    void makeRectangleData(SimulationConfig& c, std::vector<double>& mask, OASISParser::Rectangle* r, OASISParser::KPoint<int> offset);
     void drawRectangle(QPainter& painter, OASISParser::Rectangle* rectangle, OASISParser::KPoint<int> offset);
     void drawTrapezoid(QPainter& painter, OASISParser::Trapezoid* trapezoid, OASISParser::KPoint<int> offset);
     void drawCTrapezoid(QPainter& painter, OASISParser::CTrapezoid* ctrapezoid, OASISParser::KPoint<int> offset);
     void drawPolygon(QPainter& painter, OASISParser::Polygon* polygon, OASISParser::KPoint<int> offset);
-    void makePlacementData(SimulationConfig& c, double* mask, OASISParser::Placement* placement, OASISParser::KPoint<int> offset);
+    void makePlacementData(SimulationConfig& c, std::vector<double>& mask, OASISParser::Placement* placement, OASISParser::KPoint<int> offset);
     void drawPlacement(QPainter& painter, OASISParser::Placement* placement, OASISParser::KPoint<int> offset, int currentDepth);
 
     // Mouse
@@ -51,8 +51,8 @@ public:
     void updateCell(OASISParser::OASISData* oasisData, OASISParser::OASISCell* cell);
 
     // Make Mask array for simulator
-    void makeMaskData(SimulationConfig& c, double* mask, OASISParser::OASISCell* cell);
-    void makeCellData(SimulationConfig& c, double* mask, OASISParser::OASISCell* cell, OASISParser::KPoint<int> cellOrigin);
+    void makeMaskData(SimulationConfig& c, std::vector<double>& mask, OASISParser::OASISCell* cell);
+    void makeCellData(SimulationConfig& c, std::vector<double>& mask, OASISParser::OASISCell* cell, OASISParser::KPoint<int> cellOrigin);
 };
 
 #endif // OASISVIEW_H

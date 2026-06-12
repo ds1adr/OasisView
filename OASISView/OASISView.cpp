@@ -38,11 +38,11 @@ void OASISView::updateCell(OASISParser::OASISData* oasisData, OASISCell* cell) {
     update();
 }
 
-void OASISView::makeMaskData(SimulationConfig& c, double* mask, OASISCell* cell) {
+void OASISView::makeMaskData(SimulationConfig& c, std::vector<double>& mask, OASISCell* cell) {
     makeCellData(c, mask, cell, KPoint<int>(0, 0));
 }
 
-void OASISView::makeCellData(SimulationConfig& c, double* mask, OASISParser::OASISCell* cell, OASISParser::KPoint<int> cellOrigin) {
+void OASISView::makeCellData(SimulationConfig& c, std::vector<double>& mask, OASISParser::OASISCell* cell, OASISParser::KPoint<int> cellOrigin) {
     if (cell == nullptr) {
         return;
     }
@@ -117,7 +117,7 @@ void OASISView::drawCell(QPainter& painter, OASISCell* cell, int currentDepth, K
     }
 }
 
-void OASISView::makeRectangleData(SimulationConfig& c, double* mask, Rectangle* r, KPoint<int> offset) {
+void OASISView::makeRectangleData(SimulationConfig& c, std::vector<double>& mask, Rectangle* r, KPoint<int> offset) {
     int mask_lx = c.originX;
     int mask_ly = c.originY;
     int mask_ux = c.originX + c.Nx * c.dx;
@@ -237,7 +237,7 @@ void OASISView::drawPolygon(QPainter& painter, OASISParser::Polygon* _polygon, O
     }
 }
 
-void OASISView::makePlacementData(SimulationConfig& c, double* mask, Placement* placement, KPoint<int> offset) {
+void OASISView::makePlacementData(SimulationConfig& c, std::vector<double>& mask, Placement* placement, KPoint<int> offset) {
     OASISCell* subCell;
     if (placement->getCellName().empty()) {
         subCell = mOASISData->getCell(placement->getReference());

@@ -34,15 +34,15 @@ private:
 
     void writeMask(SimulationConfig& config, double* mask);
     void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
-    void makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, double* mask, double threshould);
+    void makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, std::vector<double>& mask, double threshould);
 
-    std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, double* mask);
-    void rollbackMask(SimulationConfig& c, int flipGrid, double* mask, std::tuple<int, int>& locTuple);
+    std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask);
+    void rollbackMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask, std::tuple<int, int>& locTuple);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void makeMaskData(SimulationConfig& c, double* mask);
+    void makeMaskData(SimulationConfig& c, std::vector<double>& mask);
 
 private slots:
     void openFileClicked();

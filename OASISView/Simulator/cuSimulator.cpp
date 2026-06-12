@@ -5,7 +5,7 @@
 
 #include "cuSimulator.h"
 
-void cu_simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<double>& total_intensity) {
+void cu_simulate_2d_abbe(const SimulationConfig& c, std::vector<double>& mask, std::vector<double>& total_intensity) {
     int size = c.Nx * c.Ny;
     cufftHandle p_forward;
     cufftHandle p_backward;

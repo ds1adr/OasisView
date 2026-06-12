@@ -117,7 +117,7 @@ void simulate_1d(const SimulationConfig1D& c, std::vector<double>& mask, std::ve
 
 }
 
-void simulate_2d_abbe(const SimulationConfig& c, double *mask, std::vector<double>& total_intensity) {
+void simulate_2d_abbe(const SimulationConfig& c, std::vector<double>& mask, std::vector<double>& total_intensity) {
     int size = c.Nx * c.Ny;
     fftw_complex *mask_data = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     fftw_complex *spectrum = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);

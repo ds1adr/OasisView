@@ -14,7 +14,7 @@ class Simulation1DResultDialog : public QDialog
 public:
     explicit Simulation1DResultDialog(QWidget *parent = nullptr);
 
-    void setValues(const SimulationConfig1D& config, const std::vector<double>values);
+    void setValues(const SimulationConfig1D& config, const std::vector<double>& values);
 private:
     QVBoxLayout* mMainLayout;
     QChartView* mChartView;

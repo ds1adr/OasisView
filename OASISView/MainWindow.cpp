@@ -155,7 +155,7 @@ void MainWindow::cellDepthComboBoxChanged(QString depth) {
     mOASISView->update();
 }
 
-void MainWindow::makeMaskData(SimulationConfig& c, double* mask) {
+void MainWindow::makeMaskData(SimulationConfig& c, std::vector<double>& mask) {
     string cellName = mCellNameComboBox->currentText().toStdString();
     OASISParser::OASISCell* cell = mOASISData.getCell(cellName);
     mOASISView->makeMaskData(c, mask, cell);
@@ -197,13 +197,12 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
 
     // make mask data from QOASISData (1D array with 2D size)
     int size = config.Nx * config.Ny;
-    double* mask = new double[size];
-    std::memset(mask, 0, sizeof(double) * size);
+    std::vector<double> mask(size, 0);
 
     //
     makeMaskData(config, mask);
 
-    writeMask(config, mask);
+    writeIntensity(config, mask);
 
     // results
     vector<double> intensity(size, 0);
@@ -220,8 +219,6 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     std::cout << "Duration: " << elapsed.count() << " microseconds.\n" << std::endl;
-
-    delete [] mask;
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);
@@ -377,8 +374,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 
     // make mask data from QOASISData (1D array with 2D size)
     int size = config.Nx * config.Ny;
-    double* mask = new double[size];
-    std::memset(mask, 0, sizeof(double) * size);
+    vector<double> mask(size, 0);
 
     vector<double> targetIntensity(size, 0);
 
@@ -399,7 +395,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     double minCost = getCost(config, targetIntensity, intensity);
     int smallDropCount = 0;
 
-    double *flipedMask = new double[size];
+    std::vector<double> flipedMask(size, 0);
     for (int i = 0; i < size; i++) {
         flipedMask[i] = mask[i];
     }
@@ -435,17 +431,14 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
         }
     } while(count < maxCount);
 
-    writeMask(config, flipedMask);
-
-    delete [] mask;
-    delete [] flipedMask;
+    writeIntensity(config, flipedMask);
 
     // Display Dialog or Widget
     writeIntensity(config, intensity);
 }
 
 // return: flip location <x, y>
-std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, double* mask) {
+std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask) {
     int countX = (int)(c.Nx * c.dx)/flipGrid;
     int countY = (int)(c.Ny * c.dy)/flipGrid;
     int gridCountX = flipGrid / (int)(c.Nx * c.dx);
@@ -472,7 +465,7 @@ std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, dou
     return std::make_tuple(x, y);
 }
 
-void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, double* mask, std::tuple<int, int>& locTuple) {
+void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask, std::tuple<int, int>& locTuple) {
     int gridCountX = flipGrid / (int)(c.Nx * c.dx);
     int gridCountY = flipGrid / (int)(c.Ny * c.dy);
 
@@ -486,7 +479,7 @@ void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, double* mask, s
     }
 }
 
-void MainWindow::makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, double* mask, double threshould) {
+void MainWindow::makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, std::vector<double>& mask, double threshould) {
     int size = c.Nx * c.Ny;
 
     for (int i = 0; i < size; i++) {

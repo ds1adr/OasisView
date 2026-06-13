@@ -428,8 +428,9 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
             }
             minCost = cost;
         } else {
-            rollbackMask(config, flipGrid, mask, location);
+            rollbackMask(config, flipGrid, flipedMask, location);
         }
+        count++;
     } while(count < maxCount);
 
     writeIntensity(config, flipedMask);

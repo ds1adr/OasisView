@@ -415,6 +415,8 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
         // calculate cost function
         double cost = getCost(config, targetIntensity, intensity);
 
+        cout << "(" << get<0>(location) << "," << get<1>(location) << "):" << minCost << "-" << cost;
+
         // if cost function is larger than before, roll back
         if (cost < minCost) {
             double percent = (minCost - cost)/minCost;
@@ -427,8 +429,10 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
                 smallDropCount = 0;
             }
             minCost = cost;
+            cout << " Accept" << endl;
         } else {
             rollbackMask(config, flipGrid, flipedMask, location);
+            cout << " Rollback" << endl;
         }
         count++;
     } while(count < maxCount);
@@ -443,8 +447,8 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask) {
     int countX = (int)(c.Nx * c.dx)/flipGrid;
     int countY = (int)(c.Ny * c.dy)/flipGrid;
-    int gridCountX = flipGrid / (int)(c.Nx * c.dx);
-    int gridCountY = flipGrid / (int)(c.Ny * c.dy);
+    int gridCountX = flipGrid / c.dx;
+    int gridCountY = flipGrid / c.dy;
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -468,8 +472,8 @@ std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, std
 }
 
 void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask, std::tuple<int, int>& locTuple) {
-    int gridCountX = flipGrid / (int)(c.Nx * c.dx);
-    int gridCountY = flipGrid / (int)(c.Ny * c.dy);
+    int gridCountX = flipGrid / c.dx;
+    int gridCountY = flipGrid / c.dy;
 
     int x = get<0>(locTuple);
     int y = get<1>(locTuple);

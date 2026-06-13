@@ -79,4 +79,5 @@ void ILTDialog::runButtonClicked(bool) {
 
 void ILTDialog::cancelButtonClicked(bool) {
     std::cout << "ILT Cancel Button" << std::endl;
+    emit cancelSelected();
 }

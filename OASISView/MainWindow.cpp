@@ -350,7 +350,8 @@ void MainWindow::ILTClicked() {
         return;
     }
     ILTDialog dialog = ILTDialog(this);
-    connect(&dialog, SIGNAL(ILTSelected(int, int, int, int, float, float, float, float, int, int)), this, SLOT(ILTSelected(int, int, int, int, float, float, float, float, int, int)));
+    connect(&dialog, SIGNAL(ILTSelected(int, int, int, int, float, float, float, float, float, int, int)), this, SLOT(ILTSelected(int, int, int, int, float, float, float, float, float, int, int)));
+    connect(&dialog, SIGNAL(cancelSelected()), this, SLOT(simulationCancelClicked()));
     dialog.exec();
 }
 

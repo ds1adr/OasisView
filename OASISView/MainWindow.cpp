@@ -415,24 +415,21 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
         // calculate cost function
         double cost = getCost(config, targetIntensity, intensity);
 
-        cout << "(" << get<0>(location) << "," << get<1>(location) << "):" << minCost << "-" << cost;
-
         // if cost function is larger than before, roll back
         if (cost < minCost) {
             double percent = (minCost - cost)/minCost;
-            if (percent < 0.03) {
-                smallDropCount++;
-                if (smallDropCount == 10) {
-                    break;
-                }
-            } else {
-                smallDropCount = 0;
-            }
+            // Need to proper value / method to catch saturation point
+//            if (percent < 0.03) {
+//                smallDropCount++;
+//                if (smallDropCount == 10) {
+//                    break;
+//                }
+//            } else {
+//                smallDropCount = 0;
+//            }
             minCost = cost;
-            cout << " Accept" << endl;
         } else {
             rollbackMask(config, flipGrid, flipedMask, location);
-            cout << " Rollback" << endl;
         }
         count++;
     } while(count < maxCount);

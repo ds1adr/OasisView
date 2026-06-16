@@ -202,7 +202,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     //
     makeMaskData(config, mask);
 
-    writeIntensity(config, mask);
+    writeVectorArray(config, mask);
 
     // results
     vector<double> intensity(size, 0);
@@ -221,7 +221,7 @@ void MainWindow::simulationSelected(int lowLeftX, int lowLeftY, int upperRightX,
     std::cout << "Duration: " << elapsed.count() << " microseconds.\n" << std::endl;
 
     // Display Dialog or Widget
-    writeIntensity(config, intensity);
+    writeVectorArray(config, intensity);
 }
 
 void MainWindow::simulation1DButtonClicked() {
@@ -263,47 +263,7 @@ void MainWindow::simulation1DSelected(int pitch, int spaceWidth, int simulationW
     intensityDialog.exec();
 }
 
-void MainWindow::writeMask(SimulationConfig& config, double* mask) {
-    double pos_x = 0;
-    double pos_y = 0;
-    QString fileName = QFileDialog::getSaveFileName();
-
-    QString gnuPlotFileName = fileName + ".plt";
-    QString outputFileName = fileName + ".txt";
-
-    ofstream gnuos = ofstream(gnuPlotFileName.toStdString());
-
-    gnuos << "set pm3d map" << endl;
-    gnuos << "set palette rgbformulae 33,13,10" << endl;
-    gnuos << "set contour base" << endl;
-    gnuos << "set cntrparam levels 10" << endl;
-    gnuos << "set cntrparam cubicspline" << endl;
-
-    gnuos << "splot " << "\"" << outputFileName.toStdString() << "\"" << " with pm3d" << endl;
-
-    ofstream os = ofstream(outputFileName.toStdString());
-
-    if (!os.is_open()) {
-        // throw error
-        return;
-    }
-
-    os << "# X Y Z" << endl;
-
-    for (int jy = 0; jy < config.Ny; jy++) {
-        pos_x = 0;
-        for (int ix = 0; ix < config.Nx; ix++) {
-            os << pos_x << " " << pos_y << " " << mask[jy * config.Nx + ix] << endl;
-            pos_x += config.dx;
-        }
-        os << endl;
-        pos_y += config.dy;
-    }
-
-    os.close();
-}
-
-void MainWindow::writeIntensity(SimulationConfig& config, std::vector<double>& intensity) {
+void MainWindow::writeVectorArray(SimulationConfig& config, std::vector<double>& intensity) {
     double pos_x = 0;
     double pos_y = 0;
     QString fileName = QFileDialog::getSaveFileName();
@@ -434,10 +394,10 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
         count++;
     } while(count < maxCount);
 
-    writeIntensity(config, flipedMask);
+    writeVectorArray(config, flipedMask);
 
     // Display Dialog or Widget
-    writeIntensity(config, intensity);
+    writeVectorArray(config, intensity);
 }
 
 // return: flip location <x, y>

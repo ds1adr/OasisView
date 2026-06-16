@@ -32,8 +32,7 @@ private:
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
 
-    void writeMask(SimulationConfig& config, double* mask);
-    void writeIntensity(SimulationConfig& config, std::vector<double>& intensity);
+    void writeVectorArray(SimulationConfig& config, std::vector<double>& intensity);
     void makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, std::vector<double>& mask, double threshould);
 
     std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask);

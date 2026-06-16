@@ -75,9 +75,11 @@ void ILTDialog::runButtonClicked(bool) {
     int maxCount = mMaxCount->text().toInt();
 
     emit ILTSelected(llx, lly, urx, ury, waveLength, na, sigma, innerSigma, threshould, flipGrid, maxCount);
+    this->accept();
 }
 
 void ILTDialog::cancelButtonClicked(bool) {
     std::cout << "ILT Cancel Button" << std::endl;
     emit cancelSelected();
+    this->reject();
 }

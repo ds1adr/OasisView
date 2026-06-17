@@ -333,8 +333,10 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     config.originX = lowLeftX;
     config.originY = lowLeftY;
 
-    std::thread t(&MainWindow::ILTCalculation, this, std::ref(config), threshould, flipGrid, maxCount);
-    t.join();
+//    std::thread t(&MainWindow::ILTCalculation, this, std::ref(config), threshould, flipGrid, maxCount);
+//    t.join();
+
+    ILTCalculation(config, threshould, flipGrid, maxCount);
 }
 
 void MainWindow::ILTCalculation(SimulationConfig& config, float threshould, int flipGrid, int maxCount) {

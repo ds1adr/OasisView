@@ -333,6 +333,11 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     config.originX = lowLeftX;
     config.originY = lowLeftY;
 
+    std::thread t(&MainWindow::ILTCalculation, this, std::ref(config), threshould, flipGrid, maxCount);
+    t.join();
+}
+
+void MainWindow::ILTCalculation(SimulationConfig& config, float threshould, int flipGrid, int maxCount) {
     // make mask data from QOASISData (1D array with 2D size)
     int size = config.Nx * config.Ny;
     vector<double> mask(size, 0);

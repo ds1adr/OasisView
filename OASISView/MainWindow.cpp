@@ -333,8 +333,14 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     config.originX = lowLeftX;
     config.originY = lowLeftY;
 
-//    std::thread t(&MainWindow::ILTCalculation, this, std::ref(config), threshould, flipGrid, maxCount);
-//    t.join();
+    int size = config.Nx * config.Ny;
+    vector<double> mask(size, 0);
+
+    vector<double> targetIntensity(size, 0);
+
+    //
+    makeMaskData(config, mask);
+    makeTargetIntensityFromMask(config, targetIntensity, mask, threshould);
 
     ILTCalculation(config, threshould, flipGrid, maxCount);
 }

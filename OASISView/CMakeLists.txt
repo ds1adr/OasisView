@@ -38,6 +38,8 @@ set(PROJECT_SOURCES
         MainWindow.h
         OASISView.h
         OASISView.cpp
+        ILTThread.h
+        ILTThread.cpp
         OASISParser/OASISElement.h
         OASISParser/OASISParserException.h
         OASISParser/OASISElementParser.h

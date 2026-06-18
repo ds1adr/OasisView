@@ -340,129 +340,14 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 
     //
     makeMaskData(config, mask);
-    makeTargetIntensityFromMask(config, targetIntensity, mask, threshould);
 
-    ILTCalculation(config, threshould, flipGrid, maxCount);
-}
-
-void MainWindow::ILTCalculation(SimulationConfig& config, float threshould, int flipGrid, int maxCount) {
-    // make mask data from QOASISData (1D array with 2D size)
-    int size = config.Nx * config.Ny;
-    vector<double> mask(size, 0);
-
-    vector<double> targetIntensity(size, 0);
-
-    //
-    makeMaskData(config, mask);
-    makeTargetIntensityFromMask(config, targetIntensity, mask, threshould);
-
-    // results
-    vector<double> intensity(size, 0);
-
-    // first run for reference
-#ifdef _CUDA_
-    cu_simulate_2d_abbe(config, mask, intensity);
-#else
-    simulate_2d_abbe(config, mask, intensity);
-#endif
-    // calculate initial cost function
-    double minCost = getCost(config, targetIntensity, intensity);
-    int smallDropCount = 0;
-
-    std::vector<double> flipedMask(size, 0);
-    for (int i = 0; i < size; i++) {
-        flipedMask[i] = mask[i];
-    }
-    int count = 0;
-    do {
-        // flip mask randomly
-        auto location = flipMask(config, flipGrid, flipedMask);
-
-        // simulate_2d
-#ifdef _CUDA_
-        cu_simulate_2d_abbe(config, flipedMask, intensity);
-#else
-        simulate_2d_abbe(config, flipedMask, intensity);
-#endif
-
-        // calculate cost function
-        double cost = getCost(config, targetIntensity, intensity);
-
-        // if cost function is larger than before, roll back
-        if (cost < minCost) {
-            double percent = (minCost - cost)/minCost;
-            // Need to proper value / method to catch saturation point
-//            if (percent < 0.03) {
-//                smallDropCount++;
-//                if (smallDropCount == 10) {
-//                    break;
-//                }
-//            } else {
-//                smallDropCount = 0;
-//            }
-            minCost = cost;
-        } else {
-            rollbackMask(config, flipGrid, flipedMask, location);
-        }
-        count++;
-    } while(count < maxCount);
-
-    writeVectorArray(config, flipedMask);
-
-    // Display Dialog or Widget
-    writeVectorArray(config, intensity);
-}
-
-// return: flip location <x, y>
-std::tuple<int, int> MainWindow::flipMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask) {
-    int countX = (int)(c.Nx * c.dx)/flipGrid;
-    int countY = (int)(c.Ny * c.dy)/flipGrid;
-    int gridCountX = flipGrid / c.dx;
-    int gridCountY = flipGrid / c.dy;
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    std::uniform_int_distribution<int> distribX(0, countX);
-    std::uniform_int_distribution<int> distribY(0, countY);
-
-    int randX = distribX(gen);
-    int randY = distribY(gen);
-
-    int x = randX * gridCountX;
-    int y = randY * gridCountY;
-
-    for (int jy = y; jy < y + gridCountY; jy++) {
-        for (int ix = x; ix < x + gridCountX; ix++) {
-            mask[jy * c.Nx + ix] = (mask[jy * c.Nx + ix]) > 0 ? 0.0 : 1.0 / (c.Nx * c.Ny);
-        }
+    if (thread) {
+        thread->quit();
+        delete thread;
+        thread = nullptr;
     }
 
-    return std::make_tuple(x, y);
-}
-
-void MainWindow::rollbackMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask, std::tuple<int, int>& locTuple) {
-    int gridCountX = flipGrid / c.dx;
-    int gridCountY = flipGrid / c.dy;
-
-    int x = get<0>(locTuple);
-    int y = get<1>(locTuple);
-
-    for (int jy = y; jy < y + gridCountY; jy++) {
-        for (int ix = x; ix < x + gridCountX; ix++) {
-            mask[jy * c.Nx + ix] = (mask[jy * c.Nx + ix]) > 0 ? 0.0 : 1.0 / (c.Nx * c.Ny);
-        }
-    }
-}
-
-void MainWindow::makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, std::vector<double>& mask, double threshould) {
-    int size = c.Nx * c.Ny;
-
-    for (int i = 0; i < size; i++) {
-        if (mask[i] > 0) {
-            target[i] = threshould * 2.0;
-        } else {
-            target[i] = 0.0;
-        }
-    }
+    thread = new ILTThread(config, mask, threshould, flipGrid, maxCount);
+    // TODO: Need connect
+    thread->start();
 }

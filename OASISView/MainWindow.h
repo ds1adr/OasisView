@@ -9,6 +9,7 @@
 #include "OASISParser/OASISData.h"
 #include "OASISView.h"
 #include "Simulator/Simulator.h"
+#include "ILTThread.h"
 
 class MainWindow : public QMainWindow
 {
@@ -29,14 +30,12 @@ private:
     QMenu* mILTMenu;
     QAction* mILTAction;
 
+    ILTThread* thread = nullptr;
+
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);
 
     void writeVectorArray(SimulationConfig& config, std::vector<double>& intensity);
-    void makeTargetIntensityFromMask(SimulationConfig&c, std::vector<double>& target, std::vector<double>& mask, double threshould);
-
-    std::tuple<int, int> flipMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask);
-    void rollbackMask(SimulationConfig& c, int flipGrid, std::vector<double>& mask, std::tuple<int, int>& locTuple);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -59,7 +58,5 @@ private slots:
     void simulationSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma);
     void simulation1DSelected(int pitch, int spaceWidth, int simulationWindow, float waveLength, float na, float sigma);
     void ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int upperRightY, float waveLength, float na, float sigma, float innerSigma, float threshould, int flipGrid, int maxCount);
-    void ILTCalculation(SimulationConfig& config, float threshould, int flipGrid, int maxCount);
-
 };
 #endif // MAINWINDOW_H

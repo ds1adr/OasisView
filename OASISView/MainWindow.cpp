@@ -349,5 +349,10 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 
     thread = new ILTThread(config, mask, threshould, flipGrid, maxCount);
     // TODO: Need connect
+    connect(thread, SIGNAL(maskUpdateILT(SimulationConfig&, vector<double>&, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig&, vector<double>&, bool)));
     thread->start();
+}
+
+void MainWindow::handleMaskUpdateILT(SimulationConfig& config, vector<double>& mask, bool isFinal) {
+
 }

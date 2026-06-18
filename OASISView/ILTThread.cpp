@@ -75,6 +75,7 @@ void ILTThread::run() {
 //                smallDropCount = 0;
 //            }
             minCost = cost;
+            emit maskUpdateILT(config, flipedMask, false);
         } else {
             rollbackMask(config, flipGrid, flipedMask, location);
         }
@@ -83,6 +84,7 @@ void ILTThread::run() {
 
 // Emit
 //    writeVectorArray(config, flipedMask);
+    emit maskUpdateILT(config, flipedMask, true);
 
     // Display Dialog or Widget
     // Emit

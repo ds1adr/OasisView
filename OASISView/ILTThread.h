@@ -25,8 +25,8 @@ protected:
     void run() override;
 
 signals:
-    void maskUpdate(SimulationConfig& c, std::vector<double>& values);
-    void intensityUpdate(SimulationConfig& c, std::vector<double>& values);
+    void maskUpdateILT(SimulationConfig& c, std::vector<double>& values, bool isFinal);
+    void intensityUpdateILT(SimulationConfig& c, std::vector<double>& values);
 };
 
 #endif // ILTTHREAD_H

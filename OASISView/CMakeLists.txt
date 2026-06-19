@@ -40,6 +40,8 @@ set(PROJECT_SOURCES
         OASISView.cpp
         ILTThread.h
         ILTThread.cpp
+        MaskDataViewDialog.h
+        MaskDataViewDialog.cpp
         OASISParser/OASISElement.h
         OASISParser/OASISParserException.h
         OASISParser/OASISElementParser.h

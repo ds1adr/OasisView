@@ -97,14 +97,16 @@ std::tuple<int, int> ILTThread::flipMask(std::vector<double>& mask) {
     int gridCountX = flipGrid / config.dx;
     int gridCountY = flipGrid / config.dy;
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    default_random_engine rEngine;
 
     std::uniform_int_distribution<int> distribX(0, countX);
     std::uniform_int_distribution<int> distribY(0, countY);
 
-    int randX = distribX(gen);
-    int randY = distribY(gen);
+    auto genX = bind(distribX, rEngine);
+    auto genY = bind(distribY, rEngine);
+
+    int randX = genX();
+    int randY = genY();
 
     int x = randX * gridCountX;
     int y = randY * gridCountY;

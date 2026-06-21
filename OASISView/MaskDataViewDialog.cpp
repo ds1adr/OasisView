@@ -5,3 +5,7 @@ MaskDataViewDialog::MaskDataViewDialog(QWidget *parent)
 {
 
 }
+
+void MaskDataViewDialog::updateMask(SimulationConfig& config, std::vector<double>& mask) {
+
+}

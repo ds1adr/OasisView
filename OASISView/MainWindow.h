@@ -10,6 +10,7 @@
 #include "OASISView.h"
 #include "Simulator/Simulator.h"
 #include "ILTThread.h"
+#include "MaskDataViewDialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +30,7 @@ private:
     QAction* mSimulationAction;
     QMenu* mILTMenu;
     QAction* mILTAction;
+    MaskDataViewDialog* mMaskViewDialog;
 
     ILTThread* thread = nullptr;
 

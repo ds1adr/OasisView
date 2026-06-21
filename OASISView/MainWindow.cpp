@@ -341,6 +341,9 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     //
     makeMaskData(config, mask);
 
+    mMaskViewDialog = new MaskDataViewDialog(this);
+    mMaskViewDialog->exec();
+
     if (thread) {
         thread->quit();
         delete thread;
@@ -348,16 +351,19 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     }
 
     thread = new ILTThread(config, mask, threshould, flipGrid, maxCount);
-    // TODO: Need connect
+
     connect(thread, SIGNAL(maskUpdateILT(SimulationConfig&, vector<double>&, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig&, vector<double>&, bool)));
     connect(thread, SIGNAL(intensityUpdateILT(SimulationConfig&, vector<double>&)), this, SLOT(handleIntensityUpdateILT(SimulationConfig&, vector<double>&)));
     thread->start();
 }
 
 void MainWindow::handleMaskUpdateILT(SimulationConfig& config, vector<double>& mask, bool isFinal) {
-
+    cout << "Handle Mask Update ILT" << endl;
+    if (mMaskViewDialog) {
+        mMaskViewDialog->updateMask(config, mask);
+    }
 }
 
 void MainWindow::handleIntensityUpdateILT(SimulationConfig& config, vector<double>& values) {
-
+    cout << "Handle Intensity Update ILT" << endl;
 }

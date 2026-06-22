@@ -95,6 +95,10 @@ MainWindow::~MainWindow()
     delete mLayerListWidget;
     delete mDock;
     delete mOASISView;
+
+    if (mThread) {
+        delete mThread;
+    }
 }
 
 void MainWindow::statusChanged(QString& message) {
@@ -342,19 +346,19 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     makeMaskData(config, mask);
 
     mMaskViewDialog = new MaskDataViewDialog(this);
-    mMaskViewDialog->exec();
+    mMaskViewDialog->show();
 
-    if (thread) {
-        thread->quit();
-        delete thread;
-        thread = nullptr;
+    if (mThread) {
+        mThread->quit();
+        delete mThread;
+        mThread = nullptr;
     }
 
-    thread = new ILTThread(config, mask, threshould, flipGrid, maxCount);
+    mThread = new ILTThread(config, mask, threshould, flipGrid, maxCount, this);
 
-    connect(thread, SIGNAL(maskUpdateILT(SimulationConfig&, vector<double>&, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig&, vector<double>&, bool)));
-    connect(thread, SIGNAL(intensityUpdateILT(SimulationConfig&, vector<double>&)), this, SLOT(handleIntensityUpdateILT(SimulationConfig&, vector<double>&)));
-    thread->start();
+    connect(mThread, SIGNAL(maskUpdateILT(SimulationConfig&, vector<double>&, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig&, vector<double>&, bool)));
+    connect(mThread, SIGNAL(intensityUpdateILT(SimulationConfig&, vector<double>&)), this, SLOT(handleIntensityUpdateILT(SimulationConfig&, vector<double>&)));
+    mThread->start();
 }
 
 void MainWindow::handleMaskUpdateILT(SimulationConfig& config, vector<double>& mask, bool isFinal) {

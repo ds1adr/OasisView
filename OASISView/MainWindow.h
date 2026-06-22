@@ -32,7 +32,7 @@ private:
     QAction* mILTAction;
     MaskDataViewDialog* mMaskViewDialog;
 
-    ILTThread* thread = nullptr;
+    ILTThread* mThread = nullptr;
 
     void drawCell(std::string cellName);
     void setDepthCombo(int depth);

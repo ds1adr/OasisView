@@ -9,11 +9,11 @@ class ILTThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit ILTThread(SimulationConfig& config, std::vector<double>& mask, float threshould, int flipGrid, int maxCount, QObject *parent = nullptr);
+    explicit ILTThread(SimulationConfig config, std::vector<double> mask, float threshould, int flipGrid, int maxCount, QObject *parent = nullptr);
 
 private:
-    SimulationConfig& config;
-    std::vector<double>& mask;
+    SimulationConfig config;
+    std::vector<double> mask;
     float threshould;
     int flipGrid;
     int maxCount;

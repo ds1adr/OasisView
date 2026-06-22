@@ -356,18 +356,18 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 
     mThread = new ILTThread(config, mask, threshould, flipGrid, maxCount, this);
 
-    connect(mThread, SIGNAL(maskUpdateILT(SimulationConfig&, vector<double>&, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig&, vector<double>&, bool)));
-    connect(mThread, SIGNAL(intensityUpdateILT(SimulationConfig&, vector<double>&)), this, SLOT(handleIntensityUpdateILT(SimulationConfig&, vector<double>&)));
+    connect(mThread, SIGNAL(maskUpdateILT(SimulationConfig, vector<double>, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig, vector<double>, bool)));
+    connect(mThread, SIGNAL(intensityUpdateILT(SimulationConfig, vector<double>)), this, SLOT(handleIntensityUpdateILT(SimulationConfig, vector<double>)));
     mThread->start();
 }
 
-void MainWindow::handleMaskUpdateILT(SimulationConfig& config, vector<double>& mask, bool isFinal) {
+void MainWindow::handleMaskUpdateILT(SimulationConfig config, vector<double> mask, bool isFinal) {
     cout << "Handle Mask Update ILT" << endl;
     if (mMaskViewDialog) {
         mMaskViewDialog->updateMask(config, mask);
     }
 }
 
-void MainWindow::handleIntensityUpdateILT(SimulationConfig& config, vector<double>& values) {
+void MainWindow::handleIntensityUpdateILT(SimulationConfig config, vector<double> values) {
     cout << "Handle Intensity Update ILT" << endl;
 }

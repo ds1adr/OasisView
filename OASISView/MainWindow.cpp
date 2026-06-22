@@ -356,8 +356,8 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
 
     mThread = new ILTThread(config, mask, threshould, flipGrid, maxCount, this);
 
-    connect(mThread, SIGNAL(maskUpdateILT(SimulationConfig, vector<double>, bool)), this, SLOT(handleMaskUpdateILT(SimulationConfig, vector<double>, bool)));
-    connect(mThread, SIGNAL(intensityUpdateILT(SimulationConfig, vector<double>)), this, SLOT(handleIntensityUpdateILT(SimulationConfig, vector<double>)));
+    connect(mThread, &ILTThread::maskUpdateILT, this, &MainWindow::handleMaskUpdateILT);
+    connect(mThread, &ILTThread::intensityUpdateILT, this, &MainWindow::handleIntensityUpdateILT);
     mThread->start();
 }
 

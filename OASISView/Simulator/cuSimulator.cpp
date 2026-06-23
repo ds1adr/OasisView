@@ -36,7 +36,6 @@ void cu_simulate_2d_abbe(const SimulationConfig& c, std::vector<double>& mask, s
 
     const double pupilRx = (c.NA / c.wavelength) * (c.Nx * c.dx);
     const double pupilRy = (c.NA / c.wavelength) * (c.Ny * c.dy);
-    std::cout << "PupilRx:" << pupilRx << std::endl;
 
     double ds = 0.1; // Source sampling step
     for (double sx = -c.sigma; sx <= c.sigma; sx += ds) {

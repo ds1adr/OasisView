@@ -6,7 +6,7 @@
 using namespace std;
 
 ILTThread::ILTThread(SimulationConfig config, vector<double> mask, float threshould, int flipGrid, int maxCount, QObject *parent)
-    : QThread{parent}, config{config}, mask{mask}, threshould{threshould}, maxCount{maxCount}
+    : QThread{parent}, config{config}, mask{mask}, threshould{threshould}, flipGrid{flipGrid}, maxCount{maxCount}
 {
 }
 

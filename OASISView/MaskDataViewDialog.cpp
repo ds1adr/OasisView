@@ -15,6 +15,9 @@ void MaskDataViewDialog::updateMask(SimulationConfig& config, std::vector<double
 }
 
 void MaskDataViewDialog::paintEvent(QPaintEvent *event) {
+    if (mask.size() < config.Nx * config.Ny) {
+        return;
+    }
     QRect rect = this->geometry();
 
     double ratioX = rect.width() / (config.Nx * config.dx);

@@ -346,6 +346,7 @@ void MainWindow::ILTSelected(int lowLeftX, int lowLeftY, int upperRightX, int up
     makeMaskData(config, mask);
 
     mMaskViewDialog = new MaskDataViewDialog(this);
+    mMaskViewDialog->setGeometry(0, 0, 600, 600);
     mMaskViewDialog->show();
 
     if (mThread) {

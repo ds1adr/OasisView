@@ -54,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
     mToolBar = addToolBar("ILT");
     mToolBar->addAction(mILTAction);
 
+    mToolBar = addToolBar("");
+
     mCellNameComboBox = new QComboBox(this);
     mToolBar->addWidget(mCellNameComboBox);
     connect(mCellNameComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(cellNameComboBoxChanged(QString)));

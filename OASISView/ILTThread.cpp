@@ -1,6 +1,7 @@
 #include "ILTThread.h"
 #include "Simulator/cuSimulator.h"
 
+#include <iostream>
 #include <random>
 
 using namespace std;
@@ -75,11 +76,13 @@ void ILTThread::run() {
 //                smallDropCount = 0;
 //            }
             minCost = cost;
+            std::cout << "Update mask: ";
             emit maskUpdateILT(config, flipedMask, false);
         } else {
             rollbackMask(config, flipGrid, flipedMask, location);
         }
         count++;
+        std::cout << count << ", Max: " << maxCount << " Cost:" << cost << " MinCost:" << minCost << endl;
     } while(count < maxCount);
 
 // Emit
@@ -97,19 +100,17 @@ std::tuple<int, int> ILTThread::flipMask(std::vector<double>& mask) {
     int gridCountX = flipGrid / config.dx;
     int gridCountY = flipGrid / config.dy;
 
-    default_random_engine rEngine;
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
     std::uniform_int_distribution<int> distribX(0, countX);
     std::uniform_int_distribution<int> distribY(0, countY);
 
-    auto genX = bind(distribX, rEngine);
-    auto genY = bind(distribY, rEngine);
+    int genX = distribX(gen);
+    int genY = distribY(gen);
 
-    int randX = genX();
-    int randY = genY();
-
-    int x = randX * gridCountX;
-    int y = randY * gridCountY;
+    int x = genX * gridCountX;
+    int y = genY * gridCountY;
 
     for (int jy = y; jy < y + gridCountY; jy++) {
         for (int ix = x; ix < x + gridCountX; ix++) {
